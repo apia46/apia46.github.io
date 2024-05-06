@@ -9454,15 +9454,39 @@ function _godot_js_display_canvas_is_focused() {
 }
 
 function _godot_js_display_clipboard_get(callback) {
- if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(61, 1, callback);
- const func = GodotRuntime.get_func(callback);
- try {
-  navigator.clipboard.readText().then(function(result) {
-   const ptr = GodotRuntime.allocString(result);
-   func(ptr);
-   GodotRuntime.free(ptr);
-  }).catch(function(e) {});
- } catch (e) {}
+	try {
+		var result = prompt("Paste a Replay or Level:");
+		const ptr=GodotRuntime.allocString(result);
+		const func=GodotRuntime.get_func(callback);
+		func(ptr);
+		GodotRuntime.free(ptr);
+	} catch (e) { console.log(e) }
+}
+function chunkSubstr(str, size) {
+  const numChunks = Math.ceil(str.length / size)
+  const chunks = new Array(numChunks)
+
+  for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    chunks[i] = str.substr(o, size)
+  }
+
+  return chunks
+}
+function _godot_js_display_clipboard_set(p_text) {
+	try {
+		const text=GodotRuntime.parseString(p_text);
+		console.log(text)
+		if (text.length > 2000) {
+			var chunks = chunkSubstr(text, 2000);
+			for (var i = 0; i < chunks.length; ++i)
+			{
+				prompt("Level part " + (i+1) + ": (I also put it in console.log.)", chunks[i]);
+			}
+		}
+		else {
+			prompt("Here is your Replay or Level: (I also put it in console.log.)", text);
+		}
+	} catch (e) { console.log(e) }
 }
 
 function _godot_js_display_clipboard_set(p_text) {
