@@ -4,14 +4,49 @@
         <meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no">
         <title>!!__READER__!!</title>
-        <link rel="stylesheet" href="reader.css">
+        <link rel="stylesheet" href="corru.css">
+        <script src="../jquery-3.7.1.min.js"></script>
+        <script src="https://corru.observer/js/howler.min.js"></script>
+        <script src="corru.js"></script>
+        <script src="dialogue.js"></script>
     </head>
-    <body state="corru-entered" menu="none" class="masksunlocked notchrome firefreak showgun showcopper emptycopper normalload sitting in-dialogue in-menu" page="corru-observer" quality="regular" low_intensity="false" gameplay_off="false" wide="false" mask="hunger" c="-2" n="i" currentdialogue="mth++fbx">
-        <div id="dialogue-box" class="menu-box" menu="dialogue">
-            <div class="dialogue-message actor-moth external moth sent">
-                <div class="dialogue-portrait" style="--background-image: https://corru.observer/img/sprites/moth/mothman.gif;"></div>
-                <div class="dialogue-text">
-                    What's up?
+    <body menu="none" class="in-dialogue" page="unknown" quality="regular" low_intensity="false" wide="false" c="-2" n="i" currentdialogue="mth++fbx">
+        <div id="meta-menu">
+            <div id="meta-icon"></div>
+            <i id="meta-volume-toggle" class="ci-vol"></i>
+            <div id="meta-volume">
+                <input type="range" min="0" max="1" value="0.5" step="0.05" class="slider" id="meta-volume-slider">
+            </div>
+            <i class="ci-moth moth-trigger" definition="NOTE::'establishes external contact'"><span class="mothnotice"><i class="ci-moth"></i></span></i>
+            <div id="meta-mask">
+                <i class="ci-masks mask-trigger" onclick="toggleMasksMenu()" definition="NOTE::'influence thoughtspace';'third-party installation'"></i>
+    
+                <div id="masks" class="menu ozo-menu"><div class="ozo-mask-grid"></div></div>
+            </div>
+            <i class="ci-bars"></i>
+            <div id="meta-links">
+                <div id="mui-links">
+                    <a id="meta-obs" definition="NOTE::'review scanned and detected entities'"><i class="ci-ent"></i></a>
+                    <a id="meta-sys" definition="NOTE::'system management'"><i class="ci-sys"></i></a>
+                </div>
+            </div>
+        </div>
+        <div id="definition-box"></div>
+
+        <div id="readout" class="readout-log menu"></div>
+
+        <div id="content">
+            <div id="dialogue-box" class="menu-box" menu="dialogue">
+                <div class="dialogue-message actor-moth external moth sent">
+                    <div class="dialogue-portrait" style="--background-image: https://corru.observer/img/sprites/moth/mothman.gif;"></div>
+                    <div class="dialogue-text">
+                        hey buddy
+                    </div>
+                </div>
+                <div class="dialogue-message actor-moth external moth sent">
+                    <div class="dialogue-text">
+                        what's up?
+                    </div>
                 </div>
             </div>
         </div>

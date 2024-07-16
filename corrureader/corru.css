@@ -35,47 +35,8 @@
 	}
 }
 
-body[state="corru-loaded"][menu="none"]:not(.in-dialogue)::before, body.loading::after, body.corru-refreshing::after {
-    content: "WARNING::'Mindspike usage may potentially trigger seizures for people with PHOTOSENSITIVE EPILEPSY. There are occasional unexpected flashes of light.';\A'Third party rendering extensions may interfere with operation.';\A'User discretion is advised.'";
-    font-family: spacemono;
-    font-size: 0.75em;
-    max-width: 600px;
-    position: fixed;
-    z-index: 1000;
-    display: block;
-    top: 10vh;
-    background: var(--dark-color);
-    padding: 0.25em;
-    text-align: center;
-    line-height: 1.25em;
-    white-space: pre-wrap;
-    pointer-events: none;
-}
-
-body[state="corru-loaded"]:not(.in-dialogue):not(.loading):not(.corru-refreshing)::after {
-    content: "CORRU OBSERVER";
-    font-family: barcodetext;
-    font-size: 2em;
-    position: fixed;
-    z-index: 1000;
-    bottom: 2vmin;
-    left: 2vmin;
-    background: var(--dark-color);
-    padding: 0.25em;
-    pointer-events: none;
-}
-
-body.loading::after, body.corru-refreshing::after {
-    content: "ATTENTION::'clearing mindspike buffer';'no progress will be lost'";
-    padding: 1em;
-    top: 50%;
-    transform: translateY(-100%);
-    opacity: 1;
-    display: block;
-}
-
-body.loading::after {
-    content: "NOTICE::'loading resources';'please wait'";
+#content {
+    transition: 1s;
 }
 
 /* GENERAL COLORS */
@@ -372,136 +333,22 @@ html.ftb {
     opacity: 0;
 }
 
-/* LOADING STUFF */
-#content {
-    transition: 1s;
-    opacity: 1;
-    min-height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-html.is-animating #content {
-    opacity: 0;
-}
-
-#static, body.loading #static, body[state="corru-entered"].loading #static {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	opacity: 1;
-	z-index: 25;
-	pointer-events: none;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-    transition: opacity 400ms ease-in-out;
-}
-
-#static:after {
-	content: "";
-    background: var(--bright-color);
-	background-image: url('../img/textures/static.gif');
-	animation: STATIC 1s steps(4) infinite;
-	animation-play-state: running;
-	position: fixed;
-	left: -50%;
-	top: -100%;
-	height: 300%;
-	width: 300%;
-}
-
-#static::before {
-    content: "";
-    position: absolute;
-    width: 20vmin;
-    height: 20vmin;
-    background: url(../img/sprites/velzie/smile2.png);
-    z-index: 5;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    pointer-events: none;
-}
-
-body[state="corru-loaded"] #static, body.loading #static, body[state="corru-leaving"] #static {
-    pointer-events: initial;
-}
-
-body.in-dialogue[state="corru-loaded"] #static, body[state*="corru-loaded"].in-dialogue #static div {
-    pointer-events: none;
-}
-
-body[state*="corru-loaded"] #static div, body[state="corru-entered"].flash #static {
-    opacity: 1;
-    pointer-events: initial;
-    z-index: 2;
-}
-
-body.flash #static {
-    z-index: 25;
-}
-
-body.velzie #static::before {
-    opacity: 1;
-}
-
-.enter {
-    display: flex;
-    flex-direction: column;
-    font-family: barcodetext;
-    background: var(--dark-color);
-    color: var(--neutral-color);
-    border: 1px solid var(--neutral-color);
-    font-size: 1.5em;
-    text-align: center;
-    padding: 1em;
-    cursor: pointer;
-}
-
-.enter::before {
-    content: attr(page);
-    margin-bottom: 1em;
-    font-size: 1.5em;
-    text-align: center;
-    color: var(--obesk-color);
-}
-
-#static .enter, body[state*="corru-entered"] #static, .cutscene #static .enter, body.loading #static .enter {
-    opacity: 0;
-    pointer-events: none;
-}
-
-body.loading #static .enter {
-    opacity: 0.25;
-}
-
 /* DEFAULT STYLING */
 a { 
 	text-decoration: none;
 }
 
 body {
-	background: var(--dark-color);
+	background: url(https://corru.observer/img/textures/fadeinlonghalf.gif), url(https://corru.observer/img/textures/ccontours.gif);
+    background-size: auto 100vh, auto;
+    background-attachment: fixed;
 	color: var(--bright-color);
-	overflow: hidden;
+	overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: spacemono, sans-serif;
-}
-
-body.in-menu, body[state="corru-loaded"] {
-    overflow-y: hidden !important;
-    overflow-x: hidden !important;
 }
 
 #content {
@@ -510,6 +357,7 @@ body.in-menu, body[state="corru-loaded"] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+    overflow-y: auto;
 }
 
 /* MENU */
@@ -535,7 +383,7 @@ body.in-menu, body[state="corru-loaded"] {
 #meta-icon {
     width: 80px;
     height: 80px;
-    background-image: url(../img/textures/overlay.gif);
+    background-image: url(https://corru.observer/img/textures/overlay.gif);
     border-radius: 100%;
     animation: SPIN 20s linear infinite;
     animation-play-state: paused;
@@ -549,7 +397,7 @@ body.in-menu, body[state="corru-loaded"] {
     left: -10%;
     width: 120%;
     height: 120%;
-    background-image: url(../img/mui/mindspikelogo.gif);
+    background-image: url(https://corru.observer/img/mui/mindspikelogo.gif);
     background-size: contain;
     background-position: center;
     transform-origin: center;
@@ -684,7 +532,7 @@ body.in-menu, body[state="corru-loaded"] {
     left: -15vw;
     height: 30vh;
     width: 30vw;
-    background: url(../img/textures/overlay.gif);
+    background: url(https://corru.observer/img/textures/overlay.gif);
     animation: SPIN 20s linear infinite;
     transform-origin: center;
     animation-play-state: paused;
@@ -788,16 +636,11 @@ body.in-menu, body[state="corru-loaded"] {
 
 #mui-links a:nth-child(1) {
 	transition-delay: 0.25s;
-	color: var(--bright-color);
+	color: var(--neutral-color);
 }
 
 #mui-links a:nth-child(2) {
 	transition-delay: 0.5s;
-	color: var(--neutral-color);
-}
-
-#mui-links a:nth-child(3) {
-	transition-delay: 0.75s;
 	color: var(--obesk-color);
 }
 
@@ -816,9 +659,6 @@ body.in-menu, body[state="corru-loaded"] {
     display: none;
     transform: translate(25%, 110%);
     z-index: 1;
-}
-
-.masksunlocked #meta-menu #meta-mask {
     display: block;
 }
 
@@ -858,12 +698,12 @@ body[menu="masks"].in-tiny-menu #meta-menu .mask-trigger::before {
     transform: rotateY(180deg);
 }
 
-.masksunlocked #meta-menu .moth-trigger {
+#meta-menu .moth-trigger {
     transform: translate(105%, 5%);
 }
 
-body:not(.in-menu).masksunlocked #meta-menu:hover .moth-trigger,
-body:not(.in-menu).masksunlocked.expand-menu #meta-menu .moth-trigger {
+body:not(.in-menu) #meta-menu:hover .moth-trigger,
+body:not(.in-menu).expand-menu #meta-menu .moth-trigger {
     transform: translate(175%, 40%) scale(1.2);
     opacity: 1;
     color: var(--friend-color)
@@ -908,30 +748,6 @@ body[menu="masks"].in-tiny-menu #meta-menu .mask-trigger:after  {
 	opacity: 1;
 }
 
-body:not(.in-menu) #meta-menu:hover .moth-trigger,
-body:not(.in-menu, .masksunlocked).expand-menu #meta-menu .moth-trigger {
-    color: var(--friend-color);
-    transform: translate(66%, 50%) scale(1.2);
-}
-
-body[state="corru-loaded"] .moth-trigger, 
-body[state="corru-loaded"] #meta-obs, 
-body[state="corru-loaded"] #meta-hub,
-body.mui-prohibited .moth-trigger, 
-body.mui-prohibited #meta-mask, 
-body.mui-prohibited #meta-obs, 
-body.mui-prohibited #meta-hub, 
-body.nomoth .moth-trigger, 
-body.noent #meta-obs,
-body.nomenus .moth-trigger,
-body.nomenus #meta-links, 
-body.nomenus #meta-menu .ci-bars,
-body.nomenus .mask-trigger, 
-body.nomenus #meta-mask, 
-body.nosys #meta-sys {
-    display: none !important;
-}
-
 /* special moth callout */
 #meta-menu .moth-trigger.newthoughts {
     color: var(--friend-color);
@@ -965,15 +781,11 @@ body.nosys #meta-sys {
 
 /* MENUS */
 .menu-box {
-    position: fixed;
+    position: absolute;
     top: 0;
-    right: 0;
-    width: 50vw;
-    height: 100vh;
     background: var(--dark-color);
     transition: transform 400ms ease-in-out;
     z-index: 20;
-    transform: translateX(55vw);
     pointer-events: none;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1066,7 +878,7 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     font-size: 2em;
     padding: 1em 0.25em;
     color: var(--neutral-color);
-    background: url(../img/textures/fadein.gif), var(--pageImg);
+    background: url(https://corru.observer/img/textures/fadein.gif), var(--pageImg);
     background-position: top, center;
     background-size: cover;
     border-bottom: 1px solid;
@@ -1113,7 +925,7 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     overflow: hidden;
     color: var(--neutral-color);
     transition: transform 100ms ease-in-out;
-    background-image: url(../img/textures/static.gif);
+    background-image: url(https://corru.observer/img/textures/static.gif);
 }
 
 .page.collapsed .ent {
@@ -1156,22 +968,13 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     object-fit: cover;
 }
 
-/* special hiding/showing - intended for ent pages, but can be used on regular entities too */
-body:not(.ep1) .ep1on, /* after feeding only */
-body:not(.ep2) #entity-menu .thoughtform.collapse, /* after collapse can be unlocked only */
-body:not(.ep2) .ep2on, 
-body:not(.ep3) .ep3on /* after golem is unlocked */
-{ 
-    display: none !important;
-}
-
 /* ENTITY MENU DETAILS */
 #entity-details {
     left: 0;
     right: unset;
     transform: translateX(110vw);
     background: transparent;
-    background-image: url(../img/textures/fadeinlonghalf.gif);
+    background-image: url(https://corru.observer/img/textures/fadeinlonghalf.gif);
     background-size: auto 100%;
     display: flex;
     justify-content: center;
@@ -1185,7 +988,7 @@ body:not(.ep3) .ep3on /* after golem is unlocked */
     height: 0px;
     padding-top: 100%;
     border-radius: 100%;
-    background: url(../img/textures/panelpattern.gif);
+    background: url(https://corru.observer/img/textures/panelpattern.gif);
     position: relative;
     transform: scale(0.001) rotate(180deg);
     transition: transform 1s ease-in-out;
@@ -1265,7 +1068,7 @@ body[menu="system"] #system-menu, :root.bigmode body[menu="system"] #system-menu
 }
 
 details.sysblock[open] {
-    background: url(../img/textures/panelpatterntranflip.gif), var(--neutral-color);
+    background: url(https://corru.observer/img/textures/panelpatterntranflip.gif), var(--neutral-color);
     padding: 1em;
     background-position: 50% 50%;
     background-size: auto 100%;
@@ -1585,7 +1388,7 @@ body[wide="adapted"] .sysbox.widescreen { display: flex !important }
     left: 50%;
     top: 0;
     --baseTransform: translate(-50%, -110%);
-    background-image: url('../img/da_fiend.png');
+    background-image: url('https://corru.observer/img/da_fiend.png');
     background-repeat: no-repeat;
     background-size: 90%;
     background-position: center;
@@ -1594,19 +1397,19 @@ body[wide="adapted"] .sysbox.widescreen { display: flex !important }
 }
 
 .devs a[href*="pocl"]::after {
-    background-image: url('../img/da_pocl.png');
+    background-image: url('https://corru.observer/img/da_pocl.png');
 }
 
 .devs a[href*="jack"]::after {
-    background-image: url('../img/da_tonk.png');
+    background-image: url('https://corru.observer/img/da_tonk.png');
 }
 
 .devs a[href*="fyi"]::after {
-    background-image: url('../img/da_sha.png');
+    background-image: url('https://corru.observer/img/da_sha.png');
 }
 
 .devs a[href*="redrealm"]::after {
-    background-image: url('../img/da_fool.png');
+    background-image: url('https://corru.observer/img/da_fool.png');
 }
 
 .devs a:hover::after {
@@ -1651,7 +1454,7 @@ body[menu="system"] #iconsupporters { /* in case animations slow anything down *
     font-size: 2em;
     border: 2px outset;
     color: var(--fundfriend-color);
-    background: url(../img/textures/spotgradientinversemicro.gif), url(../img/textures/hazeflowtiny.gif), url(../img/textures/fresnelftiny.gif);
+    background: url(https://corru.observer/img/textures/spotgradientinversemicro.gif), url(https://corru.observer/img/textures/hazeflowtiny.gif), url(https://corru.observer/img/textures/fresnelftiny.gif);
     background-size: 100%;
     box-shadow: 0px 0px 10px var(--obesk-color);
     animation: SPIN-Y 30s linear infinite;
@@ -1700,8 +1503,6 @@ body[wide="adapted"] #quality-select .button[wide="on"],
 body[wide="false"] #quality-select .button[wide="off"],
 body[low_intensity="true"] #control-select .low-intensity,
 body[low_intensity="false"] #control-select .reg-intensity,
-body[gameplay_off="true"] #control-select .gameplay-off,
-body[gameplay_off="false"] #control-select .gameplay-on,
 :root:not(.bigmode) #quality-select .normal-size,
 :root.bigmode #quality-select .large-size,
 #system-menu .button.primary:hover {
@@ -1730,20 +1531,9 @@ body[gameplay_off="false"] #control-select .gameplay-on,
 }
   
 /* DIALOGUE MENU */
-.in-dialogue #dialogue-box {
-    transform: translateX(0vw);
-    pointer-events: initial;
-}
-
 #dialogue-box {
     width: 30vw;
     padding: 0;
-    padding-bottom: 15vh;
-    transform: translateX(50vw);
-    z-index: 20;
-}
-
-body[state="corru-loaded"].in-dialogue #dialogue-box {
     z-index: 30;
 }
 
@@ -1865,7 +1655,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
     content: "";
     position: absolute;
     right: -0.95em;
-    height: calc(100% - 5em);
+    height: calc(100% - 5.5em);
     width: 50%;
     border: 0.32rem double;
     border-left: unset;
@@ -2013,7 +1803,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .actor-moth .dialogue-portrait::after {
-    background: url(../img/sprites/moth/mothman.gif), linear-gradient(to bottom, rgba(255, 255, 255, 0.71), var(--friend-color));
+    background: url(https://corru.observer/img/sprites/moth/mothman.gif), linear-gradient(to bottom, rgba(255, 255, 255, 0.71), var(--friend-color));
     background-size: 150%, auto;
     background-position: center top;
     background-repeat: no-repeat;
@@ -2035,7 +1825,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 
 .dialogue-message.actor-sys {
     --color: var(--dark-color);
-    --background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%), url(../img/textures/warp.png), url(../img/textures/static.gif);
+    --background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%), url(https://corru.observer/img/textures/warp.png), url(https://corru.observer/img/textures/static.gif);
     text-shadow: 1px 1px var(--neutral-color);
     border-color: var(--bright-color);
     font-family: barcodetext, monospace;
@@ -2044,7 +1834,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 
 .actor-sys .dialogue-portrait::after {
     background-position: center;
-    background: url(../img/mui/mindspikelogoactive.gif), url(../img/textures/static.gif);
+    background: url(https://corru.observer/img/mui/mindspikelogoactive.gif), url(https://corru.observer/img/textures/static.gif);
     background-size: 100%;
     background-position: center;
     animation: SPIN 30s linear infinite;
@@ -2062,7 +1852,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .dialogue-message.obesk {
-    --background: url(../img/textures/corruripple.gif);
+    --background: url(https://corru.observer/img/textures/corruripple.gif);
     --color: var(--obesk-color);
     text-shadow: 1px 1px var(--bright-color);
     font-size: 1.25em;
@@ -2078,7 +1868,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .obesk .dialogue-portrait {
-    background-image: url(../img/textures/corruripple.gif);
+    background-image: url(https://corru.observer/img/textures/corruripple.gif);
     background-size: cover;
     border-radius: 100%;
 }
@@ -2097,16 +1887,16 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .larval .dialogue-portrait, .larval.message img {
-    background-image: url(../img/textures/ccontours.gif);
+    background-image: url(https://corru.observer/img/textures/ccontours.gif);
 }
 
 .qou .dialogue-portrait {
-    background-image: url(../img/textures/corrurippletran.gif);
+    background-image: url(https://corru.observer/img/textures/corrurippletran.gif);
     background-color: var(--bright-color);
 }
 
 .blocker .dialogue-portait {
-    background-image: url(../img/textures/blocker.gif);
+    background-image: url(https://corru.observer/img/textures/blocker.gif);
 }
 
 .dialogue-message.qou.akizet {
@@ -2119,7 +1909,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .funfriend .dialogue-text {
-    background-image: url(../img/textures/static.gif);
+    background-image: url(https://corru.observer/img/textures/static.gif);
     background-position: center;
     background-size: 100%;
     text-shadow: 1px 1px var(--dark-color), 2px 2px 2px var(--friend-color);
@@ -2165,7 +1955,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 .readout-log .message.incoherent {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.75em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(https://corru.observer/img/textures/fadein.gif), url(https://corru.observer/img/textures/corruripplegrayscale.gif);
     background-size: 150%, auto;
 }
 
@@ -2194,7 +1984,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 
 .dialogue-message.actor-bsteli {
     --color: var(--bastard-color);
-    --background: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(../img/textures/stun.gif);
+    --background: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(https://corru.observer/img/textures/stun.gif);
 }
 
 .dialogue-message.bstrd .dialogue-text, .dialogue-message.actor-bsteli.expression__bstrd .dialogue-text {
@@ -2202,7 +1992,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
     font-size: 3em;
     margin: 0.5rem;
     padding: 0.3em;
-    background-image: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(../img/textures/stun.gif);
+    background-image: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(https://corru.observer/img/textures/stun.gif);
 }
 
 .dialogue-message.bstrd .dialogue-portrait::before {
@@ -2423,7 +2213,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .readout-log .message.moth img {
-    background: url(../img/sprites/moth/mothman.gif) white;
+    background: url(https://corru.observer/img/sprites/moth/mothman.gif) white;
     background-size: 165%;
     background-position: center top
 }
@@ -2444,7 +2234,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 .readout-log .message.sys img {
     height: 1.25em;
     object-fit: contain;
-    background-image: url(../img/textures/static.gif) !important;
+    background-image: url(https://corru.observer/img/textures/static.gif) !important;
 }
 
 .readout-log .message.sys.navigation p {
@@ -2493,7 +2283,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 .readout-log .message.ship img {
     object-fit: none;
     object-position: 42.5% -1%;
-    background-image: url(../img/textures/static.gif);
+    background-image: url(https://corru.observer/img/textures/static.gif);
 }
 
 .message.metafiend {
@@ -2519,7 +2309,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
     min-height: 150px;
     color: transparent;
     border-color: var(--bright-color);
-    background-image: url(../img/local/uncosm/hello.gif);
+    background-image: url(https://corru.observer/img/local/uncosm/hello.gif);
     background-size: 100% 100%;
     background-position: center;
     background-color: black;
@@ -2527,7 +2317,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 
 .dialogue-message.awakened,
 .message.awakened {
-    --background: url(../img/textures/spotgradientinversewhite.gif), url(../img/local/uncosm/ozo/ozospiral_text.png), white;
+    --background: url(https://corru.observer/img/textures/spotgradientinversewhite.gif), url(https://corru.observer/img/local/uncosm/ozo/ozospiral_text.png), white;
     --color: var(--neutral-color);
 }
 
@@ -2557,7 +2347,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 .readout-log .message.drowning {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.25em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(https://corru.observer/img/textures/fadein.gif), url(https://corru.observer/img/textures/corruripplegrayscale.gif);
     background-size: 150%, auto;
 }
 
@@ -2578,7 +2368,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
     color: var(--bright-color);
     text-transform: uppercase;
     letter-spacing: 0.125em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(https://corru.observer/img/textures/fadein.gif), url(https://corru.observer/img/textures/corruripplegrayscale.gif);
     background-size: 100%, auto;
     filter: invert(1)
 }
@@ -2588,12 +2378,12 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 
 .menu .portrait-bright img, .portrait-bright .dialogue-portrait::after { background-color: var(--bright-color) }
 .menu .portrait-dark img, .portrait-dark .dialogue-portrait::after { background-color: var(--dark-color) }
-.menu .portrait-blocker img, .portrait-blocker .dialogue-portrait { background-image: url(../img/textures/blocker.gif)}
-.menu .portrait-ripple img { background-image: url(../img/textures/corruripple.gif)}
-.menu .portrait-darkripple img { background-image: url(../img/textures/corruripplegrayscale.gif)}
-.menu .portrait-static img { background-image: url(../img/textures/static.gif)}
-.menu .portrait-darkstatic img, .portrait-darkstatic .dialogue-portrait { background-image: url(../img/textures/badstatic.gif)}
-.menu .portrait-fear img { background-image: url(../img/textures/fear.gif); background-size: cover;}
+.menu .portrait-blocker img, .portrait-blocker .dialogue-portrait { background-image: url(https://corru.observer/img/textures/blocker.gif)}
+.menu .portrait-ripple img { background-image: url(https://corru.observer/img/textures/corruripple.gif)}
+.menu .portrait-darkripple img { background-image: url(https://corru.observer/img/textures/corruripplegrayscale.gif)}
+.menu .portrait-static img { background-image: url(https://corru.observer/img/textures/static.gif)}
+.menu .portrait-darkstatic img, .portrait-darkstatic .dialogue-portrait { background-image: url(https://corru.observer/img/textures/badstatic.gif)}
+.menu .portrait-fear img { background-image: url(https://corru.observer/img/textures/fear.gif); background-size: cover;}
 .menu .portrait-cover img { object-fit: cover }
 .menu .portrait-contain img { object-fit: contain }
 .menu .portrait-auto img, .portrait-auto .dialogue-portrait::after { object-fit: none; background-size: auto; }
@@ -2603,7 +2393,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 .menu .portrait-bottom img { object-position: bottom }
 .menu .portrait-centerlow img { object-position: center 65% }
 .menu .portrait-bw img { filter: grayscale(1) contrast(2) }
-.menu .portrait-haze img, .menu .portrait-haze .dialogue-portrait { background: url(../img/textures/memoryhaze.gif); background-size: cover; }
+.menu .portrait-haze img, .menu .portrait-haze .dialogue-portrait { background: url(https://corru.observer/img/textures/memoryhaze.gif); background-size: cover; }
 
 .portrait-cover .dialogue-portrait::after { background-position: center; background-size: cover; }
 .portrait-top .dialogue-portrait::after { background-position: top; }
@@ -2691,7 +2481,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
     background-image: url(https://corru.observer/img/mui/marblynryetarget_micro.svg);
 }
 
-.mui-prohibited .target, .in-dialogue .target, .in-menu .target {
+.mui-prohibited .target, .target, .in-menu .target {
     display: none !important;
 }
   
@@ -2933,7 +2723,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .act-option.act-ozo {
-    background: url(../img/local/uncosm/ozo/ozospiral_text.png), var(--neutral-color);
+    background: url(https://corru.observer/img/local/uncosm/ozo/ozospiral_text.png), var(--neutral-color);
     background-size: contain;
 }
 
@@ -2973,7 +2763,7 @@ body[state="corru-loaded"].in-dialogue #dialogue-box {
 }
 
 .mui-active #meta-icon:after {
-    background-image: url(../img/mui/mindspikelogoactive.gif);
+    background-image: url(https://corru.observer/img/mui/mindspikelogoactive.gif);
     animation-play-state: running;    
 }
 
@@ -3094,7 +2884,7 @@ body:not(.mui-active) .target[lowvis] {
 .code {
     display: inline-block;
     padding: 2.5px 5px;
-    background: url(../img/textures/corrurippletran.gif), white !important;
+    background: url(https://corru.observer/img/textures/corrurippletran.gif), white !important;
     background-position: center !important;
     color: var(--dark-color) !important;
     border: 1px solid var(--neutral-color) !important;
@@ -3123,14 +2913,14 @@ body:not(.mui-active) .target[lowvis] {
     height: 200%;
     position: absolute;
     pointer-events: none;
-    background-image: url(../img/sprites/misc/sphereframe.gif);
+    background-image: url(https://corru.observer/img/sprites/misc/sphereframe.gif);
     background-size: contain;
     background-position: center;
     animation: SHAKE 15S ease-in-out INFINITE alternate;
 }
 
 .buddy {
-    --buddyimg: url(../img/sprites/funfriend/funfriend.gif);
+    --buddyimg: url(https://corru.observer/img/sprites/funfriend/funfriend.gif);
     --offsetX: 50vw;
     --offsetY: 50vh;
     --size: 75px;
@@ -3238,10 +3028,10 @@ body:not(.mui-active) .target[lowvis] {
     position: absolute;
     width: 125%;
     height: 125%;
-    background: url(../img/textures/corrurippletran.gif), url(../img/textures/badstatic.gif);
+    background: url(https://corru.observer/img/textures/corrurippletran.gif), url(https://corru.observer/img/textures/badstatic.gif);
     background-position: center;
 }
-.repairpatch::after { background: url(../img/textures/cneural.gif); background-size: 50% }
+.repairpatch::after { background: url(https://corru.observer/img/textures/cneural.gif); background-size: 50% }
 
 body:not([quality="low"]) .repairpatch-drift {filter: drop-shadow(-3px -1px 0px var(--obesk-color)) drop-shadow(5px 5px 0px var(--friend-color));}
 body:not([quality="low"]) .repairpatch { animation: PATCHWAVER 20s ease-in-out infinite alternate; }
@@ -3281,34 +3071,6 @@ body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infi
 
 .ffproxy.buddy .chatter-container {
     text-transform: uppercase;
-}
-
-/* EPISODE CONTROL */
-#advance-notice {
-    position: fixed;
-    top: 2vmin;
-    left: 150px;
-    z-index: 26;
-    width: 20vmin;
-    height: 5vmin;
-    transition: transform 1s ease-in-out;
-}
-
-#advance-notice, 
-.in-dialogue #advance-notice, 
-.in-combat #advance-notice,
-body[state="corru-loaded"] #advance-notice,
-body[page="corru-observer"]:not(.sitting) #advance-notice {
-    display: none;
-}
-
-#advance-notice.active {
-    display: block;
-}
-
-#advance-notice .target::after {
-    font-size: calc(1rem + 0.5vw);
-    padding: 0.25rem 1.25rem;
 }
 
 /* OBJECTIVES */
@@ -3430,7 +3192,7 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
   
 
 /* SIZE ADJUSTMENTS */
-.codezone.in-dialogue #dialogue-box, :root.bigmode .codezone.in-dialogue #dialogue-box {
+#dialogue-box, :root.bigmode #dialogue-box {
     transform: unset;
     left: 0;
     right: 0;
@@ -3446,12 +3208,11 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
 
 @media only screen and (max-width: 1366px) {
     #readout { width: 33%; }
-    #dialogue-box { width: 40%; }
     :root { --contentDialogueOffset: -20vw }
 
     :root.bigmode { --contentDialogueOffset: -25vw }
     :root.bigmode #readout { width: 40%; }
-    :root.bigmode #dialogue-box, :root.bigmode .codezone.in-dialogue #dialogue-box { width: 50%; }
+    :root.bigmode #dialogue-box, :root.bigmode #dialogue-box { width: 50%; }
     :root.bigmode #definition-box { max-width: 50vw; }
 
     :root.bigmode #system-menu {
@@ -3471,7 +3232,7 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
         margin-bottom: 2px;
     }
 
-    :root.bigmode .in-dialogue .vn-wrapper {
+    :root.bigmode .vn-wrapper {
         transform: scale(0.75);
     }
 }
@@ -3595,7 +3356,7 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
     height: 120%;
     border-radius: 100%;
     z-index: -1;
-    background: url(../img/textures/ccontours.gif);
+    background: url(https://corru.observer/img/textures/ccontours.gif);
     pointer-events: none;
 }
 
@@ -3625,7 +3386,7 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
     width: 125%;
     border-radius: 100%;
     animation-duration: 40s;
-    background: url(../img/local/uncosm/ozo/ozospiral_text.png);
+    background: url(https://corru.observer/img/local/uncosm/ozo/ozospiral_text.png);
     background-position: center;
     background-size: cover;
     z-index: -1;
@@ -3633,7 +3394,7 @@ body[page="corru-observer"]:not(.sitting) #advance-notice {
 
 .ozo-mask-grid::before {
     animation: SPIN 20s linear infinite;
-    background-image: url(../img/textures/memoryhaze2.gif);
+    background-image: url(https://corru.observer/img/textures/memoryhaze2.gif);
 }
 
 body[menu="masks"].in-tiny-menu #masks {
@@ -3683,7 +3444,7 @@ body[menu="masks"].in-tiny-menu .ozo-mask {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
-    background-image: url(../img/fav.gif);
+    background-image: url(https://corru.observer/img/fav.gif);
     background-size: contain;
     --baseTransform: translateX(-125%) translateY(-50%);
     border: 1px solid;
@@ -3699,7 +3460,7 @@ body[menu="system"].in-menu .mindsci-status::before {
 
 .mindsci-status[code="2"] {
     border-color: var(--bright-color) !important;
-    background: url(../img/textures/static.gif) !important;
+    background: url(https://corru.observer/img/textures/static.gif) !important;
     color: var(--dark-color) !important;
 }
 
@@ -3729,7 +3490,7 @@ body[menu="system"].in-menu .mindsci-status[code="-1"]::before {
 
 .mindsci-status[code="-2"] {
     border-color: var(--obesk-color) !important;
-    background: url(../img/textures/mspinnel.gif) !important;
+    background: url(https://corru.observer/img/textures/mspinnel.gif) !important;
     color: var(--bright-color) !important;
 }
 
@@ -3762,7 +3523,7 @@ body.chromium > .menu {
     position: absolute;
 }
 
-.in-menu #beacon-vfx, .in-dialogue #beacon-vfx {
+.in-menu #beacon-vfx, #beacon-vfx {
     transform: translateX(var(--contentDialogueOffset));
 }
 
@@ -3781,7 +3542,7 @@ body.chromium > .menu {
 
 #beacon-vfx::before, #beacon-vfx::after {
     content: "";
-    background: url(../img/local/uncosm/ozo/ozospiral.gif);
+    background: url(https://corru.observer/img/local/uncosm/ozo/ozospiral.gif);
     background-position: center;
     background-size: cover;
     animation: SPIN 60s linear infinite;
@@ -3823,7 +3584,7 @@ body.chromium > .menu {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url(../img/textures/fadeinlong.gif), linear-gradient(0deg, rgba(255, 0, 255, 0.63) 0%, rgb(0, 0, 0) 100%);
+    background: url(https://corru.observer/img/textures/fadeinlong.gif), linear-gradient(0deg, rgba(255, 0, 255, 0.63) 0%, rgb(0, 0, 0) 100%);
     background-size: 100% auto;
     transform: rotate(180deg);
     transition: opacity 2s ease-in-out;
@@ -3934,35 +3695,35 @@ body.chromium > .menu {
 
 /* VN - qou vn */
 /* gakvu has a hardcoded no-connector for collapse part 1 */
-.vn-char#gakvu .head, body[currentdialogue="d3_movefriend_finish"] .vn-char#gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
-.vn-char#gakvu .body { background-image: var(--gakvuCoatFull), url(../img/sprites/obesk/gakvu/full/gakvu_legs.gif); }
-.vn-wrapper.vn-con #gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/connector.gif), url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
-#content[embassyday="1"] .vn-char#gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/connectoralt.gif), url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
+.vn-char#gakvu .head, body[currentdialogue="d3_movefriend_finish"] .vn-char#gakvu .head { background-image: url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_face.gif), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_head.gif); }
+.vn-char#gakvu .body { background-image: var(--gakvuCoatFull), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_legs.gif); }
+.vn-wrapper.vn-con #gakvu .head { background-image: url(https://corru.observer/img/sprites/obesk/gakvu/full/connector.gif), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_face.gif), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_head.gif); }
+#content[embassyday="1"] .vn-char#gakvu .head { background-image: url(https://corru.observer/img/sprites/obesk/gakvu/full/connectoralt.gif), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_face.gif), url(https://corru.observer/img/sprites/obesk/gakvu/full/gakvu_head.gif); }
 
 .vn-char#tozik {
     height: 180vmin;
 }
-.vn-char#tozik .head { background-image: url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
-.vn-char#tozik .body { background-image: url(../img/sprites/obesk/tozik/full/tozik_body.gif); }
+.vn-char#tozik .head { background-image: url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_eyes.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_head.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_headcore.gif); }
+.vn-char#tozik .body { background-image: url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_body.gif); }
 .vn-char#tozik .body::before {
-    background-image: url(../img/sprites/obesk/tozik/full/tozik_arms.gif);
+    background-image: url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_arms.gif);
     background-size: inherit;
     content: "";
     animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
 }
-.vn-wrapper.vn-con #tozik .head { background-image: url(../img/sprites/obesk/tozik/full/connector.gif), url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
-#content[embassyday="1"] .vn-char#tozik .head { background-image: url(../img/sprites/obesk/tozik/full/connectoralt.gif), url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
+.vn-wrapper.vn-con #tozik .head { background-image: url(https://corru.observer/img/sprites/obesk/tozik/full/connector.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_eyes.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_head.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_headcore.gif); }
+#content[embassyday="1"] .vn-char#tozik .head { background-image: url(https://corru.observer/img/sprites/obesk/tozik/full/connectoralt.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_eyes.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_head.gif), url(https://corru.observer/img/sprites/obesk/tozik/full/tozik_headcore.gif); }
 
 
 .vn-char#miltza {
     --charTransform: translateY(-7.5%);
     height: 220vmin;
 }
-#miltza.vn-char .head { background-image: url(../img/sprites/obesk/miltza/full/face.gif), url(../img/sprites/obesk/miltza/full/head.gif);}
-#miltza.vn-char .body { background-image: url(../img/sprites/obesk/miltza/full/torso.gif), url(../img/sprites/obesk/miltza/full/legs.gif) }
-#miltza.vn-char .arms { background-image: url(../img/sprites/obesk/miltza/full/arms.gif);}
+#miltza.vn-char .head { background-image: url(https://corru.observer/img/sprites/obesk/miltza/full/face.gif), url(https://corru.observer/img/sprites/obesk/miltza/full/head.gif);}
+#miltza.vn-char .body { background-image: url(https://corru.observer/img/sprites/obesk/miltza/full/torso.gif), url(https://corru.observer/img/sprites/obesk/miltza/full/legs.gif) }
+#miltza.vn-char .arms { background-image: url(https://corru.observer/img/sprites/obesk/miltza/full/arms.gif);}
     #miltza.vn-char .arms::after { 
-        background-image: url(../img/sprites/obesk/miltza/full/okizika_arm.gif);
+        background-image: url(https://corru.observer/img/sprites/obesk/miltza/full/okizika_arm.gif);
         width: 100%;
         height: 100%;
         display: block;
@@ -3970,29 +3731,29 @@ body.chromium > .menu {
         background-repeat: no-repeat;
         background-position: center;
     }
-.vn-wrapper.vn-con #miltza .head, body[currentdialogue="d3_movefriend_finish"] .vn-wrapper #miltza .head { background-image: url(../img/sprites/obesk/miltza/full/connector.gif), url(../img/sprites/obesk/miltza/full/face.gif), url(../img/sprites/obesk/miltza/full/head.gif); }
+.vn-wrapper.vn-con #miltza .head, body[currentdialogue="d3_movefriend_finish"] .vn-wrapper #miltza .head { background-image: url(https://corru.observer/img/sprites/obesk/miltza/full/connector.gif), url(https://corru.observer/img/sprites/obesk/miltza/full/face.gif), url(https://corru.observer/img/sprites/obesk/miltza/full/head.gif); }
 
 
-#cavik.vn-char .head { background-image: url(../img/sprites/obesk/cavik/full/cavikhair.gif); }
-    #cavik.vn-char .head::before { content: ""; background-image: url(../img/sprites/obesk/cavik/full/cavikmask.gif); }
-    .vn-wrapper.vn-con #cavik .head::before { background-image: url(../img/sprites/obesk/cavik/full/connector.gif), url(../img/sprites/obesk/cavik/full/cavikmask.gif);}
-#cavik.vn-char .body { background-image: url(../img/sprites/obesk/cavik/full/cavikponcho.gif); }
-#cavik.vn-char .arms { background-image: url(../img/sprites/obesk/cavik/full/cavikhands.gif); }
-#cavik.vn-char .legs { background-image: url(../img/sprites/obesk/cavik/full/cavikboots.gif); z-index: -1; }
-    #cavik.vn-char .legs::before { content: ""; background-image: url(../img/sprites/obesk/cavik/full/cavikabdomen.gif); }
+#cavik.vn-char .head { background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikhair.gif); }
+    #cavik.vn-char .head::before { content: ""; background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikmask.gif); }
+    .vn-wrapper.vn-con #cavik .head::before { background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/connector.gif), url(https://corru.observer/img/sprites/obesk/cavik/full/cavikmask.gif);}
+#cavik.vn-char .body { background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikponcho.gif); }
+#cavik.vn-char .arms { background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikhands.gif); }
+#cavik.vn-char .legs { background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikboots.gif); z-index: -1; }
+    #cavik.vn-char .legs::before { content: ""; background-image: url(https://corru.observer/img/sprites/obesk/cavik/full/cavikabdomen.gif); }
 
 #bozko.vn-char { height: 150vmin }
-#bozko.vn-char .head { background-image: url(../img/sprites/obesk/bozko/full/bozkohead.gif);}
-    .vn-wrapper.vn-con #bozko .head { background-image: url(../img/sprites/obesk/bozko/full/connector.gif), url(../img/sprites/obesk/bozko/full/bozkohead.gif)}
-#bozko.vn-char .body { background-image: url(../img/sprites/obesk/bozko/full/bozkobody.gif);}
-#bozko.vn-char .arms { background-image: url(../img/sprites/obesk/bozko/full/bozkoarms.gif);}
-    #bozko.vn-char .arms::before { background-image: url(../img/sprites/obesk/bozko/full/bozkofingers.gif); content: ""; background-position: bottom;}
+#bozko.vn-char .head { background-image: url(https://corru.observer/img/sprites/obesk/bozko/full/bozkohead.gif);}
+    .vn-wrapper.vn-con #bozko .head { background-image: url(https://corru.observer/img/sprites/obesk/bozko/full/connector.gif), url(https://corru.observer/img/sprites/obesk/bozko/full/bozkohead.gif)}
+#bozko.vn-char .body { background-image: url(https://corru.observer/img/sprites/obesk/bozko/full/bozkobody.gif);}
+#bozko.vn-char .arms { background-image: url(https://corru.observer/img/sprites/obesk/bozko/full/bozkoarms.gif);}
+    #bozko.vn-char .arms::before { background-image: url(https://corru.observer/img/sprites/obesk/bozko/full/bozkofingers.gif); content: ""; background-position: bottom;}
 
-#kazki.vn-char .head { background-image: url(../img/sprites/obesk/kazki/full/kazkihead.gif), url(../img/sprites/obesk/kazki/full/kazkihair.gif)}
+#kazki.vn-char .head { background-image: url(https://corru.observer/img/sprites/obesk/kazki/full/kazkihead.gif), url(https://corru.observer/img/sprites/obesk/kazki/full/kazkihair.gif)}
     .vn-wrapper.vn-con #kazki .head,
-    #content[embassyday="2"] .vn-char#kazki .head { background-image: url(../img/sprites/obesk/kazki/full/connector.gif), url(../img/sprites/obesk/kazki/full/kazkihead.gif), url(../img/sprites/obesk/kazki/full/kazkihair.gif); }
-#kazki.vn-char .body { background-image: url(../img/sprites/obesk/kazki/full/kazkiarms.gif), url(../img/sprites/obesk/kazki/full/kazkishawl.gif)}
-#kazki.vn-char .legs { background-image: url(../img/sprites/obesk/kazki/full/kazkiorb.gif), url(../img/sprites/obesk/kazki/full/kazkilegs.gif)}
+    #content[embassyday="2"] .vn-char#kazki .head { background-image: url(https://corru.observer/img/sprites/obesk/kazki/full/connector.gif), url(https://corru.observer/img/sprites/obesk/kazki/full/kazkihead.gif), url(https://corru.observer/img/sprites/obesk/kazki/full/kazkihair.gif); }
+#kazki.vn-char .body { background-image: url(https://corru.observer/img/sprites/obesk/kazki/full/kazkiarms.gif), url(https://corru.observer/img/sprites/obesk/kazki/full/kazkishawl.gif)}
+#kazki.vn-char .legs { background-image: url(https://corru.observer/img/sprites/obesk/kazki/full/kazkiorb.gif), url(https://corru.observer/img/sprites/obesk/kazki/full/kazkilegs.gif)}
 
 /* VN - mindcores */
 .vn-char.vn-mindcore {
@@ -4003,145 +3764,145 @@ body.chromium > .menu {
     width: 55vmin;
 }
 
-#itzil.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore1.gif);}
-#karik.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore2.gif);}
-#itzilBusted.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore1busted.gif)}
+#itzil.vn-char { --mindcoreImg: url(https://corru.observer/img/local/embassy/mindcore1.gif);}
+#karik.vn-char { --mindcoreImg: url(https://corru.observer/img/local/embassy/mindcore2.gif);}
+#itzilBusted.vn-char { --mindcoreImg: url(https://corru.observer/img/local/embassy/mindcore1busted.gif)}
 
 #ikgolem.vn-char { height: 150vmin }
-#ikgolem.vn-char .head { background-image: url(../img/sprites/obesk/ikgol/full/head.gif);}
-    .vn-wrapper.vn-con #ikgolem .head { background-image: url(../img/sprites/obesk/ikgol/full/head.gif), url(../img/sprites/obesk/ikgol/full/connector.gif)}
+#ikgolem.vn-char .head { background-image: url(https://corru.observer/img/sprites/obesk/ikgol/full/head.gif);}
+    .vn-wrapper.vn-con #ikgolem .head { background-image: url(https://corru.observer/img/sprites/obesk/ikgol/full/head.gif), url(https://corru.observer/img/sprites/obesk/ikgol/full/connector.gif)}
     .vn-wrapper[pos*="basehead"] #ikgolem .head,
-    .vn-wrapper[pos*="basehead"].vn-con #ikgolem .head { background-image: url(../img/sprites/obesk/ikgol/full/head_nostyle.gif) }
-#ikgolem.vn-char .body { background-image: url(../img/sprites/obesk/ikgol/full/body.gif);}
-#ikgolem.vn-char .arms { background-image: url(../img/sprites/obesk/ikgol/full/arms.gif);}
+    .vn-wrapper[pos*="basehead"].vn-con #ikgolem .head { background-image: url(https://corru.observer/img/sprites/obesk/ikgol/full/head_nostyle.gif) }
+#ikgolem.vn-char .body { background-image: url(https://corru.observer/img/sprites/obesk/ikgol/full/body.gif);}
+#ikgolem.vn-char .arms { background-image: url(https://corru.observer/img/sprites/obesk/ikgol/full/arms.gif);}
 
 /* VN - geli */
 .vn-char.vn-geli {
     height: 250vmin;
     --charTransform: translateY(-10%);
-    --expression: url(../img/sprites/obesk/geli/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_neutral.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_neutral.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_neutral.gif);
 }
 .vn-char.vn-geli[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_concerned.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_concerned.gif);
 }
 .vn-char.vn-geli[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_thinkingalt.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_thinking.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_thinkingalt.gif);
 }
 .vn-char.vn-geli[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_pleased.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_pleased.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_pleased.gif);
 }
 .vn-char.vn-geli[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_uncanny.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_concerned.gif);
 }
 .vn-char.vn-geli[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_thinking.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/full/face_happysmiler.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/full/receptors_thinking.gif);
 }
 
-.vn-char.vn-geli .head { background-image: var(--expression), url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
+.vn-char.vn-geli .head { background-image: var(--expression), url(https://corru.observer/img/sprites/obesk/geli/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
 .vn-char.vn-geli .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/full/collar.gif), url(../img/sprites/obesk/geli/full/body.gif) }
+.vn-char.vn-geli .body { background-image: url(https://corru.observer/img/sprites/obesk/geli/full/collar.gif), url(https://corru.observer/img/sprites/obesk/geli/full/body.gif) }
 .vn-char.vn-geli .body::before {
-    background-image: url(../img/sprites/obesk/geli/full/arms.gif);
+    background-image: url(https://corru.observer/img/sprites/obesk/geli/full/arms.gif);
     background-size: inherit;
     content: "";
     transition: all 3s ease-in-out, background-image 0s;
     animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
 }
 
-.gelioff .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
+.gelioff .vn-char.vn-geli .head {background-image: url(https://corru.observer/img/sprites/obesk/geli/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
 .gelioff .vn-char.vn-geli .head::before { transform: scale(0.85); opacity: 0; }
-.gelioff .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/full/collar_deactivated.gif), url(../img/sprites/obesk/geli/full/body_deactivated.gif) }
+.gelioff .vn-char.vn-geli .body { background-image: url(https://corru.observer/img/sprites/obesk/geli/full/collar_deactivated.gif), url(https://corru.observer/img/sprites/obesk/geli/full/body_deactivated.gif) }
 .geliboot .vn-char.vn-geli .body::before { transform: var(--baseTransform) translateY(1%) }
-.geliboot .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
+.geliboot .vn-char.vn-geli .head {background-image: url(https://corru.observer/img/sprites/obesk/geli/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
 .gelioff .vn-char.vn-geli .body::before, .gelioff .vn-char.vn-geli .head, 
 .geliboot .vn-char.vn-geli .body::before, .geliboot .vn-char.vn-geli .head {animation: unset;}
 
 .fakegeli .vn-char.vn-geli {
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_neutral.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_neutral.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_neutral.gif);
 }
 .fakegeli .vn-char.vn-geli[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_concerned.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
 }
 .fakegeli .vn-char.vn-geli[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_thinkingalt.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_thinking.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_thinkingalt.gif);
 }
 .fakegeli .vn-char.vn-geli[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_pleased.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_pleased.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_pleased.gif);
 }
 .fakegeli .vn-char.vn-geli[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_uncanny.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
 }
 .fakegeli .vn-char.vn-geli[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_thinking.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/fake/full/face_happysmiler.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/fake/full/receptors_thinking.gif);
 }
 
-.fakegeli .vn-char.vn-geli .head { background-image: var(--expression), url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/fake/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
+.fakegeli .vn-char.vn-geli .head { background-image: var(--expression), url(https://corru.observer/img/sprites/obesk/geli/fake/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/fake/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
 .fakegeli .vn-char.vn-geli .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.fakegeli .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/fake/full/collar.gif), url(../img/sprites/obesk/geli/fake/full/body.gif) }
+.fakegeli .vn-char.vn-geli .body { background-image: url(https://corru.observer/img/sprites/obesk/geli/fake/full/collar.gif), url(https://corru.observer/img/sprites/obesk/geli/fake/full/body.gif) }
 .fakegeli .vn-char.vn-geli .body::before {
-    background-image: url(../img/sprites/obesk/geli/fake/full/arms.gif);
+    background-image: url(https://corru.observer/img/sprites/obesk/geli/fake/full/arms.gif);
     background-size: inherit;
     content: "";
     transition: all 3s ease-in-out, background-image 0s;
     animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
 }
 
-.fakegeli.gelioff .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
+.fakegeli.gelioff .vn-char.vn-geli .head {background-image: url(https://corru.observer/img/sprites/obesk/geli/fake/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
 .fakegeli.gelioff .vn-char.vn-geli .head::before { transform: scale(0.85); opacity: 0; }
-.fakegeli.gelioff .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/fake/full/collar_deactivated.gif), url(../img/sprites/obesk/geli/full/body_deactivated.gif) }
+.fakegeli.gelioff .vn-char.vn-geli .body { background-image: url(https://corru.observer/img/sprites/obesk/geli/fake/full/collar_deactivated.gif), url(https://corru.observer/img/sprites/obesk/geli/full/body_deactivated.gif) }
 .fakegeli.geliboot .vn-char.vn-geli .body::before { transform: var(--baseTransform) translateY(1%) }
-.fakegeli.geliboot .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/fake/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
+.fakegeli.geliboot .vn-char.vn-geli .head {background-image: url(https://corru.observer/img/sprites/obesk/geli/fake/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/fake/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
 .fakegeli.gelioff .vn-char.vn-geli .body::before, .fakegeli.gelioff .vn-char.vn-geli .head, 
 .fakegeli.geliboot .vn-char.vn-geli .body::before, .fakegeli.geliboot .vn-char.vn-geli .head {animation: unset;}
 
 .vn-char.vn-geli.bstrdized {
     height: 250vmin;
     --charTransform: translateY(-10%);
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_neutral.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_neutral.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_neutral.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_concerned.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_thinkingalt.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_thinking.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_thinkingalt.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="bstrd"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_bstrd.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_bstrd.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_pleased.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_uncanny.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
 }
 .vn-char.vn-geli.bstrdized[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_thinking.gif);
+    --expression: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/face_happysmiler.gif);
+    --receptors: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/receptors_thinking.gif);
 }
 
-.vn-char.vn-geli.bstrdized .head { background-image: var(--expression), url(../img/sprites/obesk/geli/bsteli/full/hat.gif), url(../img/sprites/obesk/geli/bsteli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
+.vn-char.vn-geli.bstrdized .head { background-image: var(--expression), url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/hat.gif), url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
 .vn-char.vn-geli.bstrdized .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.vn-char.vn-geli.bstrdized .body { background-image: url(../img/sprites/obesk/geli/bsteli/full/collar.gif), url(../img/sprites/obesk/geli/bsteli/full/body.gif) }
+.vn-char.vn-geli.bstrdized .body { background-image: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/collar.gif), url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/body.gif) }
 .vn-char.vn-geli.bstrdized .body::before {
-    background-image: url(../img/sprites/obesk/geli/bsteli/full/arms.gif);
+    background-image: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/arms.gif);
     background-size: inherit;
     content: "";
     transition: all 3s ease-in-out, background-image 0s;
@@ -4160,7 +3921,7 @@ body.chromium > .menu {
 
 .vn-char#kivii::after { 
     content: "";
-    background: url(../img/sprites/combat/foes/kivii/1.gif), url(../img/sprites/combat/foes/kivii/2.gif),  url(../img/sprites/combat/foes/kivii/3.gif),  url(../img/sprites/combat/foes/kivii/4.gif);
+    background: url(https://corru.observer/img/sprites/combat/foes/kivii/1.gif), url(https://corru.observer/img/sprites/combat/foes/kivii/2.gif),  url(https://corru.observer/img/sprites/combat/foes/kivii/3.gif),  url(https://corru.observer/img/sprites/combat/foes/kivii/4.gif);
     opacity: 0.1;
     background-position: center;
     width: 1px;
@@ -4169,22 +3930,22 @@ body.chromium > .menu {
 }
 
 .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/1.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/kivii/1.gif);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
 }
 
 .vn-wrapper[pos*="step2"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/2.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/kivii/2.gif);
 }
 
 .vn-wrapper[pos*="step3"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/3.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/kivii/3.gif);
 }
 
 .vn-wrapper[pos*="step4"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/4.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/kivii/4.gif);
 }
 
 .vn-char#kivii .spritestack::before, .vn-char#kivii .spritestack::after,
@@ -4193,7 +3954,7 @@ body.chromium > .menu {
     position: absolute;
     width: 150%;
     height: 100%;
-    background-image: url(../img/sprites/combat/foes/kivii/gauntlet.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/kivii/gauntlet.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-size: auto 60%;
@@ -4210,7 +3971,7 @@ body.chromium > .menu {
 
 /* fake */
 .vn-char#fakerloper .body {
-    background: url(../img/sprites/loper.gif);
+    background: url(https://corru.observer/img/sprites/loper.gif);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -4222,15 +3983,15 @@ body.chromium > .menu {
 }
 
 .vn-bstrd .head {
-    background-image: url(../img/sprites/combat/foes/bstface.gif), url(../img/sprites/combat/foes/bsthead.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/bstface.gif), url(https://corru.observer/img/sprites/combat/foes/bsthead.gif);
 }
 
 .vn-bstrd .body {
-    background-image: url(../img/sprites/combat/foes/bstbody.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/bstbody.gif);
 }
 
 .vn-bstrd .arms {
-    background-image: url(../img/sprites/combat/foes/bstarms.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/bstarms.gif);
 }
 
 body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head {
@@ -4238,11 +3999,11 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 }
 
 .bstrd-hold .vn-bstrd .arms {
-    background-image: url(../img/sprites/combat/foes/bstgun.gif);
+    background-image: url(https://corru.observer/img/sprites/combat/foes/bstgun.gif);
 }
 
 .geli-hold .vn-char.vn-geli.bstrdized .body::before {
-    background-image: url(../img/sprites/obesk/geli/bsteli/full/arms_gun.gif);
+    background-image: url(https://corru.observer/img/sprites/obesk/geli/bsteli/full/arms_gun.gif);
 }
 
 /* special VN transforms based on focus */
@@ -4287,7 +4048,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 /* special VN guys */
 .vn-char#bstrdface {
     width: 40vw;
-    background-image: url(../img/sprites/bstrd/bstrd.gif);
+    background-image: url(https://corru.observer/img/sprites/bstrd/bstrd.gif);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -4349,7 +4110,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
     transform-origin: center;
     height: 75vmin;
     width: 75vmin;
-    background: url(../img/textures/spotgradientinverse.gif);
+    background: url(https://corru.observer/img/textures/spotgradientinverse.gif);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -4357,7 +4118,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 }
 
 #echovn::before {
-    background-image: url(../img/textures/disruptionM.gif);
+    background-image: url(https://corru.observer/img/textures/disruptionM.gif);
     z-index: 2;
     border-radius: 100%;
     width: 20vmin;
@@ -4377,7 +4138,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
     position: absolute;
 }
 
-.in-dialogue .vn-wrapper.vn-party {
+.vn-wrapper.vn-party {
     opacity: 0;
 }
 
@@ -4388,8 +4149,8 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 .mui-active .vn-wrapper.vn-party .vn-char { --baseTransform: translateX(35vw) }
 .mui-active .vn-wrapper.vn-party:first-of-type .vn-char { --baseTransform: translateX(-35vw) }
 
-.in-dialogue .vn-wrapper.vn-party .vn-char { --baseTransform: translateX(80vw) }
-.in-dialogue .vn-wrapper.vn-party:first-of-type .vn-char { --baseTransform: translateX(-80vw) }
+.vn-wrapper.vn-party .vn-char { --baseTransform: translateX(80vw) }
+.vn-wrapper.vn-party:first-of-type .vn-char { --baseTransform: translateX(-80vw) }
 
 /* lame backwards bompabibibilbiity stuff */
 .vn1-backwards-compat .vn-wrapper[for="gakvu"] { order: -5 }
