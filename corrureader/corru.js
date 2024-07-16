@@ -35,25 +35,25 @@ var env = {
         },
     
         moth: {
-            image: 'https://corru.observer/img/sprites/moth/mothman.gif',
+            image: '../img/sprites/moth/mothman.gif',
             type: "external"
         }, 
     
         unknown: {
-            image: 'https://corru.observer/img/sprites/velzie/smile2.png',
+            image: '../img/sprites/velzie/smile2.png',
             type: "velzie",
             element: "#velzieface",
             voice: ()=>{play('talksignal', 0.5)}
         },
     
         self: {
-            image: 'https://corru.observer/img/portraits/interloper.gif',
+            image: '../img/portraits/interloper.gif',
             type: "interloper",
             player: true
         },
     
         sys: {
-            image: 'https://corru.observer/img/mui/mindspikelogoactive.gif',
+            image: '../img/mui/mindspikelogoactive.gif',
             type: "mindspike",
             player: true,
             voice: ()=>{play('muiScanner', 2)}
@@ -61,20 +61,20 @@ var env = {
 
         funfriend: {
             element: "#funfriend",
-            image: 'https://corru.observer/img/sprites/funfriend/funfriend.gif',
+            image: '../img/sprites/funfriend/funfriend.gif',
             type: "obesk funfriend",
             voice: ()=>{play('talk', 2)}
         },
 
         proxyfriend: {
             element: "#ffproxy",
-            image: 'https://corru.observer/img/sprites/funfriend/proxyfriend.gif',
+            image: '../img/sprites/funfriend/proxyfriend.gif',
             type: "obesk funfriend",
             voice: ()=>{play('talkhigh', 1)}
         },
 
         akizet: {
-            image: 'https://corru.observer/img/sprites/akizet/dith.gif',
+            image: '../img/sprites/akizet/dith.gif',
             type: "obesk qou akizet",
             element: ".truecreature .akizet",
             player: true,
@@ -82,13 +82,13 @@ var env = {
         },
 
         bstrd: {
-            image: 'https://corru.observer/img/sprites/bstrd/bstrd.gif',
+            image: '../img/sprites/bstrd/bstrd.gif',
             type: "bstrd portrait-cover",
             voice: ()=>play('talkgal', 0.4)
         },
     
         actual_site_error: {
-            image: 'https://corru.observer/img/viendbot.png',
+            image: '../img/viendbot.png',
             type: "metafiend portrait-dark portrait-contain",
             voice: ()=>{play('muiClick', 2)}
         },
@@ -96,12 +96,12 @@ var env = {
         bugviend: {
             name: '»õGQàº3¾õ”cR%',
             type: "incoherent thoughtform portrait-blocker hallucination",
-            image: "https://corru.observer/img/sprites/combat/foes/hallucinations/portrait.gif",
+            image: "../img/sprites/combat/foes/hallucinations/portrait.gif",
             voice: ()=>play('fear', 2)
         },
 
         effigy: {
-            image: 'https://corru.observer/img/local/uncosm/ozo/akieffigy_portrait.gif',
+            image: '../img/local/uncosm/ozo/akieffigy_portrait.gif',
             type: "thoughtform awakened portrait-haze portrait-cover",
             element: "#realgrid .akieffigy",
             voice: ()=>play('talkflower', 1.25)
@@ -221,7 +221,7 @@ var env = {
             sound: "realitymask",
             on: ()=>{},
             off: ()=>{},
-            maskImage: `url(https://corru.observer/img/portraits/interloper.gif)`,
+            maskImage: `url(../img/portraits/interloper.gif)`,
             definition: "'displays all of a text at once'"
         },
 
@@ -229,7 +229,7 @@ var env = {
             sound: "hungermask",
             on: ()=>{},
             off: ()=>{},
-            maskImage: `url(https://corru.observer/img/sprites/daemons/genericscan.gif)`,
+            maskImage: `url(../img/sprites/daemons/genericscan.gif)`,
             definition: "'reenacts the dialogue sequence'"
         },
     },
@@ -646,7 +646,7 @@ function MUI(state) {
 
 //global SFX map
 var sfxmap = new Howl({
-    src: ['https://corru.observer/audio/csfxmap.ogg'],
+    src: ['../csfxmap.ogg'],
     preload: true,
     html5: false,
     volume: 0.75,
