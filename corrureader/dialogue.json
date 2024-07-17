@@ -1,6 +1,10 @@
 {
     "hello.html": [
         {
+            "title": "..__HELLO__..",
+            "image": "https://corru.observer/img/socials/hello.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -214,6 +218,10 @@
     ],
     "hub.html": [
         {
+            "title": "..__LOCALHOST__..",
+            "image": "https://corru.observer/img/socials/hub.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -357,6 +365,10 @@
         }
     ],
     "index.html": [
+        {
+            "title": "corru.observer",
+            "image": "https://corru.observer/img/socials/intro.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -848,6 +860,10 @@
     ],
     "not_found.html": [
         {
+            "title": "!!__ERROR::UNPROCESSABLE__!!",
+            "image": "https://corru.observer/img/socials/global.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -856,6 +872,10 @@
         }
     ],
     "concepts\\critta.html": [
+        {
+            "title": "..__crittatest__..",
+            "image": "https://corru.observer/img/socials/city.gif"
+        },
         {
             "context": "merchant",
             "type": 0,
@@ -1075,6 +1095,10 @@
     ],
     "concepts\\enemy.html": [
         {
+            "title": "..__movefriendtesting__..",
+            "image": "https://corru.observer/img/socials/city.gif"
+        },
+        {
             "context": "enemytest",
             "type": 0,
             "text": [
@@ -1109,6 +1133,10 @@
         }
     ],
     "concepts\\prog.html": [
+        {
+            "title": "..__progtest__..",
+            "image": "https://corru.observer/img/socials/global.gif"
+        },
         {
             "context": "enemytest",
             "type": 0,
@@ -1214,6 +1242,10 @@
         }
     ],
     "local\\cache.html": [
+        {
+            "title": "..__CACHE__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -1474,6 +1506,10 @@
     ],
     "local\\depths.html": [
         {
+            "title": "..__DEPTHS__..",
+            "image": "https://corru.observer/img/socials/ocean.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -1515,6 +1551,10 @@
         }
     ],
     "local\\dullvessel.html": [
+        {
+            "title": "..__OUR_DULL_VESSEL__..",
+            "image": "https://corru.observer/img/socials/dullvessel.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -1776,6 +1816,10 @@
     ],
     "local\\orbit.html": [
         {
+            "title": "..__THE_VOID__..",
+            "image": "https://corru.observer/img/socials/orbit.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -2004,6 +2048,10 @@
     ],
     "local\\ozo.html": [
         {
+            "title": "..__JOKZI_OZO__..",
+            "image": "https://corru.observer/img/socials/ozo.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -2144,6 +2192,10 @@
     ],
     "local\\beneath\\depths.html": [
         {
+            "title": "!!__ERROR::UNPROCESSABLE__!!",
+            "image": "https://corru.observer/img/socials/global.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -2154,6 +2206,10 @@
         }
     ],
     "local\\beneath\\embassy.html": [
+        {
+            "title": "::/FRAME/",
+            "image": "https://corru.observer/img/socials/frame.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -2381,6 +2437,10 @@
         }
     ],
     "local\\beneath\\index.html": [
+        {
+            "title": "a?-?b?-????-y?s?",
+            "image": "https://corru.observer/img/socials/global.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -3053,6 +3113,10 @@
     ],
     "local\\beneath\\parasite.html": [
         {
+            "title": "p?a-??r?-???s?-t?e?",
+            "image": "https://corru.observer/img/socials/global.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -3232,6 +3296,10 @@
     ],
     "local\\city\\index.html": [
         {
+            "title": "..__THEIR_CITY__..",
+            "image": "https://corru.observer/img/socials/city.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -3285,6 +3353,10 @@
         }
     ],
     "local\\city\\street.html": [
+        {
+            "title": "..__CITY_SURFACE__..",
+            "image": "https://corru.observer/img/socials/city.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -4413,12 +4485,22 @@
     ],
     "local\\ocean\\index.html": [
         {
-            "context": "",
+            "title": "..__THEIR_WATERS__..",
+            "image": "https://corru.observer/img/socials/ocean.gif"
+        },
+        {
+            "context": "mothComment",
             "type": 1,
-            "text": []
+            "text": [
+                "return \"you can really tell this was a long time ago, jesus. look at how small their island is\""
+            ]
         }
     ],
     "local\\ocean\\embassy\\golem.html": [
+        {
+            "title": "..__GOLEM_MAINTENANCE__..",
+            "image": "https://corru.observer/img/socials/golms.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -4671,6 +4753,10 @@
         }
     ],
     "local\\ocean\\embassy\\index.html": [
+        {
+            "title": "..__THE_EMBASSY__..",
+            "image": "https://corru.observer/img/socials/embassy.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -5039,6 +5125,10 @@
     ],
     "local\\ocean\\ship\\elsewhere.html": [
         {
+            "title": "..__CLEMENS_ROMANUS__..",
+            "image": "https://corru.observer/img/socials/code__clemens romanus.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -5126,6 +5216,10 @@
     ],
     "local\\ocean\\ship\\index.html": [
         {
+            "title": "..__THEIR_VESSEL__..",
+            "image": "https://corru.observer/img/socials/ship.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -5138,6 +5232,10 @@
         }
     ],
     "local\\ocean\\ship\\interview.html": [
+        {
+            "title": "..__FIRST_CHAT__..",
+            "image": "https://corru.observer/img/socials/ship.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -5722,6 +5820,10 @@
     ],
     "local\\uncosm\\cavik.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -5821,6 +5923,10 @@
     ],
     "local\\uncosm\\clemens romanus.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "clement",
             "type": 0,
             "text": [
@@ -5862,6 +5968,10 @@
         }
     ],
     "local\\uncosm\\corru.html": [
+        {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "corru",
             "type": 0,
@@ -5950,6 +6060,10 @@
     ],
     "local\\uncosm\\dog.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "dog",
             "type": 0,
             "text": [
@@ -5995,6 +6109,10 @@
         }
     ],
     "local\\uncosm\\dull.html": [
+        {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "dull",
             "type": 0,
@@ -6066,6 +6184,10 @@
         }
     ],
     "local\\uncosm\\effigy.html": [
+        {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -6193,6 +6315,10 @@
     ],
     "local\\uncosm\\flower.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "flower",
             "type": 0,
             "text": [
@@ -6271,6 +6397,10 @@
     ],
     "local\\uncosm\\index.html": [
         {
+            "title": "\u00bb\u00e9\u00bb\u00afu\u00c2%S\u00a5(\u00bb",
+            "image": "https://corru.observer/img/socials/uncosm.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -6279,6 +6409,10 @@
         }
     ],
     "local\\uncosm\\larval.html": [
+        {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "larval",
             "type": 0,
@@ -6418,6 +6552,10 @@
     ],
     "local\\uncosm\\parasite.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "parasite",
             "type": 0,
             "text": [
@@ -6480,6 +6618,10 @@
         }
     ],
     "local\\uncosm\\recosm.html": [
+        {
+            "title": "my beautiful world",
+            "image": "https://corru.observer/img/socials/uncosm.gif"
+        },
         {
             "context": "mothComment",
             "type": 1,
@@ -6929,6 +7071,10 @@
     ],
     "local\\uncosm\\sorry.html": [
         {
+            "title": "..__F($JKSV&*Z^)",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "velzie",
             "type": 0,
             "text": [
@@ -7017,6 +7163,10 @@
     ],
     "local\\uncosm\\spire.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "spire",
             "type": 0,
             "text": [
@@ -7088,6 +7238,10 @@
     ],
     "local\\uncosm\\surface.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "surface",
             "type": 0,
             "text": [
@@ -7145,6 +7299,10 @@
     ],
     "local\\uncosm\\veilk.html": [
         {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
+        {
             "context": "veilk",
             "type": 0,
             "text": [
@@ -7180,6 +7338,10 @@
     ],
     "local\\uncosm\\where.html": [
         {
+            "title": "\u00bb\u00e9\u00bb\u00afu\u00c2%S\u00a5(\u00bb",
+            "image": "https://corru.observer/img/socials/uncosm.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -7200,6 +7362,10 @@
         }
     ],
     "local\\uncosm\\yuzku.html": [
+        {
+            "title": "..__UNKNOWN__..",
+            "image": "https://corru.observer/img/socials/where.gif"
+        },
         {
             "context": "yuzku",
             "type": 0,
@@ -7272,6 +7438,10 @@
         }
     ],
     "js\\beneath_embassy.js": [
+        {
+            "title": "js\\beneath_embassy.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
         {
             "context": "bstrdmeet",
             "type": 0,
@@ -8608,6 +8778,10 @@
         }
     ],
     "js\\embassy_collapse.js": [
+        {
+            "title": "js\\embassy_collapse.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
         {
             "context": "mothframe",
             "type": 0,
@@ -12105,6 +12279,10 @@
         }
     ],
     "js\\embassy_golem.js": [
+        {
+            "title": "js\\embassy_golem.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
         {
             "context": "genericenemy",
             "type": 0,
@@ -17114,6 +17292,10 @@
     ],
     "js\\embassy_precollapse.js": [
         {
+            "title": "js\\embassy_precollapse.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
+        {
             "context": "quality",
             "type": 0,
             "text": [
@@ -19214,6 +19396,10 @@
     ],
     "js\\globalents.js": [
         {
+            "title": "js\\globalents.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
+        {
             "context": "mothComment",
             "type": 1,
             "text": [
@@ -20151,6 +20337,10 @@
     ],
     "js\\hub.js": [
         {
+            "title": "js\\hub.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
+        {
             "context": "hubBuddyResponses",
             "type": 0,
             "text": [
@@ -21008,6 +21198,10 @@
         }
     ],
     "js\\jokziozo_dialogue.js": [
+        {
+            "title": "js\\jokziozo_dialogue.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
         {
             "context": "council_intro",
             "type": 0,
@@ -22988,6 +23182,10 @@
     ],
     "js\\combat\\combatActorsJson.js": [
         {
+            "title": "js\\combat\\combatActorsJson.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
+        {
             "context": "generic",
             "type": 3,
             "text": {
@@ -23710,6 +23908,10 @@
         }
     ],
     "js\\shared\\e3a2geli.js": [
+        {
+            "title": "js\\shared\\e3a2geli.js",
+            "image": "https://corru.observer/img/textures/corruripple.gif"
+        },
         {
             "context": "bsteliResp",
             "type": 0,

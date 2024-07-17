@@ -3,12 +3,6 @@
 var content = document.querySelector('#content')
 var body = document.body
 
-//flags - story progress, save, etc
-var flags = { dialogues: {}, dullvessel_position: 'orbit', detectedEntities: {}}
-if(localStorage.getItem('flags') && localStorage.getItem('flags') != "null") {
-    flags = JSON.parse(localStorage.getItem('flags'))
-}
-
 var env = {
     corruStaticBaseVol: 0.4, //base transition volume
     mui: false, //determines whether the mindspike UI is on or not
@@ -35,25 +29,25 @@ var env = {
         },
     
         moth: {
-            image: '../img/sprites/moth/mothman.gif',
+            image: 'assets/img/sprites/moth/mothman.gif',
             type: "external"
         }, 
     
         unknown: {
-            image: '../img/sprites/velzie/smile2.png',
+            image: 'assets/img/sprites/velzie/smile2.png',
             type: "velzie",
             element: "#velzieface",
             voice: ()=>{play('talksignal', 0.5)}
         },
     
         self: {
-            image: '../img/portraits/interloper.gif',
+            image: 'assets/img/portraits/interloper.gif',
             type: "interloper",
             player: true
         },
     
         sys: {
-            image: '../img/mui/mindspikelogoactive.gif',
+            image: 'assets/img/mui/mindspikelogoactive.gif',
             type: "mindspike",
             player: true,
             voice: ()=>{play('muiScanner', 2)}
@@ -61,20 +55,20 @@ var env = {
 
         funfriend: {
             element: "#funfriend",
-            image: '../img/sprites/funfriend/funfriend.gif',
+            image: 'assets/img/sprites/funfriend/funfriend.gif',
             type: "obesk funfriend",
             voice: ()=>{play('talk', 2)}
         },
 
         proxyfriend: {
             element: "#ffproxy",
-            image: '../img/sprites/funfriend/proxyfriend.gif',
+            image: 'assets/img/sprites/funfriend/proxyfriend.gif',
             type: "obesk funfriend",
             voice: ()=>{play('talkhigh', 1)}
         },
 
         akizet: {
-            image: '../img/sprites/akizet/dith.gif',
+            image: 'assets/img/sprites/akizet/dith.gif',
             type: "obesk qou akizet",
             element: ".truecreature .akizet",
             player: true,
@@ -82,13 +76,13 @@ var env = {
         },
 
         bstrd: {
-            image: '../img/sprites/bstrd/bstrd.gif',
+            image: 'assets/img/sprites/bstrd/bstrd.gif',
             type: "bstrd portrait-cover",
             voice: ()=>play('talkgal', 0.4)
         },
     
         actual_site_error: {
-            image: '../img/viendbot.png',
+            image: 'assets/img/viendbot.png',
             type: "metafiend portrait-dark portrait-contain",
             voice: ()=>{play('muiClick', 2)}
         },
@@ -96,35 +90,19 @@ var env = {
         bugviend: {
             name: '»õGQàº3¾õ”cR%',
             type: "incoherent thoughtform portrait-blocker hallucination",
-            image: "../img/sprites/combat/foes/hallucinations/portrait.gif",
+            image: "assets/img/sprites/combat/foes/hallucinations/portrait.gif",
             voice: ()=>play('fear', 2)
         },
 
         effigy: {
-            image: '../img/local/uncosm/ozo/akieffigy_portrait.gif',
+            image: 'assets/img/local/uncosm/ozo/akieffigy_portrait.gif',
             type: "thoughtform awakened portrait-haze portrait-cover",
             element: "#realgrid .akieffigy",
             voice: ()=>play('talkflower', 1.25)
         }
     },
     totalMessages: 0,
-
-    stage: {}, //stage stuff - mostly defined per page
-    stages: {},
-    stageEntities: {
-        '.': {slug: '.', class: "blocks nothing"},
-        "░": {slug: '░'},//generic movable space
-        
-        p: { //player spawn point
-            contains: {
-                slug: 'p',
-                id: "creature",
-                class: "player ally-sprite",
-                type: "player"
-            }
-        }
-    },
-		
+    
     timeouts: [],
     setTimeout: (func, time) => {
         let newTimeout = setTimeout(func, time)
@@ -154,59 +132,6 @@ var env = {
 
     //document-based corru events for modding mostly
     hooks: {
-        /*  triggered at the end of each respective event in the page lifecycle
-            
-            usage i.e. 
-                //this is called before corru_entered on pages with no "enter" screen, or otherwise when the enter button is made visible
-                //it doesn't necessarily mean everything is loaded, more like the DOM is ready to proceed
-                document.addEventListener('corru_loaded', ()=>{
-                    console.log(`${page.title} on-load events complete`)
-                })
-
-                //resource additions are used to load critical JS files and stop entering until they're done
-                //this is presently distinct from loaded, in that only certain pages use it (ozo and embassy pages) in order to load extra stuff
-                //you'll want to use this if you want to wait for dialogues to be initialized on those pages
-                //sorry that it's separate from corru_loaded LOL i know that sucks - need to overhaul some stuff to make it be one singular thing though
-                document.addEventListener('corru_resources_added', ()=>{
-                    console.log(`${page.title}'s instance of addResources completed`)
-                })
-
-                document.addEventListener('corru_entered', ()=>{
-                    console.log(`now entering ${page.title}`)
-                })
-
-                document.addEventListener('corru_leaving', ()=>{
-                    console.log(`now leaving ${page.title}`)
-                })
-
-                document.addEventListener('corru_changed', (ev)=>{
-                    const key = ev.detail.key;
-                    const value = ev.detail.value;
-                })
-
-                document.addEventListener('corru_act', (ev)=>{
-                    const entity = ev.detail.entity; //what's being acted upon
-                    const action = ev.detail.action; //the action
-                })
-
-                document.addEventListener('corru_net', (ev)=>{
-                    // do you hear it too?
-                })
-
-            can be manually triggered via dispatchEvent, i.e. "document.dispatchEvent(env.hooks.corru_loaded)" 
-
-            the page object is updated periodically, so if you need to preserve it, be sure you do something like 'let currentPage = page' so you have the ref
-            here are some useful props
-                path: the URL path (i.e. /hub/)
-                title: what appears in the browser tab and log when navigating
-                name: the title in a short 'slugified' version, (..__LOCALHOST__.. => localhost)
-                dialoguePrefix: prefix for dialogue flags that are checked on this page, ("hub" marks flags like so: "hub__funfriend-start")
-
-                ( plus some others not listed since they shouldn't be touched so they aren't listed here sry :-P )
-                    P.S. don't modify the page-specific page.flags object directly
-                    instead, set via the PAGE!! prefix in change(), i.e. change("PAGE!!somethingOnThisPage", true)
-        */
-
         corru_loaded: new CustomEvent('corru_loaded'), 
         corru_entered: new CustomEvent('corru_entered'),
         corru_resources_added: new CustomEvent('corru_resources_added'),
@@ -221,7 +146,7 @@ var env = {
             sound: "realitymask",
             on: ()=>{},
             off: ()=>{},
-            maskImage: `url(../img/portraits/interloper.gif)`,
+            maskImage: `url(assets/img/portraits/interloper.gif)`,
             definition: "'displays all of a text at once'"
         },
 
@@ -229,7 +154,7 @@ var env = {
             sound: "hungermask",
             on: ()=>{},
             off: ()=>{},
-            maskImage: `url(../img/sprites/daemons/genericscan.gif)`,
+            maskImage: `url(assets/img/sprites/daemons/genericscan.gif)`,
             definition: "'reenacts the dialogue sequence'"
         },
     },
@@ -337,9 +262,23 @@ $(()=>{
     })
 
     window.addEventListener('mousedown', ev=> {
+        if(ev.target.closest('.menu') || ev.target.tagName == "INPUT") return;
+
         if(!body.classList.contains('in-menu')) {
             if(ev.target.id == "meta-icon") {
                 MUI("toggle")
+
+            } else if(ev.target.parentElement.id == "mui-links"){
+                switch(ev.target.id) {
+                    case "meta-obs":
+                        toggleEntMenu()
+                    break
+
+                    case "meta-sys":
+                        toggleSysMenu()
+                    break
+                }
+
             } else {
                 switch(ev.button) {
                     case 0: 
@@ -407,145 +346,14 @@ $(()=>{
     window.addEventListener('resize', updateUnitlessHeight);
     updateUnitlessHeight()
 
-    //if they have an active mask in their flags, it should start on that mask
-    let loadedMask = check('mask')
-    if(loadedMask != false) mask({name: loadedMask, retrigger: true, playSound: false});
-    else mask({name: 'reality', retrigger: true, playSound: false})
-
     //chrome detection for fixing flickering
     if(window.chrome) body.classList.add('chromeyum')
+
+    gmss()
+    setInterval(gmss, 300000)
 })
 
-//basic flag lookup - this just checks against the flags object, or something within it
-// [keyname]                - regular key, top level
-// [dialogue]__[keyname]    - dialogue key - having __ swaps flagpool to look in seen dialogues instead
-// exm|[pathname]|[entname] - checks to see if you've scanned the given ent in the specified location - pathname can be part of a URL rather than the whole one, (i.e. "local" to check in all /local/ areas). ALSO, slashes are ignored from target (i.e. localdullvessel, no /)
-function check(inputKey, inputValue = null) {
-    let key = inputKey	
-    let value = inputValue
 
-    //i.e. ('netstat|>=', 0), or just ('netstat|#') or ('netstat|') for status
-    if(key.startsWith('netstat|')) { //checking network status. will check a 'fakenet' var beforehand, which takes precedence over gmss
-        let query = key.split('|')
-        let queryCode = value === 0 || value ? Number(value) : false // this is NaN if it's not a number (surprise)
-        let comparison = query[1]
-        let currentCode = Number(typeof env.fakenet == 'number' ? env.fakenet : env.mss.code)
-
-        if(typeof queryCode == "number") {
-            switch(comparison) {
-                case ">": case "gt":  return currentCode > queryCode
-                case "<": case "lt":  return currentCode < queryCode
-                case ">=": case "gte": return currentCode >= queryCode
-                case "<=": case "lte": return currentCode <= queryCode
-                default:    return currentCode == queryCode
-            } 
-        } else return currentCode
-
-    } else if(key.includes('exm|')) {  //checking to see if an ent is scanned
-        let query = key.split('|')
-        let targetLocation = query[1]
-        let targetEntity = query[2]
-        var foundEntity = false
-
-        //runs through pages until it finds at least one page with the specified entity, then breaks
-        for (const pageName in flags.detectedEntities) {
-            const page = flags.detectedEntities[pageName];
-            let strippedPath = page.path.replace(/[/]/g, '');
-
-            if(strippedPath.includes(targetLocation)) {
-                let entity = page.entities[targetEntity]
-                if(entity) if(entity.scanned) foundEntity = true
-            }
-        }
-
-        if(value === true)          return foundEntity == true
-        else if(value === false)    return foundEntity == false
-        else                        return foundEntity
-
-    } else if(key.includes('pa|')) { //checking to see if someone is timestopper'd in the page.party object
-        if(!page.party) return 'no party'
-        let query = key.split('|')
-        let partyLimit = page.party.partyLimit || 3
-        let present = page.party.slice(0, partyLimit).some(mem => mem.slug === query[1])
-
-        if(value === true)          return present == true
-        else if(value === false)    return present == false
-        else                        return present
-
-    } else if(key.includes('aug|')) { //checks to see if augment is in use by anyone in party
-        let query = key.split('|')
-        if(!page.party) return 'no party'
-        let usingAugment = page.party.some(member=>{
-            if(member.augments) return member.augments.includes(query[1])
-        })
-
-        if(value === true)          return usingAugment == true
-        else if(value === false)    return usingAugment == false
-        else                        return usingAugment
-
-    } else if(key.includes('item|')) { //checking to see if an item is in the party inventory
-        //item|name|gt, #   greater than
-        //item|name|lt, #   less than
-        //item|name|gte, #   greater than/equal
-        //item|name|lte, #   less than/equal
-        //item|name, #      equals
-        //item|name, false  has none    
-        //item|name, true   has any     
-        //item|name, (none) has any     
-
-        let query = key.split('|')
-        let itemCheck = checkItem(env.ITEM_LIST[query[1]])
-        let comparison = query.length > 2 ? query[2] : false
-
-        if(typeof value == "number") {
-            switch(comparison) {
-                case ">": case "gt":  return itemCheck > value
-                case "<": case "lt":  return itemCheck < value
-                case ">=": case "gte": return itemCheck >= value
-                case "<=": case "lte": return itemCheck <= value
-                default:    return itemCheck == value
-            } 
-        }
-
-        else if(value === false)    return itemCheck == 0
-        else                        return itemCheck > 0
-
-    } else { //checking for regular flag
-        let flagPool = flags
-        if(key.includes("ENV!!")) {flagPool = env; key = key.replace("ENV!!", '')} //ENV!! is the session/page environment, it gathers content as you go through different areas and contains almost everything
-        if(key.includes("TEMP!!")) flagPool = sessionStorage //TEMP!! is per session
-        if(key.includes("PAGE!!")) flagPool = page.flags //PAGE!! is per page
-        if(key.includes('__') || key.includes('++')) { //__/++ indicates dialogue related, ++ is global
-            flagPool = flags.dialogues
-            if(!key.includes('-')) key = key + "-start" //if you're checking the general name of the dialogue, check the start visibility instead
-        }
-
-        let returnVal
-        if(typeof flagPool[key] == "undefined") { //it's undefined
-            if(value === null || value === true) returnVal = false
-            else if(value == false) returnVal = true
-        } else { //it's defined
-            if(flagPool[key] === value) { // basic comparison
-                returnVal = true
-
-            } else if(flagPool[key] && value === null) { //regular get
-                returnVal = flagPool[key] == "false" ? false : flagPool[key]
-                
-            } else if(value === true) { //checking for truthiness
-                if(flagPool[key] != "false" && flagPool[key]) returnVal = true;
-                else returnVal = false
-
-            } else if(value === false && (flagPool[key] == false || flagPool[key] == "false")) { //checking for falsiness
-                returnVal = true
-
-            } else { //fallback
-                returnVal = false
-            }
-        }
-
-        return returnVal
-    }
-}
 
 /* MASK MENU */
 function toggleMasksMenu() {
@@ -559,23 +367,20 @@ function toggleMasksMenu() {
         let i = 0
         for (const maskName in env.masks) {
             const mask = env.masks[maskName];
-
-            if(shouldItShow(mask)) {
-                menuContents += `
-                    <span 
-                        class="ozo-mask ozo-mask-${maskName} ${check('mask') == maskName ? "active" : ""}"
-                        style="
-                            --maskImage: ${mask.maskImage};
-                            --maskDelay: ${0.3 + (i * 0.1)}s;
-                        "
-                        definition="${maskName.toUpperCase()}::${mask.definition}"
-                        mask="${maskName}"
-                    >
-                        ${maskName}
-                    </span>
-                `
-                i++
-            }
+            menuContents += `
+                <span 
+                    class="ozo-mask ozo-mask-${maskName} ${body.getAttribute('mask') == maskName ? "active" : ""}"
+                    style="
+                        --maskImage: ${mask.maskImage};
+                        --maskDelay: ${0.3 + (i * 0.1)}s;
+                    "
+                    definition="${maskName.toUpperCase()}::${mask.definition}"
+                    mask="${maskName}"
+                >
+                    ${maskName}
+                </span>
+            `
+            i++
         }
 
         //replace
@@ -589,7 +394,7 @@ function toggleMasksMenu() {
                 play('obeskClick')
 
                 //handle mask swap on click
-                if(check('mask') != thisMask) {
+                if(body.getAttribute('mask') != thisMask) {
                     mask({name: thisMask})
                     
                     document.querySelectorAll('.ozo-mask.active').forEach(el=>el.classList.remove('active'))
@@ -607,20 +412,6 @@ function toggleMasksMenu() {
 
 //MUI toggles
 function MUI(state) {
-    switch(state) {
-        case "prohibit":
-            body.classList.add('mui-prohibited')
-            env.muiProhibited = true
-        break;
-        case "deprohibit":
-            body.classList.remove('mui-prohibited')
-            env.muiProhibited = false
-        break;
-    }
-
-    //return if prohibited, or in a transition
-    if(body.classList.contains('in-menu') || body.classList.contains('mui-prohibited') || body.getAttribute('state') == "corru-loaded" || body.classList.contains("loading") || body.getAttribute('state') == "corru-leaving") return
-
     switch(state){
         case "toggle":
             if(env.mui) MUI("off")
@@ -646,7 +437,7 @@ function MUI(state) {
 
 //global SFX map
 var sfxmap = new Howl({
-    src: ['../csfxmap.ogg'],
+    src: ['csfxmap.ogg'],
     preload: true,
     html5: false,
     volume: 0.75,
@@ -778,41 +569,6 @@ var sfxmap = new Howl({
     }
 });
 
-//progress & event tracking shortcuts
-function change(key, value) {
-    var flagpool = flags
-    if(key.includes("TEMP!!")) flagpool = sessionStorage
-    if(key.includes("PAGE!!")) flagpool = page.flags
-
-    switch(value) {
-        case "++":
-            if(!flagpool[key]) flagpool[key] = 1
-            else flagpool[key] = Number(flagpool[key]) + 1
-        break
-
-        case "--":
-            if(!flagpool[key]) flagpool[key] = -1
-            else flagpool[key] = Number(flagpool[key]) - 1
-        break
-
-        case "DELETE":
-            delete flagpool[key]
-        break
-
-        default:
-            flagpool[key] = value
-    }
-
-    updateFlags()
-
-    // Dispatch the change event
-    document.dispatchEvent(new CustomEvent('corru_changed', { detail: { key, value } }));
-}
-
-function updateFlags() {
-    localStorage.setItem('flags', JSON.stringify(flags))
-}
-
 /* 
     mask control
     simple methods for controlling active masks
@@ -820,7 +576,7 @@ function updateFlags() {
     there's always a mask active (even default)
 */
 function mask({name, retrigger = false, playSound = true}) {
-    let current = check('mask') || "reality"
+    let current = body.getAttribute('mask') || "reality"
     let currentMask = env.masks[current]
     let newMask = env.masks[name]
 
@@ -830,9 +586,77 @@ function mask({name, retrigger = false, playSound = true}) {
         sfxmap.stop()
         play(newMask.sound, true, 0.5)
     }
-
-    change("mask", name)
     body.setAttribute('mask', name)
     if(current != name && typeof currentMask.off == "function") currentMask.off()
     if((current != name && typeof newMask.on == "function") || retrigger) newMask.on()
+}
+
+/* 
+    SYSTEM MENU 
+    nothing crazy, just toggling
+    more stuff will happen here in the future most likely (i.e. settings)
+    we actually turn on the MUI since some things are logged here
+*/
+function toggleSysMenu() {
+    if(body.getAttribute('menu') == "system")  {
+        MUI('off')
+        body.classList.remove('in-menu')
+        body.setAttribute('menu', 'none')
+    } else {
+        //show menu
+        MUI('on')
+        body.classList.add('in-menu')
+        body.setAttribute('menu', 'system')
+        play('muiScanner')
+    }
+}
+
+//easy menu exit
+function exitMenu(closeMUIToo = true) {
+
+    delete env.draggable
+    play('muiToggle')
+
+    body.classList.remove('in-menu', 'in-tiny-menu', 'expand-menu')
+    body.setAttribute('menu', 'none')
+
+    if(closeMUIToo) MUI('off')
+    env.unsavedChanges = false
+}
+
+//??? wa da he
+async function gmss() {
+    let mss = {
+        state: 0.5,
+        status: "coherent",
+        code: 0
+    }
+
+    await fetch("https://state.corru.network/").then(response => response.json()).then(json=> {mss = json})
+
+    document.querySelectorAll('.mindsci-status').forEach(el=>{
+        el.setAttribute('state', mss.state)
+        el.setAttribute('status', mss.status)
+        el.setAttribute('code', mss.code)
+        el.setAttribute('definition', `GAD::'${mss.status}'`)
+    })
+
+    let oldCode = env.mss ? env.mss.code : -99
+    env.mss = mss
+
+    if((typeof env.fakenet != 'number' && mss.code != oldCode) || oldCode == -99) updateCode()
+}
+
+function updateCode() { 
+    let num = typeof env.fakenet == 'number' ? env.fakenet : env.mss.code
+    body.setAttribute('c', num ) 
+
+    switch(num) { //for specific states, use 'c' instead of 'n' - 'n' is a general ordering
+        case -2: case -1: body.setAttribute('n', 'i'); break
+        case 0: body.setAttribute('n', 'c'); break
+        case 2: case 1: body.setAttribute('n', 'o'); break
+    }
+    
+    env.effectiveNet = num
+    document.dispatchEvent(new CustomEvent('corru_net'));
 }

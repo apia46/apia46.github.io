@@ -74,7 +74,7 @@
 /* fonts */
 @font-face {
     font-family: 'beech';
-    src: url('../fonts/Beech.woff') format('woff');
+    src: url('assets/fonts/Beech.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -83,8 +83,8 @@
 
 @font-face {
     font-family: 'barcode';
-    src: url('../fonts/LibreBarcode128-Regular.woff2') format('woff2'),
-        url('../fonts/LibreBarcode128-Regular.woff') format('woff');
+    src: url('assets/fonts/LibreBarcode128-Regular.woff2') format('woff2'),
+        url('assets/fonts/LibreBarcode128-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -93,8 +93,8 @@
 
 @font-face {
     font-family: 'barcodetext';
-    src: url('../fonts/LibreBarcode128Text-Regular.woff2') format('woff2'),
-        url('../fonts/LibreBarcode128Text-Regular.woff') format('woff');
+    src: url('assets/fonts/LibreBarcode128Text-Regular.woff2') format('woff2'),
+        url('assets/fonts/LibreBarcode128Text-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -103,8 +103,8 @@
 
 @font-face {
     font-family: 'spacemono';
-    src: url('../fonts/SpaceMono-Regular.woff2') format('woff2'),
-        url('../fonts/SpaceMono-Regular.woff') format('woff');
+    src: url('assets/fonts/SpaceMono-Regular.woff2') format('woff2'),
+        url('assets/fonts/SpaceMono-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -112,8 +112,8 @@
 
 @font-face {
     font-family: 'spacemono';
-    src: url('../fonts/SpaceMono-Bold.woff2') format('woff2'),
-        url('../fonts/SpaceMono-Bold.woff') format('woff');
+    src: url('assets/fonts/SpaceMono-Bold.woff2') format('woff2'),
+        url('assets/fonts/SpaceMono-Bold.woff') format('woff');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -122,8 +122,8 @@
 
 @font-face {
     font-family: 'bastard';
-    src: url('../fonts/newspaper.woff2') format('woff2'),
-        url('../fonts/newspaper.woff') format('woff');
+    src: url('assets/fonts/newspaper.woff2') format('woff2'),
+        url('assets/fonts/newspaper.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -132,8 +132,8 @@
 
 @font-face {
     font-family: 'intrusive';
-    src: url('../fonts/flanfont.woff2') format('woff2'),
-        url('../fonts/flanfont.woff') format('woff');
+    src: url('assets/fonts/flanfont.woff2') format('woff2'),
+        url('assets/fonts/flanfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -141,11 +141,11 @@
 
 @font-face {
     font-family: 'corruicons';
-    src:  url('../css/f/onts/corruicons.eot?6mcqel');
-    src:  url('../fonts/corruicons.eot?6mcqel#iefix') format('embedded-opentype'),
-    url('../fonts/corruicons.ttf?6mcqel') format('truetype'),
-    url('../fonts/corruicons.woff?6mcqel') format('woff'),
-    url('../fonts/corruicons.svg?6mcqel#icomoon') format('svg');
+    src:  url('assets/css/f/onts/corruicons.eot?6mcqel');
+    src:  url('assets/fonts/corruicons.eot?6mcqel#iefix') format('embedded-opentype'),
+    url('assets/fonts/corruicons.ttf?6mcqel') format('truetype'),
+    url('assets/fonts/corruicons.woff?6mcqel') format('woff'),
+    url('assets/fonts/corruicons.svg?6mcqel#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -339,7 +339,7 @@ a {
 }
 
 body {
-	background: url(../img/textures/fadeinlonghalf.gif), url(../img/textures/ccontours.gif);
+	background: url(assets/img/textures/fadeinlonghalf.gif), url(assets/img/textures/ccontours.gif);
     background-size: auto 100vh, auto;
     background-attachment: fixed;
 	color: var(--bright-color);
@@ -383,7 +383,7 @@ body {
 #meta-icon {
     width: 80px;
     height: 80px;
-    background-image: url(../img/textures/overlay.gif);
+    background-image: url(assets/img/textures/overlay.gif);
     border-radius: 100%;
     animation: SPIN 20s linear infinite;
     animation-play-state: paused;
@@ -397,7 +397,7 @@ body {
     left: -10%;
     width: 120%;
     height: 120%;
-    background-image: url(../img/mui/mindspikelogo.gif);
+    background-image: url(assets/img/mui/mindspikelogo.gif);
     background-size: contain;
     background-position: center;
     transform-origin: center;
@@ -446,11 +446,6 @@ body {
 #meta-sys i {
     font-size: 0.7em;
     padding: 0.25em;
-}
-
-.mui-prohibited #meta-icon {
-    filter: grayscale(1);
-    cursor: not-allowed;
 }
 
 #mui-links, #meta-volume, #meta-links {
@@ -532,7 +527,7 @@ body {
     left: -15vw;
     height: 30vh;
     width: 30vw;
-    background: url(../img/textures/overlay.gif);
+    background: url(assets/img/textures/overlay.gif);
     animation: SPIN 20s linear infinite;
     transform-origin: center;
     animation-play-state: paused;
@@ -781,11 +776,15 @@ body[menu="masks"].in-tiny-menu #meta-menu .mask-trigger:after  {
 
 /* MENUS */
 .menu-box {
-    position: absolute;
+    position: fixed;
     top: 0;
+    right: 0;
+    height: 100vh;
+    width: 50vw;
     background: var(--dark-color);
     transition: transform 400ms ease-in-out;
     z-index: 20;
+    transform: translateX(55vw);
     pointer-events: none;
     overflow-y: auto;
     overflow-x: hidden;
@@ -875,15 +874,56 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
 .pageheader {
     display: block;
     font-family: barcodetext;
-    font-size: 2em;
+    font-size: 25px;
     padding: 1em 0.25em;
     color: var(--neutral-color);
-    background: url(../img/textures/fadein.gif), var(--pageImg);
-    background-position: top, center;
+    background: url(assets/img/textures/fadein.gif), var(--pageImg);
+    background-position: center;
     background-size: cover;
     border-bottom: 1px solid;
     cursor: pointer;
 }
+/* page socials position adjustments */
+.page[page="hub.html"] .pageheader {
+    background-position-y: 80%, -347%;
+}
+
+.page[page="index.html"] .pageheader {
+    background-position-y: 80%, 30%;
+}
+
+.page[page="concepts\\critta.html"] .pageheader {
+    background-position-y: 80%, 9%;
+}
+
+.page[page="concepts\\enemy.html"] .pageheader {
+    background-position-y: 80%, 70%;
+}
+
+.page[page="concepts\\prog.html"] .pageheader {
+    background-position-y: 80%, 25%;
+}
+
+.page[page="hello.html"] .pageheader,
+.page[page="local\\beneath\\depths.html"] .pageheader,
+.page[page="local\\beneath\\parasite.html"] .pageheader,
+.page[page="local\\ocean\\ship\\elsewhere.html"] .pageheader {
+    background-position-y: 80%, 50%;
+}
+
+.page[page="local\\depths.html"] .pageheader,
+.page[page="local\\beneath\\index.html"] .pageheader {
+    background-position-y: 80%, 45%;
+}
+
+.page[page="local\\city\\street.html"] .pageheader {
+    background-position-y: 80%, 90%;
+}
+
+.page[page="local\\ocean\\ship\\interview.html"] .pageheader {
+    background-position-y: 80%, 55%;
+}
+
 
 .pageheader > span, .page.collapsed .pageheader:hover > span {
     background: var(--neutral-color);
@@ -925,7 +965,7 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     overflow: hidden;
     color: var(--neutral-color);
     transition: transform 100ms ease-in-out;
-    background-image: url(../img/textures/static.gif);
+    background-image: url(assets/img/textures/static.gif);
 }
 
 .page.collapsed .ent {
@@ -958,23 +998,13 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     object-fit: none;
 }
 
-/* ent image fixes */
-.page[page="THEEMBASSY"] .akizet.scanned img {
-    object-position: top;
-    object-fit: cover;
-}
-
-.page[page="THEEMBASSY"] .qou.obesk img, .page[pagename="THEEMBASSY"] .attendant img {
-    object-fit: cover;
-}
-
 /* ENTITY MENU DETAILS */
 #entity-details {
     left: 0;
     right: unset;
     transform: translateX(110vw);
     background: transparent;
-    background-image: url(../img/textures/fadeinlonghalf.gif);
+    background-image: url(assets/img/textures/fadeinlonghalf.gif);
     background-size: auto 100%;
     display: flex;
     justify-content: center;
@@ -988,7 +1018,7 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     height: 0px;
     padding-top: 100%;
     border-radius: 100%;
-    background: url(../img/textures/panelpattern.gif);
+    background: url(assets/img/textures/panelpattern.gif);
     position: relative;
     transform: scale(0.001) rotate(180deg);
     transition: transform 1s ease-in-out;
@@ -1068,7 +1098,7 @@ body[menu="system"] #system-menu, :root.bigmode body[menu="system"] #system-menu
 }
 
 details.sysblock[open] {
-    background: url(../img/textures/panelpatterntranflip.gif), var(--neutral-color);
+    background: url(assets/img/textures/panelpatterntranflip.gif), var(--neutral-color);
     padding: 1em;
     background-position: 50% 50%;
     background-size: auto 100%;
@@ -1260,7 +1290,6 @@ body[menu="system"] .warning h3::before {
 }
 
 .sysbox.widescreen { display: none !important }
-body[wide="adapted"] .sysbox.widescreen { display: flex !important }
 @media screen and (min-width: 1921px) { .sysbox.widescreen { display: flex !important } }
 @media screen and (min-height: 1081px) { .sysbox.widescreen { display: flex !important } }
 
@@ -1314,42 +1343,9 @@ body[wide="adapted"] .sysbox.widescreen { display: flex !important }
     font-size: 0.5em;
 }
 
-.sysbox.support {
-    margin-top: 1em;
-    color: var(--bright-color);
-}
-
-.support .buttons .button {
-    flex-basis: 45%;
-    flex-grow: 1;
-    width: auto;
-    margin: 0;
-}
-
-.support .buttons {
-    gap: 1em;
-}  
-
-.kofi.button, .merch.button {
-    color: var(--fundfriend-color);
-}
-
-.audio.button {
-    color: var(--friend-color);
-}
-
-.supportercredits.button {
-    color: var(--neutral-color)
-}
-
 .b8831 {
     display: block;
     text-align: center;
-}
-
-.sysbox.credits {
-    padding: 0;
-    border: 0;
 }
 
 .devs {
@@ -1388,7 +1384,7 @@ body[wide="adapted"] .sysbox.widescreen { display: flex !important }
     left: 50%;
     top: 0;
     --baseTransform: translate(-50%, -110%);
-    background-image: url('../img/da_fiend.png');
+    background-image: url('assets/img/da_fiend.png');
     background-repeat: no-repeat;
     background-size: 90%;
     background-position: center;
@@ -1396,97 +1392,17 @@ body[wide="adapted"] .sysbox.widescreen { display: flex !important }
     pointer-events: none;
 }
 
-.devs a[href*="pocl"]::after {
-    background-image: url('../img/da_pocl.png');
+.devs a[href*="632622187014258709"]::after {
+    background-image: url('joael.png');
 }
 
-.devs a[href*="jack"]::after {
-    background-image: url('../img/da_tonk.png');
-}
-
-.devs a[href*="fyi"]::after {
-    background-image: url('../img/da_sha.png');
-}
-
-.devs a[href*="redrealm"]::after {
-    background-image: url('../img/da_fool.png');
+.devs a[href*="1037448142100103218"]::after {
+    background-image: url('cantharus.png');
 }
 
 .devs a:hover::after {
     animation: SHAKE 250ms linear infinite;
     opacity: 1;
-}
-
-.supporters {
-    padding: 1em 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-  
-.supporters h4 {
-    border-bottom: 1px dashed var(--bright-color);
-    padding-bottom: 5px;
-    cursor: alias;
-}
-
-#iconsupporters {
-    display: none;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-body[menu="system"] #iconsupporters { /* in case animations slow anything down */
-    display: flex;
-}
-
-.fundfriend {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    cursor: alias;
-    padding: 5px;
-    width: 1.25em;
-    height: 1.25em;
-    font-size: 2em;
-    border: 2px outset;
-    color: var(--fundfriend-color);
-    background: url(../img/textures/spotgradientinversemicro.gif), url(../img/textures/hazeflowtiny.gif), url(../img/textures/fresnelftiny.gif);
-    background-size: 100%;
-    box-shadow: 0px 0px 10px var(--obesk-color);
-    animation: SPIN-Y 30s linear infinite;
-    overflow: hidden;
-    border-radius: 100%;
-    margin: 0.25em;
-}
-
-.fundfriend span {
-    position: absolute;
-    font-family: beech;
-    pointer-events: none;
-    display: inline-block;
-    text-transform: lowercase;
-    transform: scale(0.75) rotate(20deg);
-    font-size: 0.65em;
-    text-shadow: 1px 1px var(--dark-color), -1px 1px var(--dark-color), 1px -1px var(--dark-color), -1px -1px var(--dark-color);
-}
-
-.fundfriend span ~ span {
-    text-transform: uppercase;
-    font-size: 0.45em;
-}
-
-.fundfriend span:nth-child(2) {
-    transform: translate(10%, 50%) rotate(-135deg);
-    z-index: 2;
-}
-
-.fundfriend span:nth-child(3) {
-    transform: translate(-10%, -50%) rotate(135deg);
-    z-index: -2;
 }
 
 .sysblock .nonsense {
@@ -1497,12 +1413,6 @@ body[menu="system"] #iconsupporters { /* in case animations slow anything down *
     font-size: 16px;
 }
 
-body[quality="regular"] #quality-select .button[quality="regular"],
-body[quality="low"] #quality-select .button[quality="low"],
-body[wide="adapted"] #quality-select .button[wide="on"],
-body[wide="false"] #quality-select .button[wide="off"],
-body[low_intensity="true"] #control-select .low-intensity,
-body[low_intensity="false"] #control-select .reg-intensity,
 :root:not(.bigmode) #quality-select .normal-size,
 :root.bigmode #quality-select .large-size,
 #system-menu .button.primary:hover {
@@ -1535,6 +1445,10 @@ body[low_intensity="false"] #control-select .reg-intensity,
     width: 30vw;
     padding: 0;
     z-index: 30;
+    position: absolute;
+    right: auto;
+    height: auto;
+    transform: var(--baseTransform)
 }
 
 #dialogue-box.dialogue-click-proceed {
@@ -1803,7 +1717,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .actor-moth .dialogue-portrait::after {
-    background: url(../img/sprites/moth/mothman.gif), linear-gradient(to bottom, rgba(255, 255, 255, 0.71), var(--friend-color));
+    background: url(assets/img/sprites/moth/mothman.gif), linear-gradient(to bottom, rgba(255, 255, 255, 0.71), var(--friend-color));
     background-size: 150%, auto;
     background-position: center top;
     background-repeat: no-repeat;
@@ -1825,7 +1739,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 
 .dialogue-message.actor-sys {
     --color: var(--dark-color);
-    --background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%), url(../img/textures/warp.png), url(../img/textures/static.gif);
+    --background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%), url(assets/img/textures/warp.png), url(assets/img/textures/static.gif);
     text-shadow: 1px 1px var(--neutral-color);
     border-color: var(--bright-color);
     font-family: barcodetext, monospace;
@@ -1834,7 +1748,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 
 .actor-sys .dialogue-portrait::after {
     background-position: center;
-    background: url(../img/mui/mindspikelogoactive.gif), url(../img/textures/static.gif);
+    background: url(assets/img/mui/mindspikelogoactive.gif), url(assets/img/textures/static.gif);
     background-size: 100%;
     background-position: center;
     animation: SPIN 30s linear infinite;
@@ -1852,7 +1766,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .dialogue-message.obesk {
-    --background: url(../img/textures/corruripple.gif);
+    --background: url(assets/img/textures/corruripple.gif);
     --color: var(--obesk-color);
     text-shadow: 1px 1px var(--bright-color);
     font-size: 1.25em;
@@ -1868,7 +1782,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .obesk .dialogue-portrait {
-    background-image: url(../img/textures/corruripple.gif);
+    background-image: url(assets/img/textures/corruripple.gif);
     background-size: cover;
     border-radius: 100%;
 }
@@ -1887,16 +1801,16 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .larval .dialogue-portrait, .larval.message img {
-    background-image: url(../img/textures/ccontours.gif);
+    background-image: url(assets/img/textures/ccontours.gif);
 }
 
 .qou .dialogue-portrait {
-    background-image: url(../img/textures/corrurippletran.gif);
+    background-image: url(assets/img/textures/corrurippletran.gif);
     background-color: var(--bright-color);
 }
 
 .blocker .dialogue-portait {
-    background-image: url(../img/textures/blocker.gif);
+    background-image: url(assets/img/textures/blocker.gif);
 }
 
 .dialogue-message.qou.akizet {
@@ -1909,7 +1823,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .funfriend .dialogue-text {
-    background-image: url(../img/textures/static.gif);
+    background-image: url(assets/img/textures/static.gif);
     background-position: center;
     background-size: 100%;
     text-shadow: 1px 1px var(--dark-color), 2px 2px 2px var(--friend-color);
@@ -1955,7 +1869,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 .readout-log .message.incoherent {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.75em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
     background-size: 150%, auto;
 }
 
@@ -1984,7 +1898,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 
 .dialogue-message.actor-bsteli {
     --color: var(--bastard-color);
-    --background: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(../img/textures/stun.gif);
+    --background: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(assets/img/textures/stun.gif);
 }
 
 .dialogue-message.bstrd .dialogue-text, .dialogue-message.actor-bsteli.expression__bstrd .dialogue-text {
@@ -1992,7 +1906,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
     font-size: 3em;
     margin: 0.5rem;
     padding: 0.3em;
-    background-image: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(../img/textures/stun.gif);
+    background-image: linear-gradient(0deg, rgba(0,0,0,0.79) 0%, rgb(0, 0, 0) 25%, rgb(0, 0, 0) 50%, rgb(0, 0, 0) 75%, rgba(0,0,0,0.9) 100%), url(assets/img/textures/stun.gif);
 }
 
 .dialogue-message.bstrd .dialogue-portrait::before {
@@ -2021,7 +1935,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 25%;
+	width: 40%;
 	height: 100%;
     font-size: 0.75rem;
     padding: 15vh 0.5rem 0;
@@ -2213,7 +2127,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .readout-log .message.moth img {
-    background: url(../img/sprites/moth/mothman.gif) white;
+    background: url(assets/img/sprites/moth/mothman.gif) white;
     background-size: 165%;
     background-position: center top
 }
@@ -2234,7 +2148,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 .readout-log .message.sys img {
     height: 1.25em;
     object-fit: contain;
-    background-image: url(../img/textures/static.gif) !important;
+    background-image: url(assets/img/textures/static.gif) !important;
 }
 
 .readout-log .message.sys.navigation p {
@@ -2283,7 +2197,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 .readout-log .message.ship img {
     object-fit: none;
     object-position: 42.5% -1%;
-    background-image: url(../img/textures/static.gif);
+    background-image: url(assets/img/textures/static.gif);
 }
 
 .message.metafiend {
@@ -2309,7 +2223,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
     min-height: 150px;
     color: transparent;
     border-color: var(--bright-color);
-    background-image: url(../img/local/uncosm/hello.gif);
+    background-image: url(assets/img/local/uncosm/hello.gif);
     background-size: 100% 100%;
     background-position: center;
     background-color: black;
@@ -2317,7 +2231,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 
 .dialogue-message.awakened,
 .message.awakened {
-    --background: url(../img/textures/spotgradientinversewhite.gif), url(../img/local/uncosm/ozo/ozospiral_text.png), white;
+    --background: url(assets/img/textures/spotgradientinversewhite.gif), url(assets/img/local/uncosm/ozo/ozospiral_text.png), white;
     --color: var(--neutral-color);
 }
 
@@ -2347,7 +2261,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 .readout-log .message.drowning {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.25em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
     background-size: 150%, auto;
 }
 
@@ -2368,7 +2282,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
     color: var(--bright-color);
     text-transform: uppercase;
     letter-spacing: 0.125em;
-    background: url(../img/textures/fadein.gif), url(../img/textures/corruripplegrayscale.gif);
+    background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
     background-size: 100%, auto;
     filter: invert(1)
 }
@@ -2378,12 +2292,12 @@ body[low_intensity="false"] #control-select .reg-intensity,
 
 .menu .portrait-bright img, .portrait-bright .dialogue-portrait::after { background-color: var(--bright-color) }
 .menu .portrait-dark img, .portrait-dark .dialogue-portrait::after { background-color: var(--dark-color) }
-.menu .portrait-blocker img, .portrait-blocker .dialogue-portrait { background-image: url(../img/textures/blocker.gif)}
-.menu .portrait-ripple img { background-image: url(../img/textures/corruripple.gif)}
-.menu .portrait-darkripple img { background-image: url(../img/textures/corruripplegrayscale.gif)}
-.menu .portrait-static img { background-image: url(../img/textures/static.gif)}
-.menu .portrait-darkstatic img, .portrait-darkstatic .dialogue-portrait { background-image: url(../img/textures/badstatic.gif)}
-.menu .portrait-fear img { background-image: url(../img/textures/fear.gif); background-size: cover;}
+.menu .portrait-blocker img, .portrait-blocker .dialogue-portrait { background-image: url(assets/img/textures/blocker.gif)}
+.menu .portrait-ripple img { background-image: url(assets/img/textures/corruripple.gif)}
+.menu .portrait-darkripple img { background-image: url(assets/img/textures/corruripplegrayscale.gif)}
+.menu .portrait-static img { background-image: url(assets/img/textures/static.gif)}
+.menu .portrait-darkstatic img, .portrait-darkstatic .dialogue-portrait { background-image: url(assets/img/textures/badstatic.gif)}
+.menu .portrait-fear img { background-image: url(assets/img/textures/fear.gif); background-size: cover;}
 .menu .portrait-cover img { object-fit: cover }
 .menu .portrait-contain img { object-fit: contain }
 .menu .portrait-auto img, .portrait-auto .dialogue-portrait::after { object-fit: none; background-size: auto; }
@@ -2393,96 +2307,13 @@ body[low_intensity="false"] #control-select .reg-intensity,
 .menu .portrait-bottom img { object-position: bottom }
 .menu .portrait-centerlow img { object-position: center 65% }
 .menu .portrait-bw img { filter: grayscale(1) contrast(2) }
-.menu .portrait-haze img, .menu .portrait-haze .dialogue-portrait { background: url(../img/textures/memoryhaze.gif); background-size: cover; }
+.menu .portrait-haze img, .menu .portrait-haze .dialogue-portrait { background: url(assets/img/textures/memoryhaze.gif); background-size: cover; }
 
 .portrait-cover .dialogue-portrait::after { background-position: center; background-size: cover; }
 .portrait-top .dialogue-portrait::after { background-position: top; }
 
 @media only screen and (min-width: 2100px) { /* to avoid awkward cutoffs on big screens */
     .menu .portrait-auto img, .portrait-auto .dialogue-portrait::after { object-fit: cover; background-size: cover; }
-}
-
-/* TARGETS */
-.target {
-    display: flex;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    background: url(../img/mui/marblynryetarget.svg);
-    background-size: 100% 100%;
-    z-index: 20;
-    cursor: help;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-
-#realgrid .target {
-    backface-visibility: visible;
-    transition: unset;
-}
-
-.target::after, #realgrid .target::before {
-    content: "???";
-    font-family: barcodetext;
-    text-transform: uppercase;
-    text-align: center;
-    font-size: calc(1.25rem + 1vw);
-    color: var(--neutral-color);
-    background: var(--dark-color);
-    backface-visibility: hidden;
-    padding: 1.25rem;
-    opacity: 0.25;
-    transition: opacity 400ms ease-in-out;
-}
-
-#realgrid .target::after {
-    transform: translateZ(1px);
-}
-
-#realgrid .target::before {
-    transform: rotateY(180deg) translateZ(1px);
-    position: absolute;
-    transition: unset;
-}
-
-.target.targeted {
-    background-color: #ffff0038;
-}
-
-.target.targeted::after, #realgrid .target.targeted::before {
-    opacity: 1;
-    content: attr(entity);
-}
-
-.target.always-targeted,
-.target.always-targeted::after,
-#realgrid .target.always-targeted::before,
-.always-targeted .target,
-.always-targeted .target::after,
-.always-targeted #realgrid .target::before {
-    opacity: 1;
-    content: attr(entity) !important;
-    white-space: nowrap;
-}
-
-.target.targeted[entaltname]::after,
-#realgrid .target.targeted[entaltname]::before,
-.always-targeted .target[entaltname]::after,
-.always-targeted .target[entaltname]::before {
-    content: attr(entaltname) !important;
-}
-
-.target.always-targeted,
-.always-targeted .target {
-    background-image: url(../img/mui/marblynryetarget_micro.svg);
-}
-
-.mui-prohibited .target, .target, .in-menu .target {
-    display: none !important;
 }
   
 /* MUI CONTEXT MENU */
@@ -2723,7 +2554,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .act-option.act-ozo {
-    background: url(../img/local/uncosm/ozo/ozospiral_text.png), var(--neutral-color);
+    background: url(assets/img/local/uncosm/ozo/ozospiral_text.png), var(--neutral-color);
     background-size: contain;
 }
 
@@ -2763,7 +2594,7 @@ body[low_intensity="false"] #control-select .reg-intensity,
 }
 
 .mui-active #meta-icon:after {
-    background-image: url(../img/mui/mindspikelogoactive.gif);
+    background-image: url(assets/img/mui/mindspikelogoactive.gif);
     animation-play-state: running;    
 }
 
@@ -2884,7 +2715,7 @@ body:not(.mui-active) .target[lowvis] {
 .code {
     display: inline-block;
     padding: 2.5px 5px;
-    background: url(../img/textures/corrurippletran.gif), white !important;
+    background: url(assets/img/textures/corrurippletran.gif), white !important;
     background-position: center !important;
     color: var(--dark-color) !important;
     border: 1px solid var(--neutral-color) !important;
@@ -2913,14 +2744,14 @@ body:not(.mui-active) .target[lowvis] {
     height: 200%;
     position: absolute;
     pointer-events: none;
-    background-image: url(../img/sprites/misc/sphereframe.gif);
+    background-image: url(assets/img/sprites/misc/sphereframe.gif);
     background-size: contain;
     background-position: center;
     animation: SHAKE 15S ease-in-out INFINITE alternate;
 }
 
 .buddy {
-    --buddyimg: url(../img/sprites/funfriend/funfriend.gif);
+    --buddyimg: url(assets/img/sprites/funfriend/funfriend.gif);
     --offsetX: 50vw;
     --offsetY: 50vh;
     --size: 75px;
@@ -2994,83 +2825,6 @@ body:not(.mui-active) .target[lowvis] {
 @keyframes BUDDYBOUNCE-X {
     0% { transform: translateX(5%) rotate(5deg) }
     100% { transform: translateX(-5%) rotate(-5deg) }
-}
-
-/* FUNFRIEND REPAIRS */
-.repairpatch-drift, .repairpatch {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.repairpatch-drift {
-    display: none;
-    top: 0;
-    left: 20vh;
-    animation: PATCHDRIFT 120s ease-in-out infinite;
-}
-
-.repairpatch-drift.active {
-    display: flex;
-}
-
-.repairpatch {
-    width: 50vmin;
-    height: 40vmin;
-    border-radius: 60%;
-    overflow: hidden;
-    clip-path: polygon(5.75% 4.5%, 42.88% 8.26%, 80% 4.5%, 98.02% 13.52%, 87.57% 45.93%, 94.61% 67.06%, 92.88% 94.25%, 72% 94.25%, 58.94% 84.63%, 28.03% 90.62%, 5.75% 84.63%, 1.89% 42.58%);
-}
-
-.repairpatch::after, .repairpatch::before {
-    content: "";
-    position: absolute;
-    width: 125%;
-    height: 125%;
-    background: url(../img/textures/corrurippletran.gif), url(../img/textures/badstatic.gif);
-    background-position: center;
-}
-.repairpatch::after { background: url(../img/textures/cneural.gif); background-size: 50% }
-
-body:not([quality="low"]) .repairpatch-drift {filter: drop-shadow(-3px -1px 0px var(--obesk-color)) drop-shadow(5px 5px 0px var(--friend-color));}
-body:not([quality="low"]) .repairpatch { animation: PATCHWAVER 20s ease-in-out infinite alternate; }
-body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infinite}
-
-@keyframes PATCHWAVER {
-    100%, 0% {clip-path: polygon(0% 0%, 32.5% 0%, 68% 0%, 100% 0%, 100% 25%, 100% 62.75%, 100% 100%, 72.75% 100%, 35.5% 100%, 0% 100%, 0% 64.25%, 0% 28.25%);}
-    33% { clip-path: polygon(0% 0%, 66.5% 0%, 44.5% 20.47%, 100% 0%, 100% 67.25%, 81.51% 83.63%, 100% 100%, 44.5% 100%, 41.46% 79.07%, 0% 100%, 0% 64.25%, 23.37% 32.13%);}
-    66% { clip-path: polygon(3.5% 83.99%, 0% 0%, 40.75% 32.13%, 54% 8%, 100% 0%, 100% 18.88%, 81.5% 64.25%, 100% 100%, 75.96% 100%, 50% 82.13%, 28.06% 62.61%, 18.5% 100%);}
-}
-
-@keyframes PATCHDRIFT {
-    100%, 0% {transform: translate(0) rotate(0deg)}
-    25% {transform: translate(20vw, -20vh) rotate(10deg)}
-    50% {transform: translate(40vw, 10vh) rotate(-10deg)}
-    75% {transform: translate(20vw, 20vh) rotate(5deg)}
-}
-
-
-@keyframes PROXYBOUNCE-X {
-    0% {transform: translateX(5%) rotateY(50deg)}
-    100% {transform: translateX(-5%) rotateY(-50deg)}
-}
-
-@keyframes PROXYBOUNCE-Y {
-    0% {transform: translateY(5%) rotate(20deg)}
-    100% {transform: translateY(-5%) rotate(-20deg)}
-}
-
-.ffproxy.buddy figure {
-    animation: PROXYBOUNCE-Y 5s ease-in-out infinite alternate;
-}
-
-.ffproxy.buddy figure::after {
-    animation: PROXYBOUNCE-X 4s ease-in-out infinite alternate;
-}
-
-.ffproxy.buddy .chatter-container {
-    text-transform: uppercase;
 }
 
 /* OBJECTIVES */
@@ -3207,7 +2961,7 @@ body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infi
 :root.bigmode #dialogue-box { width: 35vw; }
 
 @media only screen and (max-width: 1366px) {
-    #readout { width: 33%; }
+    #readout { width: 40%; }
     :root { --contentDialogueOffset: -20vw }
 
     :root.bigmode { --contentDialogueOffset: -25vw }
@@ -3356,7 +3110,7 @@ body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infi
     height: 120%;
     border-radius: 100%;
     z-index: -1;
-    background: url(../img/textures/ccontours.gif);
+    background: url(assets/img/textures/ccontours.gif);
     pointer-events: none;
 }
 
@@ -3386,7 +3140,7 @@ body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infi
     width: 125%;
     border-radius: 100%;
     animation-duration: 40s;
-    background: url(../img/local/uncosm/ozo/ozospiral_text.png);
+    background: url(assets/img/local/uncosm/ozo/ozospiral_text.png);
     background-position: center;
     background-size: cover;
     z-index: -1;
@@ -3394,7 +3148,7 @@ body:not([quality="low"]) .repairpatch::before {animation: SPIN 120s linear infi
 
 .ozo-mask-grid::before {
     animation: SPIN 20s linear infinite;
-    background-image: url(../img/textures/memoryhaze2.gif);
+    background-image: url(assets/img/textures/memoryhaze2.gif);
 }
 
 body[menu="masks"].in-tiny-menu #masks {
@@ -3444,7 +3198,7 @@ body[menu="masks"].in-tiny-menu .ozo-mask {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
-    background-image: url(../img/fav.gif);
+    background-image: url(assets/img/fav.gif);
     background-size: contain;
     --baseTransform: translateX(-125%) translateY(-50%);
     border: 1px solid;
@@ -3460,7 +3214,7 @@ body[menu="system"].in-menu .mindsci-status::before {
 
 .mindsci-status[code="2"] {
     border-color: var(--bright-color) !important;
-    background: url(../img/textures/static.gif) !important;
+    background: url(assets/img/textures/static.gif) !important;
     color: var(--dark-color) !important;
 }
 
@@ -3490,7 +3244,7 @@ body[menu="system"].in-menu .mindsci-status[code="-1"]::before {
 
 .mindsci-status[code="-2"] {
     border-color: var(--obesk-color) !important;
-    background: url(../img/textures/mspinnel.gif) !important;
+    background: url(assets/img/textures/mspinnel.gif) !important;
     color: var(--bright-color) !important;
 }
 
@@ -3542,7 +3296,7 @@ body.chromium > .menu {
 
 #beacon-vfx::before, #beacon-vfx::after {
     content: "";
-    background: url(../img/local/uncosm/ozo/ozospiral.gif);
+    background: url(assets/img/local/uncosm/ozo/ozospiral.gif);
     background-position: center;
     background-size: cover;
     animation: SPIN 60s linear infinite;
@@ -3584,7 +3338,7 @@ body.chromium > .menu {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url(../img/textures/fadeinlong.gif), linear-gradient(0deg, rgba(255, 0, 255, 0.63) 0%, rgb(0, 0, 0) 100%);
+    background: url(assets/img/textures/fadeinlong.gif), linear-gradient(0deg, rgba(255, 0, 255, 0.63) 0%, rgb(0, 0, 0) 100%);
     background-size: 100% auto;
     transform: rotate(180deg);
     transition: opacity 2s ease-in-out;
@@ -3693,222 +3447,6 @@ body.chromium > .menu {
     background-size: auto 100%;
 }
 
-/* VN - qou vn */
-/* gakvu has a hardcoded no-connector for collapse part 1 */
-.vn-char#gakvu .head, body[currentdialogue="d3_movefriend_finish"] .vn-char#gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
-.vn-char#gakvu .body { background-image: var(--gakvuCoatFull), url(../img/sprites/obesk/gakvu/full/gakvu_legs.gif); }
-.vn-wrapper.vn-con #gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/connector.gif), url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
-#content[embassyday="1"] .vn-char#gakvu .head { background-image: url(../img/sprites/obesk/gakvu/full/connectoralt.gif), url(../img/sprites/obesk/gakvu/full/gakvu_face.gif), url(../img/sprites/obesk/gakvu/full/gakvu_head.gif); }
-
-.vn-char#tozik {
-    height: 180vmin;
-}
-.vn-char#tozik .head { background-image: url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
-.vn-char#tozik .body { background-image: url(../img/sprites/obesk/tozik/full/tozik_body.gif); }
-.vn-char#tozik .body::before {
-    background-image: url(../img/sprites/obesk/tozik/full/tozik_arms.gif);
-    background-size: inherit;
-    content: "";
-    animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
-}
-.vn-wrapper.vn-con #tozik .head { background-image: url(../img/sprites/obesk/tozik/full/connector.gif), url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
-#content[embassyday="1"] .vn-char#tozik .head { background-image: url(../img/sprites/obesk/tozik/full/connectoralt.gif), url(../img/sprites/obesk/tozik/full/tozik_eyes.gif), url(../img/sprites/obesk/tozik/full/tozik_head.gif), url(../img/sprites/obesk/tozik/full/tozik_headcore.gif); }
-
-
-.vn-char#miltza {
-    --charTransform: translateY(-7.5%);
-    height: 220vmin;
-}
-#miltza.vn-char .head { background-image: url(../img/sprites/obesk/miltza/full/face.gif), url(../img/sprites/obesk/miltza/full/head.gif);}
-#miltza.vn-char .body { background-image: url(../img/sprites/obesk/miltza/full/torso.gif), url(../img/sprites/obesk/miltza/full/legs.gif) }
-#miltza.vn-char .arms { background-image: url(../img/sprites/obesk/miltza/full/arms.gif);}
-    #miltza.vn-char .arms::after { 
-        background-image: url(../img/sprites/obesk/miltza/full/okizika_arm.gif);
-        width: 100%;
-        height: 100%;
-        display: block;
-        background-size: inherit;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-.vn-wrapper.vn-con #miltza .head, body[currentdialogue="d3_movefriend_finish"] .vn-wrapper #miltza .head { background-image: url(../img/sprites/obesk/miltza/full/connector.gif), url(../img/sprites/obesk/miltza/full/face.gif), url(../img/sprites/obesk/miltza/full/head.gif); }
-
-
-#cavik.vn-char .head { background-image: url(../img/sprites/obesk/cavik/full/cavikhair.gif); }
-    #cavik.vn-char .head::before { content: ""; background-image: url(../img/sprites/obesk/cavik/full/cavikmask.gif); }
-    .vn-wrapper.vn-con #cavik .head::before { background-image: url(../img/sprites/obesk/cavik/full/connector.gif), url(../img/sprites/obesk/cavik/full/cavikmask.gif);}
-#cavik.vn-char .body { background-image: url(../img/sprites/obesk/cavik/full/cavikponcho.gif); }
-#cavik.vn-char .arms { background-image: url(../img/sprites/obesk/cavik/full/cavikhands.gif); }
-#cavik.vn-char .legs { background-image: url(../img/sprites/obesk/cavik/full/cavikboots.gif); z-index: -1; }
-    #cavik.vn-char .legs::before { content: ""; background-image: url(../img/sprites/obesk/cavik/full/cavikabdomen.gif); }
-
-#bozko.vn-char { height: 150vmin }
-#bozko.vn-char .head { background-image: url(../img/sprites/obesk/bozko/full/bozkohead.gif);}
-    .vn-wrapper.vn-con #bozko .head { background-image: url(../img/sprites/obesk/bozko/full/connector.gif), url(../img/sprites/obesk/bozko/full/bozkohead.gif)}
-#bozko.vn-char .body { background-image: url(../img/sprites/obesk/bozko/full/bozkobody.gif);}
-#bozko.vn-char .arms { background-image: url(../img/sprites/obesk/bozko/full/bozkoarms.gif);}
-    #bozko.vn-char .arms::before { background-image: url(../img/sprites/obesk/bozko/full/bozkofingers.gif); content: ""; background-position: bottom;}
-
-#kazki.vn-char .head { background-image: url(../img/sprites/obesk/kazki/full/kazkihead.gif), url(../img/sprites/obesk/kazki/full/kazkihair.gif)}
-    .vn-wrapper.vn-con #kazki .head,
-    #content[embassyday="2"] .vn-char#kazki .head { background-image: url(../img/sprites/obesk/kazki/full/connector.gif), url(../img/sprites/obesk/kazki/full/kazkihead.gif), url(../img/sprites/obesk/kazki/full/kazkihair.gif); }
-#kazki.vn-char .body { background-image: url(../img/sprites/obesk/kazki/full/kazkiarms.gif), url(../img/sprites/obesk/kazki/full/kazkishawl.gif)}
-#kazki.vn-char .legs { background-image: url(../img/sprites/obesk/kazki/full/kazkiorb.gif), url(../img/sprites/obesk/kazki/full/kazkilegs.gif)}
-
-/* VN - mindcores */
-.vn-char.vn-mindcore {
-    background-image: var(--mindcoreImg);
-    background-position: bottom;
-    background-size: contain;
-    background-repeat: no-repeat;
-    width: 55vmin;
-}
-
-#itzil.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore1.gif);}
-#karik.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore2.gif);}
-#itzilBusted.vn-char { --mindcoreImg: url(../img/local/embassy/mindcore1busted.gif)}
-
-#ikgolem.vn-char { height: 150vmin }
-#ikgolem.vn-char .head { background-image: url(../img/sprites/obesk/ikgol/full/head.gif);}
-    .vn-wrapper.vn-con #ikgolem .head { background-image: url(../img/sprites/obesk/ikgol/full/head.gif), url(../img/sprites/obesk/ikgol/full/connector.gif)}
-    .vn-wrapper[pos*="basehead"] #ikgolem .head,
-    .vn-wrapper[pos*="basehead"].vn-con #ikgolem .head { background-image: url(../img/sprites/obesk/ikgol/full/head_nostyle.gif) }
-#ikgolem.vn-char .body { background-image: url(../img/sprites/obesk/ikgol/full/body.gif);}
-#ikgolem.vn-char .arms { background-image: url(../img/sprites/obesk/ikgol/full/arms.gif);}
-
-/* VN - geli */
-.vn-char.vn-geli {
-    height: 250vmin;
-    --charTransform: translateY(-10%);
-    --expression: url(../img/sprites/obesk/geli/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_neutral.gif);
-}
-.vn-char.vn-geli[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_concerned.gif);
-}
-.vn-char.vn-geli[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_thinkingalt.gif);
-}
-.vn-char.vn-geli[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_pleased.gif);
-}
-.vn-char.vn-geli[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_concerned.gif);
-}
-.vn-char.vn-geli[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/full/receptors_thinking.gif);
-}
-
-.vn-char.vn-geli .head { background-image: var(--expression), url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
-.vn-char.vn-geli .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/full/collar.gif), url(../img/sprites/obesk/geli/full/body.gif) }
-.vn-char.vn-geli .body::before {
-    background-image: url(../img/sprites/obesk/geli/full/arms.gif);
-    background-size: inherit;
-    content: "";
-    transition: all 3s ease-in-out, background-image 0s;
-    animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
-}
-
-.gelioff .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
-.gelioff .vn-char.vn-geli .head::before { transform: scale(0.85); opacity: 0; }
-.gelioff .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/full/collar_deactivated.gif), url(../img/sprites/obesk/geli/full/body_deactivated.gif) }
-.geliboot .vn-char.vn-geli .body::before { transform: var(--baseTransform) translateY(1%) }
-.geliboot .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/full/hat.gif), url(../img/sprites/obesk/geli/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
-.gelioff .vn-char.vn-geli .body::before, .gelioff .vn-char.vn-geli .head, 
-.geliboot .vn-char.vn-geli .body::before, .geliboot .vn-char.vn-geli .head {animation: unset;}
-
-.fakegeli .vn-char.vn-geli {
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_neutral.gif);
-}
-.fakegeli .vn-char.vn-geli[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
-}
-.fakegeli .vn-char.vn-geli[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_thinkingalt.gif);
-}
-.fakegeli .vn-char.vn-geli[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_pleased.gif);
-}
-.fakegeli .vn-char.vn-geli[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_concerned.gif);
-}
-.fakegeli .vn-char.vn-geli[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/fake/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/fake/full/receptors_thinking.gif);
-}
-
-.fakegeli .vn-char.vn-geli .head { background-image: var(--expression), url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/fake/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
-.fakegeli .vn-char.vn-geli .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.fakegeli .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/fake/full/collar.gif), url(../img/sprites/obesk/geli/fake/full/body.gif) }
-.fakegeli .vn-char.vn-geli .body::before {
-    background-image: url(../img/sprites/obesk/geli/fake/full/arms.gif);
-    background-size: inherit;
-    content: "";
-    transition: all 3s ease-in-out, background-image 0s;
-    animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
-}
-
-.fakegeli.gelioff .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/full/head_inactive.gif); transform: translateY(5%)}
-.fakegeli.gelioff .vn-char.vn-geli .head::before { transform: scale(0.85); opacity: 0; }
-.fakegeli.gelioff .vn-char.vn-geli .body { background-image: url(../img/sprites/obesk/geli/fake/full/collar_deactivated.gif), url(../img/sprites/obesk/geli/full/body_deactivated.gif) }
-.fakegeli.geliboot .vn-char.vn-geli .body::before { transform: var(--baseTransform) translateY(1%) }
-.fakegeli.geliboot .vn-char.vn-geli .head {background-image: url(../img/sprites/obesk/geli/fake/full/hat.gif), url(../img/sprites/obesk/geli/fake/full/head_boot.gif); transform: var(--baseTransform) translateY(1%)}
-.fakegeli.gelioff .vn-char.vn-geli .body::before, .fakegeli.gelioff .vn-char.vn-geli .head, 
-.fakegeli.geliboot .vn-char.vn-geli .body::before, .fakegeli.geliboot .vn-char.vn-geli .head {animation: unset;}
-
-.vn-char.vn-geli.bstrdized {
-    height: 250vmin;
-    --charTransform: translateY(-10%);
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_neutral.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_neutral.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="concern"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_concerned.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="think"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_thinking.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_thinkingalt.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="bstrd"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_bstrd.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="happy"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_pleased.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_pleased.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="uncanny"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_uncanny.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_concerned.gif);
-}
-.vn-char.vn-geli.bstrdized[expression="blueeyes"] { 
-    --expression: url(../img/sprites/obesk/geli/bsteli/full/face_happysmiler.gif);
-    --receptors: url(../img/sprites/obesk/geli/bsteli/full/receptors_thinking.gif);
-}
-
-.vn-char.vn-geli.bstrdized .head { background-image: var(--expression), url(../img/sprites/obesk/geli/bsteli/full/hat.gif), url(../img/sprites/obesk/geli/bsteli/full/head.gif); transform: translate(1%); animation: TINYSWAY 7s EASE-IN-OUT infinite alternate; z-index: 2; transition: all 3s ease-in-out, background-image 0s; image-rendering: auto; }
-.vn-char.vn-geli.bstrdized .head::before {content: ""; background-image: var(--receptors); background-size: inherit; transition: all 200ms ease-in-out; transform: scale(1); z-index: -1;}
-.vn-char.vn-geli.bstrdized .body { background-image: url(../img/sprites/obesk/geli/bsteli/full/collar.gif), url(../img/sprites/obesk/geli/bsteli/full/body.gif) }
-.vn-char.vn-geli.bstrdized .body::before {
-    background-image: url(../img/sprites/obesk/geli/bsteli/full/arms.gif);
-    background-size: inherit;
-    content: "";
-    transition: all 3s ease-in-out, background-image 0s;
-    animation: TINYHOVER 10s EASE-IN-OUT infinite alternate;
-}
-
 /* kivii */
 .vn-char#kivii {
     --charTransform: translateY(-50vh);
@@ -3921,7 +3459,7 @@ body.chromium > .menu {
 
 .vn-char#kivii::after { 
     content: "";
-    background: url(../img/sprites/combat/foes/kivii/1.gif), url(../img/sprites/combat/foes/kivii/2.gif),  url(../img/sprites/combat/foes/kivii/3.gif),  url(../img/sprites/combat/foes/kivii/4.gif);
+    background: url(assets/img/sprites/combat/foes/kivii/1.gif), url(assets/img/sprites/combat/foes/kivii/2.gif),  url(assets/img/sprites/combat/foes/kivii/3.gif),  url(assets/img/sprites/combat/foes/kivii/4.gif);
     opacity: 0.1;
     background-position: center;
     width: 1px;
@@ -3930,22 +3468,22 @@ body.chromium > .menu {
 }
 
 .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/1.gif);
+    background-image: url(assets/img/sprites/combat/foes/kivii/1.gif);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
 }
 
 .vn-wrapper[pos*="step2"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/2.gif);
+    background-image: url(assets/img/sprites/combat/foes/kivii/2.gif);
 }
 
 .vn-wrapper[pos*="step3"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/3.gif);
+    background-image: url(assets/img/sprites/combat/foes/kivii/3.gif);
 }
 
 .vn-wrapper[pos*="step4"] .vn-char#kivii .sprite.swap {
-    background-image: url(../img/sprites/combat/foes/kivii/4.gif);
+    background-image: url(assets/img/sprites/combat/foes/kivii/4.gif);
 }
 
 .vn-char#kivii .spritestack::before, .vn-char#kivii .spritestack::after,
@@ -3954,7 +3492,7 @@ body.chromium > .menu {
     position: absolute;
     width: 150%;
     height: 100%;
-    background-image: url(../img/sprites/combat/foes/kivii/gauntlet.gif);
+    background-image: url(assets/img/sprites/combat/foes/kivii/gauntlet.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-size: auto 60%;
@@ -3971,7 +3509,7 @@ body.chromium > .menu {
 
 /* fake */
 .vn-char#fakerloper .body {
-    background: url(../img/sprites/loper.gif);
+    background: url(assets/img/sprites/loper.gif);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -3983,27 +3521,27 @@ body.chromium > .menu {
 }
 
 .vn-bstrd .head {
-    background-image: url(../img/sprites/combat/foes/bstface.gif), url(../img/sprites/combat/foes/bsthead.gif);
+    background-image: url(assets/img/sprites/combat/foes/bstface.gif), url(assets/img/sprites/combat/foes/bsthead.gif);
 }
 
 .vn-bstrd .body {
-    background-image: url(../img/sprites/combat/foes/bstbody.gif);
+    background-image: url(assets/img/sprites/combat/foes/bstbody.gif);
 }
 
 .vn-bstrd .arms {
-    background-image: url(../img/sprites/combat/foes/bstarms.gif);
+    background-image: url(assets/img/sprites/combat/foes/bstarms.gif);
 }
 
-body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head {
+.vn-bstrd .arms, .vn-bstrd .head {
     animation: TINYHOVER 3s ease-in-out infinite alternate;
 }
 
 .bstrd-hold .vn-bstrd .arms {
-    background-image: url(../img/sprites/combat/foes/bstgun.gif);
+    background-image: url(assets/img/sprites/combat/foes/bstgun.gif);
 }
 
 .geli-hold .vn-char.vn-geli.bstrdized .body::before {
-    background-image: url(../img/sprites/obesk/geli/bsteli/full/arms_gun.gif);
+    background-image: url(assets/img/sprites/obesk/geli/bsteli/full/arms_gun.gif);
 }
 
 /* special VN transforms based on focus */
@@ -4048,7 +3586,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 /* special VN guys */
 .vn-char#bstrdface {
     width: 40vw;
-    background-image: url(../img/sprites/bstrd/bstrd.gif);
+    background-image: url(assets/img/sprites/bstrd/bstrd.gif);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -4110,7 +3648,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
     transform-origin: center;
     height: 75vmin;
     width: 75vmin;
-    background: url(../img/textures/spotgradientinverse.gif);
+    background: url(assets/img/textures/spotgradientinverse.gif);
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -4118,7 +3656,7 @@ body[quality="regular"] .vn-bstrd .arms, body[quality="regular"] .vn-bstrd .head
 }
 
 #echovn::before {
-    background-image: url(../img/textures/disruptionM.gif);
+    background-image: url(assets/img/textures/disruptionM.gif);
     z-index: 2;
     border-radius: 100%;
     width: 20vmin;
