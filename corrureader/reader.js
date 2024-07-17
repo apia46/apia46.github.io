@@ -65,7 +65,7 @@ function getPages(){
         }
 
         menuContents += `
-        <div class="page" page="${pageName}" style="--pageImg: url(${pageName in PAGEIMAGES ? PAGEIMAGES[pageName] : metadata.image});">
+        <div class="page collapsed" page="${pageName}" style="--pageImg: url(${pageName in PAGEIMAGES ? PAGEIMAGES[pageName] : metadata.image});">
             <div class="pageheader"><span>${pageName in PAGETITLES ? PAGETITLES[pageName] : metadata.title}</span></div>
             <div class="pageents-wrapper">
                 <div class="pageents">${entListHTML}</div>

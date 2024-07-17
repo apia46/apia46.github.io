@@ -1393,11 +1393,11 @@ body[menu="system"] .warning h3::before {
 }
 
 .devs a[href*="632622187014258709"]::after {
-    background-image: url('joael.png');
+    background-image: url('assets/joael.png');
 }
 
 .devs a[href*="1037448142100103218"]::after {
-    background-image: url('cantharus.png');
+    background-image: url('assets/cantharus.png');
 }
 
 .devs a:hover::after {

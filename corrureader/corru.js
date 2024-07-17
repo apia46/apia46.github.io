@@ -437,7 +437,7 @@ function MUI(state) {
 
 //global SFX map
 var sfxmap = new Howl({
-    src: ['csfxmap.ogg'],
+    src: ['assets/csfxmap.ogg'],
     preload: true,
     html5: false,
     volume: 0.75,
