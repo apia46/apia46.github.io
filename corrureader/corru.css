@@ -885,7 +885,7 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
 }
 /* page socials position adjustments */
 .page[page="hub.html"] .pageheader {
-    background-position-y: 80%, -347%;
+    background-position-y: 80%, -300%;
 }
 
 .page[page="index.html"] .pageheader {
