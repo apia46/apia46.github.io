@@ -351,6 +351,7 @@ $(()=>{
 
     gmss()
     setInterval(gmss, 300000)
+    updateDialogueActors()
 })
 
 
@@ -632,7 +633,9 @@ async function gmss() {
         code: 0
     }
 
-    await fetch("https://state.corru.network/").then(response => response.json()).then(json=> {mss = json})
+    try {
+        await fetch("https://state.corru.network/").then(response => response.json()).then(json=> {mss = json})
+    } catch(err) {console.log(err)} //probably internet issue
 
     document.querySelectorAll('.mindsci-status').forEach(el=>{
         el.setAttribute('state', mss.state)

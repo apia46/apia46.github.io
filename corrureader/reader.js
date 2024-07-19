@@ -37,6 +37,8 @@ const PAGEIMAGES = {
 }
 
 var data
+var currentText
+var currentPage
 
 $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
@@ -49,20 +51,17 @@ function getPages(){
     var pages = Object.keys(data)
     var menuContents = ``
 
-    for (const pageNum in pages) {
-        var pageName = pages[pageNum]
+    pages.forEach(pageName=>{
         var page = data[pageName]
         var metadata = page.shift()
-        //console.log(pageName, metadata)
         var entListHTML = ``
 
-        for (const textNum in page) {
-            var text = page[textNum]
-            //console.log(text)
+        page.forEach(text=>{
+            if (text.type == 4) return //respobj
             entListHTML += `
             <div class="act-option" text="${text.context}" page="${pageName}">${text.context}</div>
             `
-        }
+        })
 
         menuContents += `
         <div class="page collapsed" page="${pageName}" style="--pageImg: url(${pageName in PAGEIMAGES ? PAGEIMAGES[pageName] : metadata.image});">
@@ -71,7 +70,7 @@ function getPages(){
                 <div class="pageents">${entListHTML}</div>
             </div>
         </div>`
-    }
+    })
 
     //add html
     document.querySelector("#readout .pagelist").insertAdjacentHTML('beforeend', menuContents)
@@ -85,4 +84,108 @@ function getPages(){
     document.querySelectorAll('#readout .pageheader').forEach(e=>{ //pageheaders collapse/uncollapse their parents
         e.addEventListener('click', ()=>e.parentElement.classList.toggle('collapsed'))
     })
-} 
+
+    //clickable entries
+    document.querySelectorAll('.pageents .act-option').forEach(e=>{
+        e.addEventListener('click', ()=>{
+            parseDialogue(e.getAttribute("page"), e.getAttribute("text"))
+        })
+    })
+}
+
+function parseDialogue(page, dialogueName){
+    currentPage = page
+    var dialogue = data[page].find((value)=>{return value.context==dialogueName})
+    switch(dialogue.type){
+        case 0:
+            currentText = generateDialogueObject(dialogue.text.join("\n"))
+            document.getElementById("dialogue-box").innerHTML = ""
+            display(currentText.start)
+        case 4:
+            return generateDialogueObject(dialogue.text.join("\n"))
+    }
+}
+
+function display(text){
+    var dMenu = document.getElementById('dialogue-menu')
+    if (dMenu) {
+        dMenu.classList.add('dialogue-menu')
+        dMenu.id = ""
+    }
+
+    var dialogueHtml = ``
+    var previousActor = ""
+    text.body.forEach(dialogue=>{
+        var actor = getDialogueActor(dialogue.actor, true)
+
+        var portrait = ""
+        if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
+
+        dialogueHtml += `
+        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} sent">
+            ${portrait}
+            <div class="dialogue-text">
+                ${dialogue.text}
+            </div>
+        </div>
+        `
+        previousActor = actor
+    })
+    dialogueHtml += `<div id="dialogue-menu"></div>`
+    document.getElementById("dialogue-box").insertAdjacentHTML('beforeend', dialogueHtml)
+    
+    if (text.responses) {
+        text.responses.forEach(response=>{
+            var actor = getDialogueActor(response.name, true)
+            document.getElementById('dialogue-menu').insertAdjacentHTML('beforeend', `
+                <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} sent">
+                    <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>
+                    <div class="dialogue-options"></div>                    
+                </div>
+            `)
+            response.replies.forEach(reply=>{
+                var replyName = reply.name == "function" ? reply.name() : reply.name.trim()
+
+                var isEnd //corru, you didnt have to do it like this. what the fuck
+                if(reply.fakeEnd || reply.destination == "END") isEnd = reply.fakeEnd || "(end chat)" 
+
+                var readState = checkUnread(reply)
+                if(readState == false) readState = "read"
+                var readAttribute = reply.hideRead ? 'read="hidden"' : `read=${readState}`
+                
+                document.querySelector(`#dialogue-menu .dialogue-options-${actor.name} .dialogue-options`).insertAdjacentHTML("beforeend", `
+                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} >${replyName}</span>
+                `)
+                
+                var replyObj = document.querySelector(`#dialogue-menu .dialogue-options span[name="${replyName}"]`)
+                replyObj.addEventListener('mousedown', function(e) {
+                    console.log(replyName)
+
+                    if(reply.exec) {
+                        try { reply.exec() } catch(e) {console.log(e)}
+                    }
+
+                    //determine how to handle the reply based on any special prefixes or names
+                    let replyValue = this.attributes.reply.value
+                    if(replyValue == "END") { //end of dialogue
+                        //endDialogue(env.currentDialogue.chain.end) ehh?
+                    } else if(replyValue.includes('CHANGE::')) { //changing to different dialogue
+                        changeDialogue(replyValue.replace('CHANGE::', ''))
+                    } else if(replyValue.includes('EXEC::')) { //executing a function - the function given should end dialogue or change it, otherwise may softlock
+                        Function(`${replyValue.replace('EXEC::', '')}`)() //oh boy
+                    } else {
+                        console.log(replyValue)
+                        display(currentText[replyValue])
+                    }
+                })
+                replyObj.addEventListener('mouseenter', ()=>play('muiHover'))
+                replyObj.addEventListener('click', ()=> play('muiClick'))
+            })
+        })
+    }
+}
+
+function changeDialogue(to){
+    document.getElementById("dialogue-box").innerHTML = ""
+    parseDialogue(currentPage, to)
+}

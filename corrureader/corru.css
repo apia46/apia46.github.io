@@ -1448,7 +1448,8 @@ body[menu="system"] .warning h3::before {
     position: absolute;
     right: auto;
     height: auto;
-    transform: var(--baseTransform)
+    transform: var(--baseTransform);
+    pointer-events: initial;
 }
 
 #dialogue-box.dialogue-click-proceed {
@@ -1494,10 +1495,6 @@ body[menu="system"] .warning h3::before {
     transition: transform 400ms ease-in-out, max-height 200ms ease-in-out;
     max-height: 600px;
     overflow: hidden;
-}
-
-.dialogue-menu .dialogue-actor:not(.chosen) {
-    max-height: 0px;
 }
 
 .dialogue-actor.chosen span:not(.chosen) {
@@ -2549,8 +2546,18 @@ body[menu="system"] .warning h3::before {
     cursor: pointer;
 }
 
+.act-option[text="mothComment"],
+.act-option[text="mothChat"],
+.act-option[text="mthresp"],
+.act-option[text="mth++${page.dialoguePrefix}"] {
+    background: var(--dark-color);
+    color: var(--friend-color);
+    border: 1px solid;
+}
+
 .act-option:hover {
     background: var(--friend-color);
+    color: var(--dark-color);
 }
 
 .act-option.act-ozo {
@@ -2693,7 +2700,7 @@ body:not(.mui-active) .target[lowvis] {
 }
 
 /* LOOSE THOUGHTS - FLOATING TEXT */
-#content .loose-thought {
+#content :not(#dialogue-box) .loose-thought {
     font-family: beech;
     display: block;
     font-size: calc(1em + 1vw);

@@ -44,7 +44,7 @@
         },
         {
             "context": "generalsentryResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -271,7 +271,7 @@
         },
         {
             "context": "mthlocalr",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -285,7 +285,7 @@
         },
         {
             "context": "mthlocalfunr",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -813,7 +813,7 @@
         },
         {
             "context": "mthhubresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -1406,7 +1406,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -1636,7 +1636,7 @@
         },
         {
             "context": "glazikaResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -1706,7 +1706,7 @@
         },
         {
             "context": "mthdullresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -1839,7 +1839,7 @@
         },
         {
             "context": "fairyresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2009,7 +2009,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2070,7 +2070,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2229,7 +2229,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2460,7 +2460,7 @@
         },
         {
             "context": "drowningIntroResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2557,7 +2557,7 @@
         },
         {
             "context": "drowningResp1",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2571,7 +2571,7 @@
         },
         {
             "context": "drowningResp2",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2585,7 +2585,7 @@
         },
         {
             "context": "drowningResp3",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2599,7 +2599,7 @@
         },
         {
             "context": "drowningResp4",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -2951,7 +2951,7 @@
         },
         {
             "context": "drowningChatResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -3056,7 +3056,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -3135,7 +3135,7 @@
         },
         {
             "context": "pieceresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -3234,7 +3234,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -3318,7 +3318,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -3377,7 +3377,7 @@
         },
         {
             "context": "envoyStreetResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -3907,7 +3907,7 @@
         },
         {
             "context": "tvresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -4186,7 +4186,7 @@
         },
         {
             "context": "flowerAwakeResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -4435,7 +4435,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -4520,7 +4520,7 @@
         },
         {
             "context": "mthgolresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -4805,7 +4805,7 @@
         },
         {
             "context": "mthembresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -5148,7 +5148,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -5255,7 +5255,7 @@
         },
         {
             "context": "interviewResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::interviewer",
@@ -5775,7 +5775,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -6217,7 +6217,7 @@
         },
         {
             "context": "drinkquestions",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -6642,7 +6642,7 @@
         },
         {
             "context": "enemyresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -6670,7 +6670,7 @@
         },
         {
             "context": "enemyquestions",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -7011,7 +7011,7 @@
         },
         {
             "context": "mthresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -8127,7 +8127,7 @@
         },
         {
             "context": "bstrdResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -10371,7 +10371,7 @@
         },
         {
             "context": "d3_closeout",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::sys",
@@ -10837,7 +10837,7 @@
         },
         {
             "context": "d3_c_responses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::gakvu",
@@ -11071,7 +11071,7 @@
         },
         {
             "context": "d3_miltza_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -11085,7 +11085,7 @@
         },
         {
             "context": "d3_miltza_artresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -11213,7 +11213,7 @@
         },
         {
             "context": "d3_mind_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -11386,7 +11386,7 @@
         },
         {
             "context": "d3_bstrdintro_responses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -12374,7 +12374,7 @@
         },
         {
             "context": "gol_intro",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -13258,7 +13258,7 @@
         },
         {
             "context": "geli_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -14825,7 +14825,7 @@
         },
         {
             "context": "s_callspeople",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -15651,7 +15651,7 @@
         },
         {
             "context": "lobby_bossdoorops",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -16127,7 +16127,7 @@
         },
         {
             "context": "tozik_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -16254,7 +16254,7 @@
         },
         {
             "context": "gakvu_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -16351,7 +16351,7 @@
         },
         {
             "context": "miltza_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -16531,7 +16531,7 @@
         },
         {
             "context": "mindcores_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::itzil",
@@ -16856,7 +16856,7 @@
         },
         {
             "context": "cavik_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -16980,7 +16980,7 @@
         },
         {
             "context": "bozko_resp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -17404,7 +17404,7 @@
         },
         {
             "context": "barfriendresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -17462,7 +17462,7 @@
         },
         {
             "context": "embassyRelocatorResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -17594,7 +17594,7 @@
         },
         {
             "context": "d1_gakvuresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -17756,7 +17756,7 @@
         },
         {
             "context": "d1_kazkibozkoresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -17979,7 +17979,7 @@
         },
         {
             "context": "d1_cavikresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -18139,7 +18139,7 @@
         },
         {
             "context": "d1_attendantresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -18644,7 +18644,7 @@
         },
         {
             "context": "d2_attendantresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -18868,7 +18868,7 @@
         },
         {
             "context": "d2_gakvuresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -19015,7 +19015,7 @@
         },
         {
             "context": "d2_tozikresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -19133,7 +19133,7 @@
         },
         {
             "context": "d2_kazkiresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::akizet",
@@ -19700,7 +19700,7 @@
         },
         {
             "context": "mthglobalresp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -20298,7 +20298,7 @@
         },
         {
             "context": "hubBuddyResponses",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -20369,7 +20369,7 @@
         },
         {
             "context": "persistentQuestions",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21214,7 +21214,7 @@
         },
         {
             "context": "councilResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21234,7 +21234,7 @@
         },
         {
             "context": "councilRejoiningResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21262,7 +21262,7 @@
         },
         {
             "context": "councilQuestionsResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21276,7 +21276,7 @@
         },
         {
             "context": "councilPlaceQuestionsResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21300,7 +21300,7 @@
         },
         {
             "context": "councilCystQuestionsResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -21319,7 +21319,7 @@
         },
         {
             "context": "interloperQuestionsResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::council",
@@ -22065,7 +22065,7 @@
         },
         {
             "context": "isabelResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22081,7 +22081,7 @@
         },
         {
             "context": "isabelYResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22094,7 +22094,7 @@
         },
         {
             "context": "isabelCResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22109,7 +22109,7 @@
         },
         {
             "context": "isabelOResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22557,7 +22557,7 @@
         },
         {
             "context": "fairyResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22569,7 +22569,7 @@
         },
         {
             "context": "fairyYResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22583,7 +22583,7 @@
         },
         {
             "context": "fairyCResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -22595,7 +22595,7 @@
         },
         {
             "context": "fairyOResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -23093,7 +23093,7 @@
         },
         {
             "context": "stowawayResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -23870,7 +23870,7 @@
         },
         {
             "context": "bsteliResp",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -23897,7 +23897,7 @@
         },
         {
             "context": "bsteliYLoop",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -23911,7 +23911,7 @@
         },
         {
             "context": "bsteliDLoop",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
@@ -23927,7 +23927,7 @@
         },
         {
             "context": "bsteliOLoop",
-            "type": 0,
+            "type": 4,
             "text": [
                 "RESPOBJ::",
                 "    RESPONSES::self",
