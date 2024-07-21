@@ -268,7 +268,7 @@ $(()=>{
             if(ev.target.id == "meta-icon") {
                 MUI("toggle")
 
-            } else if(ev.target.parentElement.id == "mui-links"){
+            } else if(ev.target.parentElement && ev.target.parentElement.id == "mui-links"){
                 switch(ev.target.id) {
                     case "meta-obs":
                         toggleEntMenu()

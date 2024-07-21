@@ -153,9 +153,9 @@ function generateDialogueObject(genString) {
                 try {
                     text = line.replace('            ', '')
                     newReasons = false
-
+                    
                     if(text == "") return
-                    if(text.startsWith("EXEC::")) recipient.exec = Function(line.replace('EXEC::', ''))
+                    if(text.startsWith("EXEC::")) recipient.exec = Function(line.replace('EXEC::', '').replaceAll('\\', ''))
                     if(text.startsWith("WAIT::")) recipient.wait = line.replace('WAIT::', '') //applies only to dialogue
                     if(text.startsWith("AUTOADVANCE::")) recipient.autoAdvance = true //applies only to dialogue
                     if(text.startsWith("SHOWIF::")) newReasons = parseShowif(line)

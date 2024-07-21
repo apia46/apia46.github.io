@@ -1524,7 +1524,30 @@ body[menu="system"] .warning h3::before {
     word-break: break-word;
     line-height: 1.1;
 }  
-  
+
+.wait {
+    text-align: center;
+    border-bottom: 1px solid var(--bright-color);
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+}
+
+.wait span {
+    text-align: center;
+    background: var(--dark-color);
+    padding: 0 10px;
+}
+
+.showif {
+    color: var(--bright-color);
+    font-size: 1rem;
+    text-shadow: none;
+    letter-spacing: 0.25px;
+    font-family: spacemono;
+    width: 100%;
+    text-align: center;
+}
+
 .dialogue-text p {
     word-break: break-word;
     margin: 0.6rem 0;

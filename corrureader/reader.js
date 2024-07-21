@@ -118,16 +118,27 @@ function display(text){
     text.body.forEach(dialogue=>{
         var actor = getDialogueActor(dialogue.actor, true)
 
-        var portrait = ""
-        if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
+        var portrait = ``
+        console.log(dialogue)
 
+        var showif = ``
+        if (dialogue.showIf) showif = `
+        <div class="showif">SHOWIF:: ${dialogue.showIf}</div>
+        `
+        
+        if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
+        
         dialogueHtml += `
         <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} sent">
+            ${showif}
             ${portrait}
             <div class="dialogue-text">
                 ${dialogue.text}
             </div>
         </div>
+        `
+        if (dialogue.wait) dialogueHtml += `
+            <div class="wait"><span>WAIT ${dialogue.wait} MS</span></div>
         `
         previousActor = actor
     })
@@ -154,7 +165,7 @@ function display(text){
                 var readAttribute = reply.hideRead ? 'read="hidden"' : `read=${readState}`
                 
                 document.querySelector(`#dialogue-menu .dialogue-options-${actor.name} .dialogue-options`).insertAdjacentHTML("beforeend", `
-                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} >${replyName}</span>
+                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${reply.exec ? `definition="${reply.exec}"` : ""}>${replyName}</span>
                 `)
                 
                 var replyObj = document.querySelector(`#dialogue-menu .dialogue-options span[name="${replyName}"]`)
@@ -172,7 +183,7 @@ function display(text){
                     } else if(replyValue.includes('CHANGE::')) { //changing to different dialogue
                         changeDialogue(replyValue.replace('CHANGE::', ''))
                     } else if(replyValue.includes('EXEC::')) { //executing a function - the function given should end dialogue or change it, otherwise may softlock
-                        Function(`${replyValue.replace('EXEC::', '')}`)() //oh boy
+                        Function(`${replyValue.replace('EXEC::', '')}`)()
                     } else {
                         console.log(replyValue)
                         display(currentText[replyValue])
