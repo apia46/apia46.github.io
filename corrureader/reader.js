@@ -39,6 +39,7 @@ const PAGEIMAGES = {
 var data
 var currentText
 var currentPage
+var dialogueMenuLatest
 
 $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
@@ -100,6 +101,7 @@ function parseDialogue(page, dialogueName){
         case 0:
             currentText = generateDialogueObject(dialogue.text.join("\n"))
             document.getElementById("dialogue-box").innerHTML = ""
+            dialogueMenuLatest = -1
             display(currentText.start)
         case 4:
             return generateDialogueObject(dialogue.text.join("\n"))
@@ -107,23 +109,16 @@ function parseDialogue(page, dialogueName){
 }
 
 function display(text){
-    var dMenu = document.getElementById('dialogue-menu')
-    if (dMenu) {
-        dMenu.classList.add('dialogue-menu')
-        dMenu.id = ""
-    }
-
     var dialogueHtml = ``
     var previousActor = ""
     text.body.forEach(dialogue=>{
         var actor = getDialogueActor(dialogue.actor, true)
 
         var portrait = ``
-        console.log(dialogue)
 
         var showif = ``
         if (dialogue.showIf) showif = `
-        <div class="showif">SHOWIF:: ${dialogue.showIf}</div>
+        <div class="showif">SHOWIF::${dialogue.showIf}</div>
         `
         
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
@@ -142,40 +137,57 @@ function display(text){
         `
         previousActor = actor
     })
-    dialogueHtml += `<div id="dialogue-menu"></div>`
+    dialogueMenuLatest += 1
+    dialogueHtml += `<div id="dialogue-menu-${dialogueMenuLatest}" class="dialogue-menu"></div>`
     document.getElementById("dialogue-box").insertAdjacentHTML('beforeend', dialogueHtml)
-    
     if (text.responses) {
         text.responses.forEach(response=>{
             var actor = getDialogueActor(response.name, true)
-            document.getElementById('dialogue-menu').insertAdjacentHTML('beforeend', `
+            document.getElementById(`dialogue-menu-${dialogueMenuLatest}`).insertAdjacentHTML('beforeend', `
                 <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} sent">
                     <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>
-                    <div class="dialogue-options"></div>                    
+                    <div class="dialogue-options"></div>
                 </div>
             `)
+            var options = document.querySelector(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options-${actor.name} .dialogue-options`)
             response.replies.forEach(reply=>{
                 var replyName = reply.name == "function" ? reply.name() : reply.name.trim()
 
                 var isEnd //corru, you didnt have to do it like this. what the fuck
                 if(reply.fakeEnd || reply.destination == "END") isEnd = reply.fakeEnd || "(end chat)" 
 
+                options.setAttribute("replysummary", (options.getAttribute("replysummary")?options.getAttribute("replysummary")+" ":"")+(isEnd?reply.name:reply.destination))
+
                 var readState = checkUnread(reply)
                 if(readState == false) readState = "read"
                 var readAttribute = reply.hideRead ? 'read="hidden"' : `read=${readState}`
                 
-                document.querySelector(`#dialogue-menu .dialogue-options-${actor.name} .dialogue-options`).insertAdjacentHTML("beforeend", `
-                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${reply.exec ? `definition="${reply.exec}"` : ""}>${replyName}</span>
+                var definition = ""
+                var showIfText = false
+                if (reply.showIf) {
+                    showIfText = []
+                    reply.showIf.forEach(condition=>{
+                        var isFalse = condition.includes(false) ? "!" : ""
+                        showIfText.push(isFalse+condition[0])
+                    })
+                }
+                if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+reply.exec:""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}'`
+
+                options.insertAdjacentHTML("beforeend", `
+                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${definition}>${replyName}</span>
                 `)
                 
-                var replyObj = document.querySelector(`#dialogue-menu .dialogue-options span[name="${replyName}"]`)
+                var replyObj = document.querySelector(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options span[name="${replyName}"]`)
                 replyObj.addEventListener('mousedown', function(e) {
-                    console.log(replyName)
 
                     if(reply.exec) {
                         try { reply.exec() } catch(e) {console.log(e)}
                     }
 
+                    var box = document.getElementById("dialogue-box")
+                    if (box.lastChild != replyObj.parentElement.parentElement.parentElement) {while (box.lastChild != replyObj.parentElement.parentElement.parentElement) box.removeChild(box.lastChild)}
+                    [].slice.call(options.children).forEach(thisReply=>{thisReply.setAttribute("read", "unread")})
+                    replyObj.setAttribute("read", "read")
                     //determine how to handle the reply based on any special prefixes or names
                     let replyValue = this.attributes.reply.value
                     if(replyValue == "END") { //end of dialogue
@@ -185,13 +197,17 @@ function display(text){
                     } else if(replyValue.includes('EXEC::')) { //executing a function - the function given should end dialogue or change it, otherwise may softlock
                         Function(`${replyValue.replace('EXEC::', '')}`)()
                     } else {
-                        console.log(replyValue)
                         display(currentText[replyValue])
                     }
                 })
                 replyObj.addEventListener('mouseenter', ()=>play('muiHover'))
                 replyObj.addEventListener('click', ()=> play('muiClick'))
             })
+            var sameoptions = 0
+            document.querySelectorAll(".dialogue-options").forEach(thisOptions=>{
+                if (thisOptions.getAttribute("replysummary") == options.getAttribute("replysummary")) sameoptions += 1
+            })
+            if (sameoptions > 1) options.classList.add("seen")
         })
     }
 }

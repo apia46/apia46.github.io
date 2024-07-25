@@ -1539,6 +1539,7 @@ body[menu="system"] .warning h3::before {
 }
 
 .showif {
+    --bright-color: #ffffff;
     color: var(--bright-color);
     font-size: 1rem;
     text-shadow: none;
@@ -1623,20 +1624,19 @@ body[menu="system"] .warning h3::before {
     border-bottom-right-radius: 100%;
 }
 
-#dialogue-menu {
+.dialogue-menu {
     margin-top: 1em;
     border-top: 1vh double var(--bright-color);
-}
-
-.dialogue-menu {
-    opacity: 0.5;
-    pointer-events: none;
 }
 
 .dialogue-actor .dialogue-portrait {
     flex-basis: 10%;
 }
-  
+
+.dialogue-options.seen {
+    opacity: 0.5;
+}
+
 .dialogue-options {
     flex-basis: 70%;
     flex-grow: 1;
