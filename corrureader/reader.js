@@ -116,16 +116,22 @@ function display(text){
 
         var portrait = ``
 
-        var showif = ``
-        if (dialogue.showIf) showif = `
-        <div class="showif">SHOWIF::${dialogue.showIf}</div>
-        `
+        var showIfText = ""
+            if (dialogue.showIf) {
+                showIfText = []
+                dialogue.showIf.forEach(condition=>{
+                    var isFalse = condition.includes(false) ? "¬" : ""
+                    showIfText.push(isFalse+condition[0])
+                })
+                showIfText = `<div class="showif">SHOWIF::${showIfText}</div>`
+            }
+        
         
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
         
         dialogueHtml += `
         <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} sent">
-            ${showif}
+            ${showIfText}
             ${portrait}
             <div class="dialogue-text">
                 ${dialogue.text}
@@ -167,7 +173,7 @@ function display(text){
                 if (reply.showIf) {
                     showIfText = []
                     reply.showIf.forEach(condition=>{
-                        var isFalse = condition.includes(false) ? "!" : ""
+                        var isFalse = condition.includes(false) ? "¬" : ""
                         showIfText.push(isFalse+condition[0])
                     })
                 }
@@ -186,19 +192,20 @@ function display(text){
 
                     var box = document.getElementById("dialogue-box")
                     if (box.lastChild != replyObj.parentElement.parentElement.parentElement) {while (box.lastChild != replyObj.parentElement.parentElement.parentElement) box.removeChild(box.lastChild)}
-                    [].slice.call(options.children).forEach(thisReply=>{thisReply.setAttribute("read", "unread")})
-                    replyObj.setAttribute("read", "read")
                     //determine how to handle the reply based on any special prefixes or names
                     let replyValue = this.attributes.reply.value
                     if(replyValue == "END") { //end of dialogue
                         //endDialogue(env.currentDialogue.chain.end) ehh?
-                    } else if(replyValue.includes('CHANGE::')) { //changing to different dialogue
+                    } else {
+                        [].slice.call(options.children).forEach(thisReply=>{thisReply.setAttribute("read", "unread")})
+                        replyObj.setAttribute("read", "read")
+                        if(replyValue.includes('CHANGE::')) { //changing to different dialogue
                         changeDialogue(replyValue.replace('CHANGE::', ''))
                     } else if(replyValue.includes('EXEC::')) { //executing a function - the function given should end dialogue or change it, otherwise may softlock
                         Function(`${replyValue.replace('EXEC::', '')}`)()
                     } else {
                         display(currentText[replyValue])
-                    }
+                    }}
                 })
                 replyObj.addEventListener('mouseenter', ()=>play('muiHover'))
                 replyObj.addEventListener('click', ()=> play('muiClick'))
