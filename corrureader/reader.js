@@ -99,9 +99,11 @@ function getPages(){
     document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_collapse.js"]'))
     document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_golem.js"]'))
     document.querySelector('.page[page="local\\\\beneath\\\\embassy.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\beneath_embassy.js"]'))
-    querySelectorAll('.page[page*="local\\\\uncosm\\\\"]').forEach(page=>{
+    var memhole = document.querySelector('.page[page="local\\\\uncosm\\\\where.html"] .pageents-wrapper')
+    document.querySelectorAll('.page[page*="local\\\\uncosm\\\\"]').forEach(page=>{
         var pagename = page.getAttribute("page")
-        if (pagename == "")
+        if (pagename == "local\\uncosm\\recosm.html" || pagename == "local\\uncosm\\where.html" || pagename == "local\\uncosm\\index.html") return
+        memhole.appendChild(page)
     })
 }
 
