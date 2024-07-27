@@ -1538,7 +1538,7 @@ body[menu="system"] .warning h3::before {
     padding: 0 10px;
 }
 
-.showif {
+.dialogueheader {
     --bright-color: #ffffff;
     color: var(--bright-color);
     font-size: 1rem;

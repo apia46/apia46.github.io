@@ -92,6 +92,17 @@ function getPages(){
             parseDialogue(e.getAttribute("page"), e.getAttribute("text"))
         })
     })
+    document.querySelector('.page[page="hub.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\hub.js"]'))
+    document.querySelector('.page[page="local\\\\ozo.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\jokziozo_dialogue.js"]'))
+    document.querySelector('.page[page="local\\\\ozo.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\shared\\\\e3a2geli.js"]'))
+    document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_precollapse.js"]'))
+    document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_collapse.js"]'))
+    document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_golem.js"]'))
+    document.querySelector('.page[page="local\\\\beneath\\\\embassy.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\beneath_embassy.js"]'))
+    querySelectorAll('.page[page*="local\\\\uncosm\\\\"]').forEach(page=>{
+        var pagename = page.getAttribute("page")
+        if (pagename == "")
+    })
 }
 
 function parseDialogue(page, dialogueName){
@@ -117,21 +128,19 @@ function display(text){
         var portrait = ``
 
         var showIfText = ""
-            if (dialogue.showIf) {
-                showIfText = []
-                dialogue.showIf.forEach(condition=>{
-                    var isFalse = condition.includes(false) ? "¬" : ""
-                    showIfText.push(isFalse+condition[0])
-                })
-                showIfText = `<div class="showif">SHOWIF::${showIfText}</div>`
-            }
-        
+        if (dialogue.showIf) {
+            showIfText = []
+            dialogue.showIf.forEach(condition=>{
+                var isFalse = condition.includes(false) ? "¬" : ""
+                showIfText.push(isFalse+condition[0])
+            })
+            showIfText = "SHOWIF::" + String(showIfText)
+        }
         
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
-        
         dialogueHtml += `
         <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} sent">
-            ${showIfText}
+            ${dialogue.showIf||dialogue.showOnce?`<div class="dialogueheader">${showIfText}${dialogue.showIf&&dialogue.showOnce?" ":""}${dialogue.showOnce?"SHOWONCE":""}</div>`:""}
             ${portrait}
             <div class="dialogue-text">
                 ${dialogue.text}
@@ -177,7 +186,7 @@ function display(text){
                         showIfText.push(isFalse+condition[0])
                     })
                 }
-                if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+reply.exec:""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}'`
+                if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+reply.exec:""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}${showIfText&&reply.showOnce?"\n":""}${reply.showOnce?"SHOWONCE":""}'`
 
                 options.insertAdjacentHTML("beforeend", `
                 <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${definition}>${replyName}</span>
