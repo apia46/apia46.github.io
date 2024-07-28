@@ -6,20 +6,20 @@ const PAGETITLES = {
     "local\\uncosm\\index.html": "..__UNCOSM__..",
     "local\\uncosm\\where.html": "..__MEMORY_HOLE__..",
 
-    "local\\uncosm\\cavik.html": "??__MEMHOLE::CAVIK__??",
-    "local\\uncosm\\clemens romanus.html": "??__MEMHOLE::CLEMENS_ROMANUS__??",
-    "local\\uncosm\\corru.html": "??__MEMHOLE::CORRU__??",
-    "local\\uncosm\\dog.html": "??__MEMHOLE::DOG__??",
-    "local\\uncosm\\dull.html": "??__MEMHOLE::DULL__??",
-    "local\\uncosm\\effigy.html": "??__MEMHOLE::EFFIGY__??",
-    "local\\uncosm\\flower.html": "??__MEMHOLE::FLOWER__??",
-    "local\\uncosm\\larval.html": "??__MEMHOLE::LARVAL__??",
-    "local\\uncosm\\parasite.html": "??__MEMHOLE::PARASITE__??",
-    "local\\uncosm\\sorry.html": "??__MEMHOLE::SORRY__??",
-    "local\\uncosm\\spire.html": "??__MEMHOLE::SPIRE__??",
-    "local\\uncosm\\surface.html": "??__MEMHOLE::SURFACE__??",
-    "local\\uncosm\\veilk.html": "??__MEMHOLE::VEILK__??",
-    "local\\uncosm\\yuzku.html": "??__MEMHOLE::YUZKU__??",
+    "local\\uncosm\\cavik.html": "??__CAVIK__??",
+    "local\\uncosm\\clemens romanus.html": "??__CLEMENS_ROMANUS__??",
+    "local\\uncosm\\corru.html": "??__CORRU__??",
+    "local\\uncosm\\dog.html": "??__DOG__??",
+    "local\\uncosm\\dull.html": "??__DULL__??",
+    "local\\uncosm\\effigy.html": "??__EFFIGY__??",
+    "local\\uncosm\\flower.html": "??__FLOWER__??",
+    "local\\uncosm\\larval.html": "??__LARVAL__??",
+    "local\\uncosm\\parasite.html": "??__PARASITE__??",
+    "local\\uncosm\\sorry.html": "??__SORRY__??",
+    "local\\uncosm\\spire.html": "??__SPIRE__??",
+    "local\\uncosm\\surface.html": "??__SURFACE__??",
+    "local\\uncosm\\veilk.html": "??__VEILK__??",
+    "local\\uncosm\\yuzku.html": "??__YUZKU__??",
 }
 const PAGEIMAGES = {
     "not_found.html": "assets/pages/not_found.png",
@@ -34,6 +34,23 @@ const PAGEIMAGES = {
     "local\\ocean\\ship\\elsewhere.html": "https://corru.observer/img/socials/code__clemens%20romanus.gif",
     "local\\ocean\\ship\\interview.html": "assets/pages/interview.png",
     "local\\city\\street.html": "https://corru.observer/img/local/city/street.gif",
+    "local\\uncosm\\recosm.html": "assets/pages/recosm.png",
+    "local\\uncosm\\where.html": "https://corru.observer/img/socials/uncosm.gif",
+    "local\\uncosm\\cavik.html": "assets/pages/cavik.png",
+    "local\\uncosm\\clemens romanus.html": "assets/pages/memory.png",
+    "local\\uncosm\\corru.html": "assets/pages/memory.png",
+    "local\\uncosm\\dog.html": "assets/pages/memory.png",
+    "local\\uncosm\\dull.html": "assets/pages/memory.png",
+    "local\\uncosm\\effigy.html": "assets/pages/effigy.png",
+    "local\\uncosm\\flower.html": "assets/pages/memory.png",
+    "local\\uncosm\\larval.html": "assets/pages/memory.png",
+    "local\\uncosm\\parasite.html": "assets/pages/memory.png",
+    "local\\uncosm\\sorry.html": "assets/pages/sorry.png",
+    "local\\uncosm\\spire.html": "assets/pages/memory.png",
+    "local\\uncosm\\surface.html": "assets/pages/memory.png",
+    "local\\uncosm\\veilk.html": "assets/pages/memory.png",
+    "local\\uncosm\\yuzku.html": "assets/pages/memory.png",
+
 }
 
 var data
@@ -97,7 +114,7 @@ function getPages(){
     document.querySelector('.page[page="local\\\\ozo.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\shared\\\\e3a2geli.js"]'))
     document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_precollapse.js"]'))
     document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_collapse.js"]'))
-    document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\index.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_golem.js"]'))
+    document.querySelector('.page[page="local\\\\ocean\\\\embassy\\\\golem.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\embassy_golem.js"]'))
     document.querySelector('.page[page="local\\\\beneath\\\\embassy.html"] .pageents-wrapper').appendChild(document.querySelector('.page[page="js\\\\beneath_embassy.js"]'))
     var memhole = document.querySelector('.page[page="local\\\\uncosm\\\\where.html"] .pageents-wrapper')
     document.querySelectorAll('.page[page*="local\\\\uncosm\\\\"]').forEach(page=>{
@@ -141,7 +158,7 @@ function display(text){
         
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
         dialogueHtml += `
-        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} sent">
+        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} ${body.getAttribute("mask")=="reality"?"sent":""}">
             ${dialogue.showIf||dialogue.showOnce?`<div class="dialogueheader">${showIfText}${dialogue.showIf&&dialogue.showOnce?" ":""}${dialogue.showOnce?"SHOWONCE":""}</div>`:""}
             ${portrait}
             <div class="dialogue-text">
@@ -161,7 +178,7 @@ function display(text){
         text.responses.forEach(response=>{
             var actor = getDialogueActor(response.name, true)
             document.getElementById(`dialogue-menu-${dialogueMenuLatest}`).insertAdjacentHTML('beforeend', `
-                <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} sent">
+                <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} ${body.getAttribute("mask")=="reality"?"sent":""}">
                     <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>
                     <div class="dialogue-options"></div>
                 </div>
@@ -188,13 +205,13 @@ function display(text){
                         showIfText.push(isFalse+condition[0])
                     })
                 }
-                if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+reply.exec:""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}${showIfText&&reply.showOnce?"\n":""}${reply.showOnce?"SHOWONCE":""}'`
+                if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+String(reply.exec).escapeHtml():""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}${showIfText&&reply.showOnce?"\n":""}${reply.showOnce?"SHOWONCE":""}'`
 
                 options.insertAdjacentHTML("beforeend", `
                 <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${definition}>${replyName}</span>
                 `)
                 
-                var replyObj = document.querySelector(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options span[name="${replyName}"]`)
+                var replyObj = Array.from(document.querySelectorAll(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options span[name="${replyName}"]`)).at(-1)
                 replyObj.addEventListener('mousedown', function(e) {
 
                     if(reply.exec) {
@@ -208,7 +225,7 @@ function display(text){
                     if(replyValue == "END") { //end of dialogue
                         //endDialogue(env.currentDialogue.chain.end) ehh?
                     } else {
-                        [].slice.call(options.children).forEach(thisReply=>{thisReply.setAttribute("read", "unread")})
+                        [].slice.call(options.children).forEach(thisReply=>{if (thisReply.attributes.reply.value != "END") thisReply.setAttribute("read", "unread")})
                         replyObj.setAttribute("read", "read")
                         if(replyValue.includes('CHANGE::')) { //changing to different dialogue
                         changeDialogue(replyValue.replace('CHANGE::', ''))
@@ -234,3 +251,16 @@ function changeDialogue(to){
     document.getElementById("dialogue-box").innerHTML = ""
     parseDialogue(currentPage, to)
 }
+
+String.prototype.escapeHtml = function() {
+    var tagsToReplace = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        '\'': '&apos;'
+    };
+    return this.replace(/[&<>"']/g, function(tag) {
+        return tagsToReplace[tag] || tag;
+    });
+};

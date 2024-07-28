@@ -1093,6 +1093,23 @@ body[menu="system"] #system-menu, :root.bigmode body[menu="system"] #system-menu
     margin-top: 0;
 }
 
+.sysbox.support {
+    margin-top: 1em;
+    color: var(--bright-color);
+}
+
+.support .buttons .button {
+    flex-basis: 45%;
+    flex-grow: 1;
+    width: auto;
+    margin: 0;
+    color: var(--friend-color)
+}
+
+.support .buttons {
+    gap: 1em;
+}  
+
 .sysblock summary {
     cursor: pointer;
 }
@@ -1450,6 +1467,7 @@ body[menu="system"] .warning h3::before {
     height: auto;
     transform: var(--baseTransform);
     pointer-events: initial;
+    overflow: hidden
 }
 
 #dialogue-box.dialogue-click-proceed {
@@ -1489,6 +1507,7 @@ body[menu="system"] .warning h3::before {
     align-items: center;
     transform: translateX(-120%);
     transition: transform 400ms ease-in-out;
+    position: absolute;
 }
 
 .dialogue-actor {
@@ -1508,6 +1527,7 @@ body[menu="system"] .warning h3::before {
 
 .dialogue-message.sent, .dialogue-actor.sent, .dialogue-message.from-player.sent {
     transform: translateX(0%);
+    position: relative;
 }
 
 .dialogue-message .dialogue-text {
@@ -1547,6 +1567,7 @@ body[menu="system"] .warning h3::before {
     font-family: spacemono;
     width: 100%;
     text-align: center;
+    text-transform: none;
 }
 
 .dialogue-text p {
