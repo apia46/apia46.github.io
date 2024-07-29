@@ -151,7 +151,7 @@
     font-display: block;
 }
 
-i[class^="ci-"], i[class*=" ci-"] {
+i[class^="ci-"], i[class*=" ci-"], .moth-sigil {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'corruicons' !important;
     speak: never;
@@ -883,6 +883,18 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     border-bottom: 1px solid;
     cursor: pointer;
 }
+
+.moth-sigil {
+    position: relative;
+    float: right;
+    transform: translateY(-0.75em);
+    color: var(--friend-color);
+}
+
+.moth-sigil::before {
+    content: "\e908";
+}
+
 /* page socials position adjustments */
 .page[page="hub.html"] .pageheader,
 .textheader .headerbox .headerbox[page="hub.html"],

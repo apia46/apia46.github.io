@@ -61,6 +61,7 @@ const PAGEIMAGES = {
 const COMMENTONLY = {
     "not_found.html": "it looks like you found an incoherence loop... seen this one before. not gonna get anything useful out of this area",
     "local\\ocean\\index.html": "you can really tell this was a long time ago, jesus. look at how small their island is",
+    "local\\uncosm\\index.html": "the readout here is like... complete nonsense. is there even anything you can interact with? does it hurt?",
 }
 
 var data
@@ -84,6 +85,7 @@ function getPages(){
         var page = data[pageName]
         var metadata = page.shift()
         var entListHTML = ``
+        var mothChat = false
         if (pageName in COMMENTONLY) {
             entListHTML = `
             <div class="message moth" actor="moth">
@@ -97,6 +99,7 @@ function getPages(){
                 var mothChatName
                 if (text.type == 2) {
                     mothChatName = text.text[0].slice(12, -2)
+                    mothChat = true
                 }
                 entListHTML += `
                 <div class="act-option" text="${text.context}" page="${pageName}">${mothChatName||text.context}</div>`
@@ -105,7 +108,10 @@ function getPages(){
         page.unshift(metadata)
         menuContents += `
         <div class="page collapsed" page="${pageName}" style="--pageImg: url(${PAGEIMAGES[pageName] || metadata.image});">
-            <div class="pageheader"><span>${PAGETITLES[pageName] || metadata.title}</span></div>
+            <div class="pageheader">
+                <span>${PAGETITLES[pageName] || metadata.title}</span>
+                ${mothChat?'<i class="moth-sigil"></i>':''}
+            </div>
             <div class="pageents-wrapper">
                 <div class="pageents">${entListHTML}</div>
             </div>
