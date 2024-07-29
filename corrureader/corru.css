@@ -884,43 +884,56 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
     cursor: pointer;
 }
 /* page socials position adjustments */
-.page[page="hub.html"] .pageheader {
+.page[page="hub.html"] .pageheader,
+.textheader .headerbox .headerbox[page="hub.html"] {
     background-position-y: 80%, -300%;
 }
 
-.page[page="index.html"] .pageheader {
+.page[page="index.html"] .pageheader,
+.textheader .headerbox .headerbox[page="index.html"] {
     background-position-y: 80%, 30%;
 }
 
-.page[page="concepts\\critta.html"] .pageheader {
+.page[page="concepts\\critta.html"] .pageheader,
+.textheader .headerbox[page="concepts\\critta.html"] {
     background-position-y: 80%, 9%;
 }
 
-.page[page="concepts\\enemy.html"] .pageheader {
+.page[page="concepts\\enemy.html"] .pageheader,
+.textheader .headerbox[page="concepts\\enemy.html"] {
     background-position-y: 80%, 70%;
 }
 
-.page[page="concepts\\prog.html"] .pageheader {
+.page[page="concepts\\prog.html"] .pageheader,
+.textheader .headerbox[page="concepts\\prog.html"] {
     background-position-y: 80%, 25%;
 }
 
 .page[page="hello.html"] .pageheader,
 .page[page="local\\beneath\\depths.html"] .pageheader,
 .page[page="local\\beneath\\parasite.html"] .pageheader,
-.page[page="local\\ocean\\ship\\elsewhere.html"] .pageheader {
+.page[page="local\\ocean\\ship\\elsewhere.html"] .pageheader,
+.textheader .headerbox[page="hello.html"],
+.textheader .headerbox[page="local\\beneath\\depths.html"],
+.textheader .headerbox[page="local\\beneath\\parasite.html"],
+.textheader .headerbox[page="local\\ocean\\ship\\elsewhere.html"] {
     background-position-y: 80%, 50%;
 }
 
 .page[page="local\\depths.html"] .pageheader,
-.page[page="local\\beneath\\index.html"] .pageheader {
+.page[page="local\\beneath\\index.html"] .pageheader,
+.textheader .headerbox[page="local\\depths.html"],
+.textheader .headerbox[page="local\\beneath\\index.html"] {
     background-position-y: 80%, 45%;
 }
 
-.page[page="local\\city\\street.html"] .pageheader {
-    background-position-y: 80%, 90%;
+.page[page="local\\city\\street.html"] .pageheader,
+.textheader .headerbox[page="local\\city\\street.html"] {
+background-position-y: 80%, 90%;
 }
 
-.page[page="local\\ocean\\ship\\interview.html"] .pageheader {
+.page[page="local\\ocean\\ship\\interview.html"] .pageheader
+.textheader .headerbox[page="local\\ocean\\ship\\interview.html"] {
     background-position-y: 80%, 55%;
 }
 
@@ -1556,6 +1569,22 @@ body[menu="system"] .warning h3::before {
     text-align: center;
     background: var(--dark-color);
     padding: 0 10px;
+}
+
+.textheader {
+    border-bottom: 1vh double var(--bright-color);
+    margin-bottom: 1em;
+}
+
+.textheader .headerbox {
+    font-family: barcodetext;
+    font-size: 25px;
+    padding: 1em 0.25em;
+    color: var(--neutral-color);
+    background: url(assets/img/textures/fadein.gif), var(--img);
+    background-position: center;
+    background-size: cover;
+    border: 1px solid;
 }
 
 .dialogueheader {

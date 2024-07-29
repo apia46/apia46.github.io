@@ -57,6 +57,7 @@ var data
 var currentText
 var currentPage
 var dialogueMenuLatest
+var dialogueStack
 
 $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
@@ -80,7 +81,7 @@ function getPages(){
             <div class="act-option" text="${text.context}" page="${pageName}">${text.context}</div>
             `
         })
-
+        page.unshift(metadata)
         menuContents += `
         <div class="page collapsed" page="${pageName}" style="--pageImg: url(${pageName in PAGEIMAGES ? PAGEIMAGES[pageName] : metadata.image});">
             <div class="pageheader"><span>${pageName in PAGETITLES ? PAGETITLES[pageName] : metadata.title}</span></div>
@@ -129,8 +130,13 @@ function parseDialogue(page, dialogueName){
     var dialogue = data[page].find((value)=>{return value.context==dialogueName})
     switch(dialogue.type){
         case 0:
+            dialogueStack = [dialogueName]
             currentText = generateDialogueObject(dialogue.text.join("\n"))
-            document.getElementById("dialogue-box").innerHTML = ""
+            document.getElementById("dialogue-box").innerHTML = `
+            <div class="textheader">
+                <div class="headerbox" style="--img: url(${page in PAGEIMAGES ? PAGEIMAGES[page] : data[page][0].image})">${page}::${dialogueStack.join("::")}</div>
+            </div>
+            `
             dialogueMenuLatest = -1
             display(currentText.start)
         case 4:
