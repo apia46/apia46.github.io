@@ -202,10 +202,10 @@ i[class^="ci-"], i[class*=" ci-"] {
 * {box-sizing: border-box}
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
-::selection {
+/*::selection {
 	background-color: transparent;
     color: inherit;
-}
+}*/
 
 img::selection {
 	background-color: transparent;
@@ -970,7 +970,6 @@ background-position-y: 80%, 90%;
     flex-wrap: wrap;
     justify-content: space-around;
     padding: 1em;
-    margin-top: 0.5em;
 }
 
 .pageents > .ent {
@@ -1918,7 +1917,7 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.actor-unknown, .textheader .message.velzie {
+.actor-unknown, .message.velzie {
     --background: var(--bright-color);
     --color: var(--dark-color);
     font-family: beech;
@@ -1934,18 +1933,18 @@ body[menu="system"] .warning h3::before {
     background-repeat: no-repeat;
 }
 
-.textheader .message.velzie {
+.message.velzie {
     background: white;
     color: black;
     text-align: center;
 }
 
-#readout .message.velzie, .textheader .message.velzie img, .textheader .message.velzie h2 {
+#readout .message.velzie, .message.velzie img, .message.velzie h2 {
     display: none;
 }
 
 .dialogue-message.incoherent .dialogue-text, 
-.textheader .message.incoherent {
+.message.incoherent {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.75em;
     background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
@@ -1953,7 +1952,7 @@ body[menu="system"] .warning h3::before {
 }
 
 .dialogue-message.incoherent-mild .dialogue-text,
-.textheader .message.incoherent-mild {
+.message.incoherent-mild {
     letter-spacing: 0.25em;
 }
 
@@ -2035,7 +2034,7 @@ body[menu="system"] .warning h3::before {
 	display: block;
 }
 
-.textheader .message {
+.message {
 	overflow: hidden;
     background: var(--dark-color);
 	border: 1px solid;
@@ -2047,7 +2046,11 @@ body[menu="system"] .warning h3::before {
     font-size: 0.75em;
 }
 
-.textheader pre { /* https://stackoverflow.com/questions/248011/how-do-i-wrap-text-in-a-pre-tag */
+.pageents .message {
+    margin: 0;
+}
+
+.message pre { /* https://stackoverflow.com/questions/248011/how-do-i-wrap-text-in-a-pre-tag */
     white-space: pre-wrap;       /* Since CSS 2.1 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
@@ -2055,20 +2058,20 @@ body[menu="system"] .warning h3::before {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-.textheader .message p {
+.message p {
     margin-bottom: 0.5rem;
 	width: 100%;
 }
 
-.textheader .message p:first-child {
+.message p:first-child {
 	margin-top: 0;
 }
 
-.textheader .message p:last-child {
+.message p:last-child {
 	margin-bottom: 0;
 }
 
-.textheader .message h2 {
+.message h2 {
     font-size: 2.5em;
     line-height: 1em;
     margin-bottom: 0.3rem;
@@ -2081,12 +2084,12 @@ body[menu="system"] .warning h3::before {
     letter-spacing: normal !important;
 }
 
-.textheader .message h3 {
+.message h3 {
 	font-family: barcodetext;
     text-transform: uppercase;
 }
 
-.textheader .message img {
+.message img {
 	float: left;
     width: 3.5rem;
     height: 3.5rem;
@@ -2122,7 +2125,7 @@ body[menu="system"] .warning h3::before {
 }
 
 /* SPECIAL ACTORS */    
-.textheader .message.interloper, .textheader .message.event {
+.message.interloper, .message.event {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2130,11 +2133,11 @@ body[menu="system"] .warning h3::before {
     color: var(--dark-color);
 }
 
-.textheader .message.interloper h2 {
+.message.interloper h2 {
     display: none;
 }
 
-.textheader .message.interloper p {
+.message.interloper p {
     font-family: barcodetext;
     font-size: 1.75rem;
     line-height: 1.2em;
@@ -2142,14 +2145,14 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.textheader .message.sourceless {
+.message.sourceless {
     text-align: center;
     background: var(--bright-color);
     color: var(--dark-color);
     text-transform: uppercase;
 }
 
-.textheader .message.sourceless.combat {
+.message.sourceless.combat {
     padding: 0 0 0.5rem;
 }
 
@@ -2157,7 +2160,7 @@ body[menu="system"] .warning h3::before {
     opacity: 0.9;
 }
 
-.textheader .message.sourceless.combat.minordetail {
+.message.sourceless.combat.minordetail {
     opacity: 1;
     padding: 0.25em;
     background: var(--dark-color);
@@ -2165,7 +2168,7 @@ body[menu="system"] .warning h3::before {
     margin: 0.25em 0;
 }
 
-.textheader .message.sourceless.combat:not(.minordetail)::before {
+.message.sourceless.combat:not(.minordetail)::before {
     content: "::COMBAT PROCEEDING::";
     color: var(--neutral-color);
     background: var(--dark-color);
@@ -2179,7 +2182,7 @@ body[menu="system"] .warning h3::before {
     color: white;
 }
 
-.textheader .message.combat > * {
+.message.combat > * {
   margin-top: 0.25rem;
 }
 
@@ -2192,7 +2195,7 @@ body[menu="system"] .warning h3::before {
     border-bottom-width: 1px;
 }
 
-.textheader .message.event {
+.message.event {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -2200,22 +2203,22 @@ body[menu="system"] .warning h3::before {
     text-align: center;
 }
 
-.textheader .message.moth {
+.message.moth {
 	border-color: var(--friend-color);
 	color: var(--friend-color);
 }
 
-.textheader .message.moth img {
+.message.moth img {
     background: url(assets/img/sprites/moth/mothman.gif) white;
     background-size: 165%;
     background-position: center top
 }
 
-.textheader .message.moth p {
+.message.moth p {
 	text-transform: lowercase;
 }
 
-.textheader .message.sys {
+.message.sys {
     color: var(--neutral-color);
     border-color: var(--neutral-color);
 	font-family: barcodetext;
@@ -2224,32 +2227,32 @@ body[menu="system"] .warning h3::before {
     line-height: 1.25em;
 }
   
-.textheader .message.sys img {
+.message.sys img {
     height: 1.25em;
     object-fit: contain;
     background-image: url(assets/img/textures/static.gif) !important;
 }
 
-.textheader .message.sys.navigation p {
+.message.sys.navigation p {
     margin: 0;
 }
 
-.textheader .message.obesk {
+.message.obesk {
     color: var(--obesk-color);
 }
 
-.textheader .message.obesk.echo {
+.message.obesk.echo {
     background: var(--bright-color);
     color: var(--dark-color);
     border-color: var(--friend-color);
     text-shadow: 1px 1px var(--friend-color);
 }
 
-.textheader .message.obesk > img {
+.message.obesk > img {
     border-radius: 100%;
 }  
 
-.textheader .message.loose-thought h2 {
+.message.loose-thought h2 {
     width: 80%;
     padding-bottom: 0.15rem;
     line-height: 0.5em;
@@ -2258,22 +2261,22 @@ body[menu="system"] .warning h3::before {
     overflow: hidden;
 }
 
-.textheader .message.loose-thought > span {
+.message.loose-thought > span {
     color: var(--obesk-color);
     margin-top: 0.5em;
     display: inline-block;
 }
 
-.textheader .message.examine {
+.message.examine {
     line-height: 1.25em;
     color: var(--neutral-color) !important;
 }
 
-.textheader .message.examine img {
+.message.examine img {
     border-radius: 0 !important;
 }
 
-.textheader .message.ship img {
+.message.ship img {
     object-fit: none;
     object-position: 42.5% -1%;
     background-image: url(assets/img/textures/static.gif);
@@ -2297,7 +2300,7 @@ body[menu="system"] .warning h3::before {
     font-family: cursive;
 }
 
-.dialogue-message.incoherenthello .dialogue-text, .textheader .message.incoherenthello {
+.dialogue-message.incoherenthello .dialogue-text, .message.incoherenthello {
     text-shadow: unset;
     min-height: 150px;
     color: transparent;
@@ -2337,7 +2340,7 @@ body[menu="system"] .warning h3::before {
 }
 
 .dialogue-message.drowning .dialogue-text, 
-.textheader .message.drowning {
+.message.drowning {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.25em;
     background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
@@ -2345,17 +2348,17 @@ body[menu="system"] .warning h3::before {
 }
 
 .dialogue-message.drowning_scared .dialogue-text, 
-.textheader .message.drowning_scared {
+.message.drowning_scared {
     letter-spacing: 0.5em;
 }
 
 .dialogue-message.drowning_panic .dialogue-text, 
-.textheader .message.drowning_panic {
+.message.drowning_panic {
     letter-spacing: 0.75em;
 }
 
 .dialogue-message.drowning_sourceless .dialogue-text, 
-.textheader .message.drowning_sourceless {
+.message.drowning_sourceless {
     text-align: center;
     background: var(--dark-color);
     color: var(--bright-color);

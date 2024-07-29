@@ -57,7 +57,10 @@ const PAGEIMAGES = {
     "js\\embassy_golem.js": "https://corru.observer/img/socials/golms.gif",
     "js\\embassy_precollapse.js": "https://corru.observer/img/socials/embassy.gif",
     "js\\embassy_collapse.js": "https://corru.observer/img/socials/embassy.gif",
-
+}
+const COMMENTONLY = {
+    "not_found.html": "it looks like you found an incoherence loop... seen this one before. not gonna get anything useful out of this area",
+    "local\\ocean\\index.html": "you can really tell this was a long time ago, jesus. look at how small their island is",
 }
 
 var data
@@ -81,13 +84,24 @@ function getPages(){
         var page = data[pageName]
         var metadata = page.shift()
         var entListHTML = ``
-
-        page.forEach(text=>{
-            if (text.type == 4 || text.type == 1) return
-            entListHTML += `
-            <div class="act-option" text="${text.context}" page="${pageName}">${text.context}</div>
-            `
-        })
+        if (pageName in COMMENTONLY) {
+            entListHTML = `
+            <div class="message moth" actor="moth">
+                <img src="assets/img/blank.gif">
+                <h2>!!__moth__!!</h2>
+                <p>${COMMENTONLY[pageName]}</p>
+            </div>`
+        } else {
+            page.forEach(text=>{
+                if (!(text.type == 0 || text.type == 2) || text.context == "mth++${page.dialoguePrefix}") return
+                var mothChatName
+                if (text.type == 2) {
+                    mothChatName = text.text[0].slice(12, -2)
+                }
+                entListHTML += `
+                <div class="act-option" text="${text.context}" page="${pageName}">${mothChatName||text.context}</div>`
+            })
+        }
         page.unshift(metadata)
         menuContents += `
         <div class="page collapsed" page="${pageName}" style="--pageImg: url(${PAGEIMAGES[pageName] || metadata.image});">
@@ -138,10 +152,10 @@ function parseDialogue(page, dialogueName){
     var dialogue = data[page].find((value)=>{return value.context==dialogueName})
     switch(dialogue.type){
         case 0:
-            dialogueStack = [dialogueName]
+            dialogueStack = [dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName]
             currentText = generateDialogueObject(dialogue.text.join("\n"))
 
-            var mothComment = data[page].find((value)=>{return value.context=="mothComment"}).text.join("\n")
+            var mothComment = data[page]?.find((value)=>{return value.context=="mothComment"})?.text?.join("\n") || false
             /*console.log(mothComment)
             try {mothComment = eval("()=>{"+mothComment+"}")()}
             catch(err) {
@@ -153,29 +167,25 @@ function parseDialogue(page, dialogueName){
             document.getElementById("dialogue-box").innerHTML = `
             <div class="textheader">
                 <div class="headerbox" style="--img: url(${PAGEIMAGES[page] || data[page][0].image})">
-                    <span class="headertext">${page}::${dialogueName}</span>
+                    <span class="headertext">${page}::${dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName}</span>
                 </div>
-                <div class="message moth external message-0 active" actor="moth">
+                ${mothComment?`<div class="message moth" actor="moth">
                     <img src="assets/img/blank.gif">
                     <h2>!!__moth__!!</h2>
                     <p><pre>${mothComment}</pre></p>
-                </div>
-            </div>
-            `
+                </div>`:""}
+            </div>`
             dialogueMenuLatest = -1
             display(currentText.start)
             break;
-        case 1:
-            console.log(dialogue)
-            break;
         case 2:
-            console.log(dialogue)
-            break;
-        case 3:
-            console.log(dialogue)
+            parseDialogue(page, "mth++${page.dialoguePrefix}")
             break;
         case 4:
             return generateDialogueObject(dialogue.text.join("\n"))
+            break;
+        default:
+            throw ["invalid dialogue case???", dialogue]
     }
 }
 
@@ -210,11 +220,9 @@ function display(text){
             <div class="dialogue-text">
                 ${dialogue.text}
             </div>
-        </div>
-        `
+        </div>`
         if (dialogue.wait) dialogueHtml += `
-            <div class="wait"><span>WAIT ${dialogue.wait} MS</span></div>
-        `
+            <div class="wait"><span>WAIT ${dialogue.wait} MS</span></div>`
         previousActor = actor
     })
     dialogueMenuLatest += 1
@@ -227,8 +235,7 @@ function display(text){
                 <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} ${body.getAttribute("mask")=="reality"?"sent":""}">
                     <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>
                     <div class="dialogue-options"></div>
-                </div>
-            `)
+                </div>`)
             var options = document.querySelector(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options-${actor.name} .dialogue-options`)
             var thisDialogueMenu = dialogueMenuLatest
             response.replies.forEach(reply=>{
@@ -271,7 +278,7 @@ function display(text){
                     if(replyValue == "END") { //end of dialogue
                         //endDialogue(env.currentDialogue.chain.end) ehh?
                     } else {
-                        [].slice.call(options.children).forEach(thisReply=>{if (thisReply.attributes.reply.value != "END") thisReply.setAttribute("read", "unread")})
+                        [].slice.call(options.children).forEach(thisReply=>{if (!thisReply.classList.contains("end-reply")) thisReply.setAttribute("read", "unread")})
                         replyObj.setAttribute("read", "read")
                         if(replyValue.includes('CHANGE::')) { //changing to different dialogue
                         changeDialogue(replyValue.replace('CHANGE::', ''))

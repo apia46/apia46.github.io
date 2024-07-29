@@ -68,7 +68,7 @@ var env = {
         },
 
         akizet: {
-            image: 'assets/img/sprites/akizet/dith.gif',
+            image: 'assets/img/sprites/akizet/portrait.gif',
             type: "obesk qou akizet",
             element: ".truecreature .akizet",
             player: true,
