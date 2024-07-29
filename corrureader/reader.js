@@ -50,6 +50,13 @@ const PAGEIMAGES = {
     "local\\uncosm\\surface.html": "assets/pages/memory.png",
     "local\\uncosm\\veilk.html": "assets/pages/memory.png",
     "local\\uncosm\\yuzku.html": "assets/pages/memory.png",
+    "js\\hub.js": "https://corru.observer/img/socials/hub.gif",
+    "js\\jokziozo_dialogue.js": "https://corru.observer/img/socials/ozo.gif",
+    "js\\shared\\e3a2geli.js": "https://corru.observer/img/socials/frame.gif",
+    "js\\beneath_embassy.js": "https://corru.observer/img/socials/frame.gif",
+    "js\\embassy_golem.js": "https://corru.observer/img/socials/golms.gif",
+    "js\\embassy_precollapse.js": "https://corru.observer/img/socials/embassy.gif",
+    "js\\embassy_collapse.js": "https://corru.observer/img/socials/embassy.gif",
 
 }
 
@@ -76,15 +83,15 @@ function getPages(){
         var entListHTML = ``
 
         page.forEach(text=>{
-            if (text.type == 4) return //respobj
+            if (text.type == 4 || text.type == 1) return
             entListHTML += `
             <div class="act-option" text="${text.context}" page="${pageName}">${text.context}</div>
             `
         })
         page.unshift(metadata)
         menuContents += `
-        <div class="page collapsed" page="${pageName}" style="--pageImg: url(${pageName in PAGEIMAGES ? PAGEIMAGES[pageName] : metadata.image});">
-            <div class="pageheader"><span>${pageName in PAGETITLES ? PAGETITLES[pageName] : metadata.title}</span></div>
+        <div class="page collapsed" page="${pageName}" style="--pageImg: url(${PAGEIMAGES[pageName] || metadata.image});">
+            <div class="pageheader"><span>${PAGETITLES[pageName] || metadata.title}</span></div>
             <div class="pageents-wrapper">
                 <div class="pageents">${entListHTML}</div>
             </div>
@@ -123,6 +130,7 @@ function getPages(){
         if (pagename == "local\\uncosm\\recosm.html" || pagename == "local\\uncosm\\where.html" || pagename == "local\\uncosm\\index.html") return
         memhole.appendChild(page)
     })
+    document.querySelector('.pagelist').insertBefore(document.querySelector('.page[page="js\\\\globalents.js"]'), document.querySelector('.pagelist').firstChild)
 }
 
 function parseDialogue(page, dialogueName){
@@ -132,13 +140,40 @@ function parseDialogue(page, dialogueName){
         case 0:
             dialogueStack = [dialogueName]
             currentText = generateDialogueObject(dialogue.text.join("\n"))
+
+            var mothComment = data[page].find((value)=>{return value.context=="mothComment"}).text.join("\n")
+            /*console.log(mothComment)
+            try {mothComment = eval("()=>{"+mothComment+"}")()}
+            catch(err) {
+                if (err.name == "TypeError") {
+                    console.log(err.message.match("^[^ ]+")[0])
+                } 
+            }*/ //bad fucking idea
+
             document.getElementById("dialogue-box").innerHTML = `
             <div class="textheader">
-                <div class="headerbox" style="--img: url(${page in PAGEIMAGES ? PAGEIMAGES[page] : data[page][0].image})">${page}::${dialogueStack.join("::")}</div>
+                <div class="headerbox" style="--img: url(${PAGEIMAGES[page] || data[page][0].image})">
+                    <span class="headertext">${page}::${dialogueName}</span>
+                </div>
+                <div class="message moth external message-0 active" actor="moth">
+                    <img src="assets/img/blank.gif">
+                    <h2>!!__moth__!!</h2>
+                    <p><pre>${mothComment}</pre></p>
+                </div>
             </div>
             `
             dialogueMenuLatest = -1
             display(currentText.start)
+            break;
+        case 1:
+            console.log(dialogue)
+            break;
+        case 2:
+            console.log(dialogue)
+            break;
+        case 3:
+            console.log(dialogue)
+            break;
         case 4:
             return generateDialogueObject(dialogue.text.join("\n"))
     }
@@ -147,6 +182,11 @@ function parseDialogue(page, dialogueName){
 function display(text){
     var dialogueHtml = ``
     var previousActor = ""
+    if (text.name != "start") {
+        dialogueStack.length = dialogueMenuLatest+1
+        dialogueStack.push(text.name)
+        document.querySelector(".headertext").innerHTML = `${currentPage}::${dialogueStack.join("​::")}`
+    }
     text.body.forEach(dialogue=>{
         var actor = getDialogueActor(dialogue.actor, true)
 
@@ -190,6 +230,7 @@ function display(text){
                 </div>
             `)
             var options = document.querySelector(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options-${actor.name} .dialogue-options`)
+            var thisDialogueMenu = dialogueMenuLatest
             response.replies.forEach(reply=>{
                 var replyName = reply.name == "function" ? reply.name() : reply.name.trim()
 
@@ -219,11 +260,10 @@ function display(text){
                 
                 var replyObj = Array.from(document.querySelectorAll(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options span[name="${replyName}"]`)).at(-1)
                 replyObj.addEventListener('mousedown', function(e) {
-
                     if(reply.exec) {
                         try { reply.exec() } catch(e) {console.log(e)}
                     }
-
+                    dialogueMenuLatest = thisDialogueMenu
                     var box = document.getElementById("dialogue-box")
                     if (box.lastChild != replyObj.parentElement.parentElement.parentElement) {while (box.lastChild != replyObj.parentElement.parentElement.parentElement) box.removeChild(box.lastChild)}
                     //determine how to handle the reply based on any special prefixes or names

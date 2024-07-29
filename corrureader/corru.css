@@ -885,7 +885,9 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
 }
 /* page socials position adjustments */
 .page[page="hub.html"] .pageheader,
-.textheader .headerbox .headerbox[page="hub.html"] {
+.textheader .headerbox .headerbox[page="hub.html"],
+.page[page="js\\hub.js"] .pageheader,
+.textheader .headerbox .headerbox[page="js\\hub.js"] {
     background-position-y: 80%, -300%;
 }
 
@@ -953,12 +955,14 @@ background-position-y: 80%, 90%;
 .page.collapsed .pageents-wrapper {
     max-height: 0vw;
     border-bottom-color: transparent;
+    padding: 0;
 }
 
 .pageents-wrapper {
     overflow: hidden;
     transition: max-height 200ms ease-in-out;
     max-height: calc(10vw * var(--entRows));
+    padding: 0.25em;
 }
 
 .pageents {
@@ -1577,14 +1581,19 @@ body[menu="system"] .warning h3::before {
 }
 
 .textheader .headerbox {
-    font-family: barcodetext;
-    font-size: 25px;
-    padding: 1em 0.25em;
+    padding: 1em;
     color: var(--neutral-color);
     background: url(assets/img/textures/fadein.gif), var(--img);
     background-position: center;
     background-size: cover;
     border: 1px solid;
+}
+
+.textheader .headerbox .headertext {
+    font-family: barcodetext;
+    font-size: 25px;
+    background-color: var(--dark-color);
+    padding: 0.25em;
 }
 
 .dialogueheader {
@@ -1782,7 +1791,7 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.readout-log .sourceless [definition], #dialogue-box .sourceless [definition]:not(.reply), .sourceless.message [definition] {
+.textheader .sourceless [definition], #dialogue-box .sourceless [definition]:not(.reply), .sourceless.message [definition] {
     border-bottom: 2px dashed;
 }
 
@@ -1909,7 +1918,7 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.actor-unknown, .readout-log .message.velzie {
+.actor-unknown, .textheader .message.velzie {
     --background: var(--bright-color);
     --color: var(--dark-color);
     font-family: beech;
@@ -1925,18 +1934,18 @@ body[menu="system"] .warning h3::before {
     background-repeat: no-repeat;
 }
 
-.readout-log .message.velzie {
+.textheader .message.velzie {
     background: white;
     color: black;
     text-align: center;
 }
 
-#readout .message.velzie, .readout-log .message.velzie img, .readout-log .message.velzie h2 {
+#readout .message.velzie, .textheader .message.velzie img, .textheader .message.velzie h2 {
     display: none;
 }
 
 .dialogue-message.incoherent .dialogue-text, 
-.readout-log .message.incoherent {
+.textheader .message.incoherent {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.75em;
     background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
@@ -1944,7 +1953,7 @@ body[menu="system"] .warning h3::before {
 }
 
 .dialogue-message.incoherent-mild .dialogue-text,
-.readout-log .message.incoherent-mild {
+.textheader .message.incoherent-mild {
     letter-spacing: 0.25em;
 }
 
@@ -2026,40 +2035,40 @@ body[menu="system"] .warning h3::before {
 	display: block;
 }
 
-.readout-log .message {
+.textheader .message {
 	overflow: hidden;
     background: var(--dark-color);
 	border: 1px solid;
 	border-color: inherit;
-	opacity: 0;
-	transition: all 500ms ease-in-out, transform 1s cubic-bezier(.33,.63,.14,.99);
-	transform: scaleY(0.001);
 	transform-origin: top;
     padding: 0.75rem 0.5rem;
     margin-bottom: 0.75rem;
     line-height: 1.25em;
+    font-size: 0.75em;
 }
 
-.readout-log .message.active {
-	opacity: 1;
-	transform: scaleY(1);
-	max-height: unset;
+.textheader pre { /* https://stackoverflow.com/questions/248011/how-do-i-wrap-text-in-a-pre-tag */
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-.readout-log .message p {
+.textheader .message p {
     margin-bottom: 0.5rem;
 	width: 100%;
 }
 
-.readout-log .message p:first-child {
+.textheader .message p:first-child {
 	margin-top: 0;
 }
 
-.readout-log .message p:last-child {
+.textheader .message p:last-child {
 	margin-bottom: 0;
 }
 
-.readout-log .message h2 {
+.textheader .message h2 {
     font-size: 2.5em;
     line-height: 1em;
     margin-bottom: 0.3rem;
@@ -2072,12 +2081,12 @@ body[menu="system"] .warning h3::before {
     letter-spacing: normal !important;
 }
 
-.readout-log .message h3 {
+.textheader .message h3 {
 	font-family: barcodetext;
     text-transform: uppercase;
 }
 
-.readout-log .message img {
+.textheader .message img {
 	float: left;
     width: 3.5rem;
     height: 3.5rem;
@@ -2113,7 +2122,7 @@ body[menu="system"] .warning h3::before {
 }
 
 /* SPECIAL ACTORS */    
-.readout-log .message.interloper, .readout-log .message.event {
+.textheader .message.interloper, .textheader .message.event {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2121,11 +2130,11 @@ body[menu="system"] .warning h3::before {
     color: var(--dark-color);
 }
 
-.readout-log .message.interloper h2 {
+.textheader .message.interloper h2 {
     display: none;
 }
 
-.readout-log .message.interloper p {
+.textheader .message.interloper p {
     font-family: barcodetext;
     font-size: 1.75rem;
     line-height: 1.2em;
@@ -2133,14 +2142,14 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.readout-log .message.sourceless {
+.textheader .message.sourceless {
     text-align: center;
     background: var(--bright-color);
     color: var(--dark-color);
     text-transform: uppercase;
 }
 
-.readout-log .message.sourceless.combat {
+.textheader .message.sourceless.combat {
     padding: 0 0 0.5rem;
 }
 
@@ -2148,7 +2157,7 @@ body[menu="system"] .warning h3::before {
     opacity: 0.9;
 }
 
-.readout-log .message.sourceless.combat.minordetail {
+.textheader .message.sourceless.combat.minordetail {
     opacity: 1;
     padding: 0.25em;
     background: var(--dark-color);
@@ -2156,7 +2165,7 @@ body[menu="system"] .warning h3::before {
     margin: 0.25em 0;
 }
 
-.readout-log .message.sourceless.combat:not(.minordetail)::before {
+.textheader .message.sourceless.combat:not(.minordetail)::before {
     content: "::COMBAT PROCEEDING::";
     color: var(--neutral-color);
     background: var(--dark-color);
@@ -2170,20 +2179,20 @@ body[menu="system"] .warning h3::before {
     color: white;
 }
 
-.readout-log .message.combat > * {
+.textheader .message.combat > * {
   margin-top: 0.25rem;
 }
 
-.readout-log .combat .action-text > * {
+.textheader .combat .action-text > * {
   pointer-events: none;
 }
 
-.readout-log .combat .action-description {
+.textheader .combat .action-description {
     font-size: calc(0.75em);
     border-bottom-width: 1px;
 }
 
-.readout-log .message.event {
+.textheader .message.event {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -2191,22 +2200,22 @@ body[menu="system"] .warning h3::before {
     text-align: center;
 }
 
-.readout-log .message.moth {
+.textheader .message.moth {
 	border-color: var(--friend-color);
 	color: var(--friend-color);
 }
 
-.readout-log .message.moth img {
+.textheader .message.moth img {
     background: url(assets/img/sprites/moth/mothman.gif) white;
     background-size: 165%;
     background-position: center top
 }
 
-.readout-log .message.moth p {
+.textheader .message.moth p {
 	text-transform: lowercase;
 }
 
-.readout-log .message.sys {
+.textheader .message.sys {
     color: var(--neutral-color);
     border-color: var(--neutral-color);
 	font-family: barcodetext;
@@ -2215,32 +2224,32 @@ body[menu="system"] .warning h3::before {
     line-height: 1.25em;
 }
   
-.readout-log .message.sys img {
+.textheader .message.sys img {
     height: 1.25em;
     object-fit: contain;
     background-image: url(assets/img/textures/static.gif) !important;
 }
 
-.readout-log .message.sys.navigation p {
+.textheader .message.sys.navigation p {
     margin: 0;
 }
 
-.readout-log .message.obesk {
+.textheader .message.obesk {
     color: var(--obesk-color);
 }
 
-.readout-log .message.obesk.echo {
+.textheader .message.obesk.echo {
     background: var(--bright-color);
     color: var(--dark-color);
     border-color: var(--friend-color);
     text-shadow: 1px 1px var(--friend-color);
 }
 
-.readout-log .message.obesk > img {
+.textheader .message.obesk > img {
     border-radius: 100%;
 }  
 
-.readout-log .message.loose-thought h2 {
+.textheader .message.loose-thought h2 {
     width: 80%;
     padding-bottom: 0.15rem;
     line-height: 0.5em;
@@ -2249,22 +2258,22 @@ body[menu="system"] .warning h3::before {
     overflow: hidden;
 }
 
-.readout-log .message.loose-thought > span {
+.textheader .message.loose-thought > span {
     color: var(--obesk-color);
     margin-top: 0.5em;
     display: inline-block;
 }
 
-.readout-log .message.examine {
+.textheader .message.examine {
     line-height: 1.25em;
     color: var(--neutral-color) !important;
 }
 
-.readout-log .message.examine img {
+.textheader .message.examine img {
     border-radius: 0 !important;
 }
 
-.readout-log .message.ship img {
+.textheader .message.ship img {
     object-fit: none;
     object-position: 42.5% -1%;
     background-image: url(assets/img/textures/static.gif);
@@ -2288,7 +2297,7 @@ body[menu="system"] .warning h3::before {
     font-family: cursive;
 }
 
-.dialogue-message.incoherenthello .dialogue-text, .readout-log .message.incoherenthello {
+.dialogue-message.incoherenthello .dialogue-text, .textheader .message.incoherenthello {
     text-shadow: unset;
     min-height: 150px;
     color: transparent;
@@ -2323,12 +2332,12 @@ body[menu="system"] .warning h3::before {
     background-size: cover, auto;
 }
 
-.readout-log .awakened [definition], #dialogue-box .awakened [definition]:not(.reply), .awakened.message [definition] {
+.textheader .awakened [definition], #dialogue-box .awakened [definition]:not(.reply), .awakened.message [definition] {
     border-bottom: 2px black dashed;
 }
 
 .dialogue-message.drowning .dialogue-text, 
-.readout-log .message.drowning {
+.textheader .message.drowning {
     text-shadow: 1px 1px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color), 2px 2px var(--dark-color);
     letter-spacing: 0.25em;
     background: url(assets/img/textures/fadein.gif), url(assets/img/textures/corruripplegrayscale.gif);
@@ -2336,17 +2345,17 @@ body[menu="system"] .warning h3::before {
 }
 
 .dialogue-message.drowning_scared .dialogue-text, 
-.readout-log .message.drowning_scared {
+.textheader .message.drowning_scared {
     letter-spacing: 0.5em;
 }
 
 .dialogue-message.drowning_panic .dialogue-text, 
-.readout-log .message.drowning_panic {
+.textheader .message.drowning_panic {
     letter-spacing: 0.75em;
 }
 
 .dialogue-message.drowning_sourceless .dialogue-text, 
-.readout-log .message.drowning_sourceless {
+.textheader .message.drowning_sourceless {
     text-align: center;
     background: var(--dark-color);
     color: var(--bright-color);
@@ -2756,7 +2765,7 @@ body:not(.mui-active) .target[lowvis] {
     opacity: 0;
 }
 
-.readout-log [definition], #dialogue-box [definition]:not(.reply), .message [definition], #party-menu [definition], .sysinfo [definition], #system-menu [definition].definition {
+.textheader [definition], #dialogue-box [definition]:not(.reply), .message [definition], #party-menu [definition], .sysinfo [definition], #system-menu [definition].definition {
     display: inline-block;
     border-bottom: 1px dashed var(--color, var(--bright-color));
     padding-bottom: 2px;
@@ -2764,7 +2773,7 @@ body:not(.mui-active) .target[lowvis] {
     cursor: alias;
 }
 
-.readout-log .code[definition] {
+.textheader .code[definition] {
     border-bottom: 2px dashed;
 }
 
@@ -3062,7 +3071,7 @@ body:not(.mui-active) .target[lowvis] {
         max-width: 50% !important;
     }
 
-    .readout-log [definition], #dialogue-box [definition], .message [definition] {
+    .textheader [definition], #dialogue-box [definition], .message [definition] {
         margin-bottom: 2px;
     }
 
