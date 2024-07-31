@@ -29,12 +29,14 @@
             <i class="ci-bars"></i>
             <div id="meta-links">
                 <div id="mui-links">
-                    <a id="meta-obs" definition="NOTE::'review in-combat entity chatter'"><i class="ci-ent"></i></a>
+                    <a id="meta-obs" definition="NOTE::'prohibitive incoherence';'unfinished feature'"><i class="ci-ent"></i></a>
                     <a id="meta-sys" definition="NOTE::'system management'"><i class="ci-sys"></i></a>
                 </div>
             </div>
         </div>
         <div id="definition-box"></div>
+        
+        <div id="textheader"></div>
 
         <div id="readout" class="readout-log menu">
             <div class="pagelist"></div>
@@ -45,18 +47,17 @@
 	        <div class="mindsci-status"></div>
             <details class="sysblock">			
                 <summary>Mindspike Data Management</summary>
-                <input id="savetext" type="textarea" placeholder="NOTE::'copy data';'paste data';'exercise caution'">
+                <textarea id="savetext" type="textarea" placeholder="NOTE::'copy logs';'paste logs';'exercise caution'"></textarea>
         
                 <div class="buttons">
-                    <span id="import" class="button">Import</span>
-                    <span id="export" class="button">Export</span>
-                    <span id="select" class="button" definition="ATTENTION::'irreversible action';'select log EP'" onclick="startDialogue('++epselect')">Select</span>
-                    <span id="delete" class="button" definition="ATTENTION::'irreversible action';'not advised';'may cause mental distress'">Delete</span>
+                    <span id="import" class="button" definition="NOTE::'import dialogue text';'embedded functions unlikely to work';'optionally put page title in quotation before first line'" onclick="importDialogue()">Import</span>
+                    <span id="export" class="button" definition="NOTE::'exports most recently viewed log'" onclick="exportDialogue()">Export</span>
+                    <a id="exportall" class="button" definition="NOTE::'1.3mb json file';'version 1';'for specifics on how to read contact the discord'" href="dialogue.json" download>Export Database</a>
                 </div>
         
                 <div class="warning sysbox">
                     <h3>!!__Attention__!!</h3>
-                    <span>Only import mindspike data from trusted sources. Illicit data is known to carry dangerous and often lethal thoughtforms. Failure to exercise caution could lead to stroke, chronos misalignment, or worse. By importing any data into your mindspike, you waive all right to medical claims against MINDSCI. For more information, please refer to your license agreement.</span>
+                    <span>Only import mindspike data from trusted sources. Illicit data is known to carry dangerous and often lethal thoughtforms. Failure to exercise caution could lead to stroke, chronos misalignment, or worse. By importing any data into your mindspike, you waive all right to medical claims against MINDSCI. For more information, <a href="https://discord.gg/FH8V4S8n7H">contact MINDSCI customer service</a>.</span>
                 </div>
             </details>
         
@@ -67,10 +68,10 @@
                     <h4>Mindspike Specifications</h4>
                     <ul>
                         <li><span>System Type:</span> Log Viewer</li>
-                        <li><span>Version:</span> Pre-Engo e3a2 <em class="definition" definition="NOTICE::'violation of terms of service';' modification of critical resources';'legally required authorization rejected for more than 730 consecutive days'">(SERVICE TERMINATED)</em></li>
-                        <li><span>Device ID:</span> IUF8-2H8FG7-1K1KS-58G-HT5</li>
+                        <li><span>Version:</span> Pre-Engo v1 <em class="definition" definition="NOTICE::'violation of terms of service';' modification of critical resources';'legally required authorization rejected'">(IN DEVELOPMENT)</em></li>
+                        <li><span>Device ID:</span> IUF8-47JZK1-1K0AU-53G-LR2</li>
                         <li><span>Installation Agent:</span> Apia</li>
-                        <li><span>Installed on:</span> July 20th, 2024</li>
+                        <li><span>Installed on:</span> <div class="definition" definition="WARNING::'invalid date';'possible risk of chronos misalignment'">August 1st, 2024</div></li>
                     </ul>
                 </div>
         
@@ -95,8 +96,8 @@
                     <h3>Support Action"s"</h3>
                     <div class="center">
                         <div class="buttons">
-                            <a href="https://discord.gg/FH8V4S8n7H" target="_blank" class="button" definition="NOTE::'the discord; report bugs here'">
-                                Report Issue
+                            <a href="https://discord.gg/FH8V4S8n7H" target="_blank" class="button" definition="NOTE::'the discord';'report bugs';'find help';'contact installation agent'">
+                                Discuss
                             </a>
                         </div>
                     </div>

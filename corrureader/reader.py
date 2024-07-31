@@ -3,7 +3,7 @@ import re
 import glob, os
 import io
 
-PATH = r""
+PATH = r"C:\Users\Beeka\Desktop\Things\scraping\provided e3a2"
 
 NOTEABLE_SECTIONS = ["reactions", "reactionPersonalities"]
 
@@ -33,7 +33,7 @@ def readDialogue(file:io.BufferedReader, position:int, type:int, page):
                 indent -= len(re.findall('}([\s_.,`\)]|$)', line))
                 if indent == 0: break
                 if indent < 2: section = ""
-        print(iter, page, position, type, indent)
+        #print(iter, page, position, type, indent)
         if iter == 0:
             match type:
                 case 0:
@@ -55,6 +55,7 @@ def readDialogue(file:io.BufferedReader, position:int, type:int, page):
                             if section in NOTEABLE_SECTIONS: dialogue["text"][section].append(line[12:])
         iter += 1
     if dialogue["text"] == {} or dialogue["text"] == []: return None
+    #print(dialogue["text"])
     return dialogue
 
 def readFile(page):

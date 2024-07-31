@@ -58,15 +58,11 @@ const PAGEIMAGES = {
     "js\\embassy_precollapse.js": "https://corru.observer/img/socials/embassy.gif",
     "js\\embassy_collapse.js": "https://corru.observer/img/socials/embassy.gif",
 }
-const COMMENTONLY = {
-    "not_found.html": "it looks like you found an incoherence loop... seen this one before. not gonna get anything useful out of this area",
-    "local\\ocean\\index.html": "you can really tell this was a long time ago, jesus. look at how small their island is",
-    "local\\uncosm\\index.html": "the readout here is like... complete nonsense. is there even anything you can interact with? does it hurt?",
-}
 
 var data
 var currentText
-var currentPage
+var currentTextName = "custom"
+var currentPage = "custom"
 var dialogueMenuLatest
 var dialogueStack
 
@@ -74,11 +70,28 @@ $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
         data = json
         delete data.metadata
+        data["custom"] = [
+            {
+                "title":"::/CUSTOM/",
+                "image":"assets/pages/memory.png",
+            },
+            {
+                "context": "custom",
+                "type": 0,
+                "text": [
+                    "start",
+                    "    moth",
+                    "        hey buddy",
+                    "        what's up?"
+                ]
+            }
+        ]
         getPages()
     })
 })
 
 function getPages(){
+    document.querySelector(".pagelist").innerHTML = ""
     var pages = Object.keys(data)
     var menuContents = ``
 
@@ -87,12 +100,13 @@ function getPages(){
         var metadata = page.shift()
         var entListHTML = ``
         var mothChat = false
-        if (pageName in COMMENTONLY) {
+        if (pageName == "js\\combat\\combatActorsJson.js") return
+        if (Object.keys(page).length == 1 && page[0].type == 2) {
             entListHTML = `
             <div class="message moth" actor="moth">
                 <img src="assets/img/blank.gif">
                 <h2>!!__moth__!!</h2>
-                <p>${COMMENTONLY[pageName]}</p>
+                <p><pre>${page[0].text.join("\n")}</pre></p>
             </div>`
         } else {
             page.forEach(text=>{
@@ -152,6 +166,7 @@ function getPages(){
         memhole.appendChild(page)
     })
     document.querySelector('.pagelist').insertBefore(document.querySelector('.page[page="js\\\\globalents.js"]'), document.querySelector('.pagelist').firstChild)
+    document.querySelector('.pagelist').insertBefore(document.querySelector('.page[page="custom"]'), document.querySelector('.pagelist').firstChild)
 }
 
 function parseDialogue(page, dialogueName){
@@ -161,6 +176,8 @@ function parseDialogue(page, dialogueName){
         case 0:
             dialogueStack = [dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName]
             currentText = generateDialogueObject(dialogue.text.join("\n"))
+            currentTextName = dialogueName
+            document.getElementById("export").setAttribute("definition", `NOTE::'exports most recently viewed log::"${currentTextName}"'`)
 
             var mothComment = data[page]?.find((value)=>{return value.context=="mothComment"})?.text?.join("\n") || false
             /*console.log(mothComment)
@@ -171,17 +188,17 @@ function parseDialogue(page, dialogueName){
                 } 
             }*/ //bad fucking idea
 
-            document.getElementById("dialogue-box").innerHTML = `
-            <div class="textheader">
-                <div class="headerbox" style="--img: url(${PAGEIMAGES[page] || data[page][0].image})">
-                    <span class="headertext">${page}::${dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName}</span>
-                </div>
-                ${mothComment?`<div class="message moth" actor="moth">
-                    <img src="assets/img/blank.gif">
-                    <h2>!!__moth__!!</h2>
-                    <p><pre>${mothComment}</pre></p>
-                </div>`:""}
-            </div>`
+            document.getElementById("dialogue-box").innerHTML = ``
+            document.getElementById("textheader").innerHTML = `
+            <div class="headerbox" style="--img: url(${PAGEIMAGES[page] || data[page][0].image})">
+                <span class="headertext">${page}::${dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName}</span>
+            </div>
+            ${mothComment?`<div class="message moth" actor="moth">
+                <img src="assets/img/blank.gif">
+                <h2>!!__moth__!!</h2>
+                <p><pre>${mothComment}</pre></p>
+            </div>`:""}`
+            document.getElementById("dialogue-box").style.marginTop = String(document.getElementById("textheader").offsetHeight)+"px"
             dialogueMenuLatest = -1
             display(currentText.start)
             break;
@@ -190,7 +207,6 @@ function parseDialogue(page, dialogueName){
             break;
         case 4:
             return generateDialogueObject(dialogue.text.join("\n"))
-            break;
         default:
             throw ["invalid dialogue case???", dialogue]
     }
@@ -312,7 +328,7 @@ function changeDialogue(to){
     parseDialogue(currentPage, to)
 }
 
-String.prototype.escapeHtml = function() {
+String.prototype.escapeHtml = function(){
     var tagsToReplace = {
         '&': '&amp;',
         '<': '&lt;',
@@ -324,3 +340,26 @@ String.prototype.escapeHtml = function() {
         return tagsToReplace[tag] || tag;
     });
 };
+
+function exportDialogue(){
+    document.getElementById("savetext").value = data[currentPage].find((value)=>{return value.context==currentTextName}).text.join("\n")
+    document.getElementById("savetext").select()
+}
+
+function importDialogue(){
+    var text = document.getElementById("savetext").value.split("\n")
+    var title = "custom"
+    if (text[0].charAt(0) == "\"") title = text.shift().slice(1,-1)
+    
+    var alreadyExists = data["custom"].find((value)=>{return value.context==title})
+    if (alreadyExists) {
+        alreadyExists.text = text
+    } else {
+        data["custom"].push({
+            "context": title,
+            "type": 0,
+            "text": text
+        })
+    }
+    getPages()
+}

@@ -897,29 +897,29 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
 
 /* page socials position adjustments */
 .page[page="hub.html"] .pageheader,
-.textheader .headerbox .headerbox[page="hub.html"],
+#textheader .headerbox .headerbox[page="hub.html"],
 .page[page="js\\hub.js"] .pageheader,
-.textheader .headerbox .headerbox[page="js\\hub.js"] {
+#textheader .headerbox .headerbox[page="js\\hub.js"] {
     background-position-y: 80%, -300%;
 }
 
 .page[page="index.html"] .pageheader,
-.textheader .headerbox .headerbox[page="index.html"] {
+#textheader .headerbox .headerbox[page="index.html"] {
     background-position-y: 80%, 30%;
 }
 
 .page[page="concepts\\critta.html"] .pageheader,
-.textheader .headerbox[page="concepts\\critta.html"] {
+#textheader .headerbox[page="concepts\\critta.html"] {
     background-position-y: 80%, 9%;
 }
 
 .page[page="concepts\\enemy.html"] .pageheader,
-.textheader .headerbox[page="concepts\\enemy.html"] {
+#textheader .headerbox[page="concepts\\enemy.html"] {
     background-position-y: 80%, 70%;
 }
 
 .page[page="concepts\\prog.html"] .pageheader,
-.textheader .headerbox[page="concepts\\prog.html"] {
+#textheader .headerbox[page="concepts\\prog.html"] {
     background-position-y: 80%, 25%;
 }
 
@@ -927,27 +927,27 @@ body[menu="entities"] #entity-menu, body[menu="entities"] #entity-details {
 .page[page="local\\beneath\\depths.html"] .pageheader,
 .page[page="local\\beneath\\parasite.html"] .pageheader,
 .page[page="local\\ocean\\ship\\elsewhere.html"] .pageheader,
-.textheader .headerbox[page="hello.html"],
-.textheader .headerbox[page="local\\beneath\\depths.html"],
-.textheader .headerbox[page="local\\beneath\\parasite.html"],
-.textheader .headerbox[page="local\\ocean\\ship\\elsewhere.html"] {
+#textheader .headerbox[page="hello.html"],
+#textheader .headerbox[page="local\\beneath\\depths.html"],
+#textheader .headerbox[page="local\\beneath\\parasite.html"],
+#textheader .headerbox[page="local\\ocean\\ship\\elsewhere.html"] {
     background-position-y: 80%, 50%;
 }
 
 .page[page="local\\depths.html"] .pageheader,
 .page[page="local\\beneath\\index.html"] .pageheader,
-.textheader .headerbox[page="local\\depths.html"],
-.textheader .headerbox[page="local\\beneath\\index.html"] {
+#textheader .headerbox[page="local\\depths.html"],
+#textheader .headerbox[page="local\\beneath\\index.html"] {
     background-position-y: 80%, 45%;
 }
 
 .page[page="local\\city\\street.html"] .pageheader,
-.textheader .headerbox[page="local\\city\\street.html"] {
+#textheader .headerbox[page="local\\city\\street.html"] {
 background-position-y: 80%, 90%;
 }
 
 .page[page="local\\ocean\\ship\\interview.html"] .pageheader
-.textheader .headerbox[page="local\\ocean\\ship\\interview.html"] {
+#textheader .headerbox[page="local\\ocean\\ship\\interview.html"] {
     background-position-y: 80%, 55%;
 }
 
@@ -1213,16 +1213,15 @@ details.sysblock[open] .sysbox, details.sysblock[open] details {
 }
 
 #savetext {
-    text-align: center;
     border: 1px solid var(--neutral-color);
     background: var(--bright-color);
     padding: 0.5em;
-    font-family: barcodetext, sans-serif;
-    line-height: 1em;
-    font-size: 2em;
+    font-family: spacemono;
     display: block;
     width: 100%;
     border: 1px solid;
+    font-size: 0.75em;
+    height: 16em;
 }
 
 .modstring .stringinput {
@@ -1495,7 +1494,7 @@ body[menu="system"] .warning h3::before {
     height: auto;
     transform: var(--baseTransform);
     pointer-events: initial;
-    overflow: hidden
+    overflow: hidden;
 }
 
 #dialogue-box.dialogue-click-proceed {
@@ -1586,12 +1585,15 @@ body[menu="system"] .warning h3::before {
     padding: 0 10px;
 }
 
-.textheader {
-    border-bottom: 1vh double var(--bright-color);
-    margin-bottom: 1em;
+#textheader {
+    position: fixed;
+    top: 0;
+    width: 40vw;
+    z-index: 35;
+    transition: 1s;
 }
 
-.textheader .headerbox {
+#textheader .headerbox {
     padding: 1em;
     color: var(--neutral-color);
     background: url(assets/img/textures/fadein.gif), var(--img);
@@ -1600,7 +1602,7 @@ body[menu="system"] .warning h3::before {
     border: 1px solid;
 }
 
-.textheader .headerbox .headertext {
+#textheader .headerbox .headertext {
     font-family: barcodetext;
     font-size: 25px;
     background-color: var(--dark-color);
@@ -1802,7 +1804,7 @@ body[menu="system"] .warning h3::before {
     text-transform: uppercase;
 }
 
-.textheader .sourceless [definition], #dialogue-box .sourceless [definition]:not(.reply), .sourceless.message [definition] {
+#textheader .sourceless [definition], #dialogue-box .sourceless [definition]:not(.reply), .sourceless.message [definition] {
     border-bottom: 2px dashed;
 }
 
@@ -2198,11 +2200,11 @@ body[menu="system"] .warning h3::before {
   margin-top: 0.25rem;
 }
 
-.textheader .combat .action-text > * {
+#textheader .combat .action-text > * {
   pointer-events: none;
 }
 
-.textheader .combat .action-description {
+#textheader .combat .action-description {
     font-size: calc(0.75em);
     border-bottom-width: 1px;
 }
@@ -2347,7 +2349,7 @@ body[menu="system"] .warning h3::before {
     background-size: cover, auto;
 }
 
-.textheader .awakened [definition], #dialogue-box .awakened [definition]:not(.reply), .awakened.message [definition] {
+#textheader .awakened [definition], #dialogue-box .awakened [definition]:not(.reply), .awakened.message [definition] {
     border-bottom: 2px black dashed;
 }
 
@@ -2689,7 +2691,8 @@ body[menu="system"] .warning h3::before {
 }
   
 /* MUI Activation */
-.mui-active #content {
+.mui-active #content,
+.mui-active #textheader {
     transform: translateX(calc(var(--contentDialogueOffset) * -1));
 }
 
@@ -2780,7 +2783,7 @@ body:not(.mui-active) .target[lowvis] {
     opacity: 0;
 }
 
-.textheader [definition], #dialogue-box [definition]:not(.reply), .message [definition], #party-menu [definition], .sysinfo [definition], #system-menu [definition].definition {
+#textheader [definition], #dialogue-box [definition]:not(.reply), .message [definition], #party-menu [definition], .sysinfo [definition], #system-menu [definition].definition {
     display: inline-block;
     border-bottom: 1px dashed var(--color, var(--bright-color));
     padding-bottom: 2px;
@@ -2788,7 +2791,7 @@ body:not(.mui-active) .target[lowvis] {
     cursor: alias;
 }
 
-.textheader .code[definition] {
+#textheader .code[definition] {
     border-bottom: 2px dashed;
 }
 
@@ -3086,7 +3089,7 @@ body:not(.mui-active) .target[lowvis] {
         max-width: 50% !important;
     }
 
-    .textheader [definition], #dialogue-box [definition], .message [definition] {
+    #textheader [definition], #dialogue-box [definition], .message [definition] {
         margin-bottom: 2px;
     }
 
