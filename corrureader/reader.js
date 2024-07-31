@@ -73,6 +73,7 @@ var dialogueStack
 $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
         data = json
+        delete data.metadata
         getPages()
     })
 })

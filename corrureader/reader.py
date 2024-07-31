@@ -3,7 +3,7 @@ import re
 import glob, os
 import io
 
-PATH = r"C:\Users\Beeka\Desktop\Things\scraping\provided e3a2"
+PATH = r""
 
 NOTEABLE_SECTIONS = ["reactions", "reactionPersonalities"]
 
@@ -27,23 +27,25 @@ def readDialogue(file:io.BufferedReader, position:int, type:int, page):
         match type:
             case 0|4:
                 if re.search(r"(?<!\\)`\)", line): break
-            case 1|2|3:
+            case 1|2|3|5:
                 indented = len(re.findall('{(?![\S]*")', line))
                 indent += indented
                 indent -= len(re.findall('}([\s_.,`\)]|$)', line))
                 if indent == 0: break
                 if indent < 2: section = ""
-        #print(iter, page, position, type, indent)
+        print(iter, page, position, type, indent)
         if iter == 0:
             match type:
-                case 0: dialogue["context"] = re.search('((?<=env.dialogues.)(?<!["`\'])[ !#-&(-\-\/-\_a-~]*(?= =))|((?<=env.dialogues\[["`\'])[ !#-&(-_a-~]*(?=["`\']] =))', line).group() # so sorry
+                case 0:
+                    dialogue["context"] = re.search('((?<=env.dialogues.)(?<!["`\'])[ !#-&(-\-\/-\_a-~]*(?= =))|((?<=env.dialogues\[["`\'])[ !#-&(-_a-~]*(?=["`\']] =))', line).group() # so sorry
+                    if os.path.basename(file.name) == "globalents.js" and (dialogue["context"] == "menu_hub" or dialogue["context"] == "++moth"): type = 5; dialogue["type"] = 5
                 case 1|2|3: dialogue["context"] = re.search("[\w]*", line).group()
         else:
             if type == 0 and iter == 1 and line.lstrip() == "RESPOBJ::": type = 4; dialogue["type"] = 4
             if line != "":
                 match type:
                     case 0|4: dialogue["text"].append(line)
-                    case 1: dialogue["text"].append(line[4:]) # tab is made out of whitespace, remove
+                    case 1|5: dialogue["text"].append(line[4:]) # tab is made out of whitespace, remove
                     case 2: dialogue["text"].append(line[5:]) # tabs are made out of \t, remove (thanks corru¿¿¿¿
                     case 3:
                         if indent == 2 and indented != 0:
@@ -52,7 +54,7 @@ def readDialogue(file:io.BufferedReader, position:int, type:int, page):
                         else:
                             if section in NOTEABLE_SECTIONS: dialogue["text"][section].append(line[12:])
         iter += 1
-    if type == 3 and dialogue["text"] == {}: return None
+    if dialogue["text"] == {} or dialogue["text"] == []: return None
     return dialogue
 
 def readFile(page):
@@ -92,7 +94,9 @@ def readFile(page):
 dir_path = os.path.dirname(os.path.realpath(__file__)) # what does this do https://stackoverflow.com/questions/5137497/find-the-current-directory-and-files-directory
 os.chdir(PATH)
 
-output = {}
+output = {"metadata": {
+    "version": 1
+}}
 
 for file in glob.glob("**/*.html", recursive=True):
     dialogues, page = readFile(file)
