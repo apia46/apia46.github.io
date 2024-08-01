@@ -237,7 +237,7 @@ function display(text){
         
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
         dialogueHtml += `
-        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} ${body.getAttribute("mask")=="reality"?"sent":""}">
+        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""}">
             ${dialogue.showIf||dialogue.showOnce?`<div class="dialogueheader">${showIfText}${dialogue.showIf&&dialogue.showOnce?" ":""}${dialogue.showOnce?"SHOWONCE":""}</div>`:""}
             ${portrait}
             <div class="dialogue-text">
@@ -255,7 +255,7 @@ function display(text){
         text.responses.forEach(response=>{
             var actor = getDialogueActor(response.name, true)
             document.getElementById(`dialogue-menu-${dialogueMenuLatest}`).insertAdjacentHTML('beforeend', `
-                <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name} ${body.getAttribute("mask")=="reality"?"sent":""}">
+                <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name}">
                     <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>
                     <div class="dialogue-options"></div>
                 </div>`)
