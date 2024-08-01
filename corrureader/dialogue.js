@@ -16,6 +16,7 @@ function generateDialogueObject(genString) {
             .replace(/'/g, '"')// removes the showif indicator and swaps single quotes for double (required for json parse for whatever reason)
             .replace(/</g, '\\u003c') //apparently < and > throw errors if they're used unescaped in JSON... weird
             .replace(/>/g, '\\u003e')
+            .replace(/\\`/g, '`')
 
         try {
             return upgradeShowIf(JSON.parse(`{ "reasons":${finalShowIf}}`).reasons) 

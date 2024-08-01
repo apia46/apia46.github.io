@@ -1498,6 +1498,13 @@ body[menu="system"] .warning h3::before {
     transform: var(--baseTransform);
     pointer-events: initial;
     overflow: hidden;
+    margin-top: var(--margintop);
+    transition: margin-top 1s;
+}
+
+body[mask="dream"] #dialogue-box {
+    margin-top: 0;
+    padding-bottom: 15vh;
 }
 
 #dialogue-box.dialogue-click-proceed {
@@ -1527,23 +1534,26 @@ body[menu="system"] .warning h3::before {
 .dialogue-message, .dialogue-actor {
     --color: var(--bright-color);
     --background: var(--dark-color);
+    --margin: 0;
     font-size: 1rem;
     letter-spacing: 0.25px;
     color: var(--color);
-    margin: 0.3rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     transform: translateX(-120%);
-    transition: transform 400ms ease-in-out;
-    position: absolute;
+    transition: transform 400ms ease-in-out, opacity 200ms ease-in-out;
+    position: relative;
+    visibility: hidden;
+    max-height: 0;
+    margin: var(--margin);
 }
 
 .dialogue-actor {
-    transition: transform 400ms ease-in-out, max-height 200ms ease-in-out;
-    max-height: 600px;
+    transition: transform 400ms ease-in-out;
     overflow: hidden;
+    flex-grow: 1;
 }
 
 .dialogue-actor.chosen span:not(.chosen) {
@@ -1555,10 +1565,22 @@ body[menu="system"] .warning h3::before {
     background: var(--dark-color);
 }
 
-.dialogue-message.sent, .dialogue-menu.sent .dialogue-actor, .dialogue-message.from-player.sent,
-body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, body[mask="reality"] .dialogue-message.from-player {
+.dialogue-message.unshow, .reply.unshow {
+    opacity: 0.5;
+}
+
+body[mask="dream"] .dialogue-message.unshow,
+body[mask="dream"] .reply.unshow {
+    display: none;
+}
+
+.dialogue-message.sent, .dialogue-menu.sent .dialogue-actor, .dialogue-message.from-player.sent, .dialogue-menu.sent,
+body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, body[mask="reality"] .dialogue-message.from-player, body[mask="reality"] .dialogue-menu {
     transform: translateX(0%);
-    position: relative;
+    max-height: unset;
+    --margin: 0.3rem;
+    --margintop: 1em;
+    visibility: visible;
 }
 
 .dialogue-message .dialogue-text {
@@ -1583,6 +1605,10 @@ body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, bo
     margin: 10px 0 20px;
 }
 
+body[mask="dream"] .wait {
+    display: none;
+}
+
 .wait span {
     text-align: center;
     background: var(--dark-color);
@@ -1595,6 +1621,10 @@ body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, bo
     width: 40vw;
     z-index: 35;
     transition: 1s;
+}
+
+body[mask="dream"] #textheader {
+    transform: translateY(-100%);
 }
 
 #textheader .headerbox {
@@ -1623,6 +1653,10 @@ body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, bo
     width: 100%;
     text-align: center;
     text-transform: none;
+}
+
+body[mask="dream"] .dialogueheader {
+    display: none;
 }
 
 .dialogue-text p {
@@ -1701,8 +1735,11 @@ body[mask="reality"] .dialogue-message, body[mask="reality"] .dialogue-actor, bo
 }
 
 .dialogue-menu {
-    margin-top: 1em;
+    --margin-top: 0;
     border-top: 1vh double var(--bright-color);
+    max-height: 0;
+    margin-top: var(--margin-top);
+    visibility: hidden;
 }
 
 .dialogue-actor .dialogue-portrait {
@@ -2954,7 +2991,8 @@ body:not(.mui-active) .target[lowvis] {
     font-size: 0.75rem;
     transition: all 1s ease-in-out, transform 2s ease-in-out;
     transform: translateY(calc(-100% - 1rem));
-    opacity: 1;
+    opacity: 0;
+    max-width: 20%;
 }
 
 #parameters::before {
@@ -2966,24 +3004,45 @@ body:not(.mui-active) .target[lowvis] {
     margin-bottom: 1rem;
 }
 
+#parameters i {
+    color: var(--bright-color);
+    text-align: center;
+    font-style: italic;
+}
+
 .in-menu #parameters {
     transform: translateY(-150%);
     opacity: 0;
 }
 
-#parameters.active {
-    transform: unset;
+#parameters:hover {
+    opacity: 1;
 }
 
-.parameter::before {
-    content: "";
+#parameters.active {
+    transform: unset;
+    opacity: 1;
+}
+
+.parameter:not(.string)::before {
+    content: "✓";
     display: inline-block;
     text-align: center;
     width: 1em;
     height: 1em;
     background: white;
+    color: black;
     border: 1px solid;
     margin-right: 1em;
+}
+
+.parameter input {
+    width: 4.2em;
+    margin-right: 1em;
+    background: white;
+    color: black;
+    border: 1px solid;
+    font-family: spacemono;
 }
 
 .parameter {
@@ -2995,17 +3054,21 @@ body:not(.mui-active) .target[lowvis] {
 }
 
 .parameter {
-    transition: all 1s ease-in-out;
+    transition: transform 1s ease-in-out;
 }
 
-.parameter.completed {
+.parameter span::selection {
+	background-color: transparent;
+    color: inherit;
+}
+
+.parameter.false {
     color: var(--friend-color);
     text-decoration: line-through;
 }
 
-.parameter.completed::before {
+.parameter.false::before {
     content: "X";
-    color: black;
 }
 
 .parameter.hide {
@@ -3031,21 +3094,22 @@ body:not(.mui-active) .target[lowvis] {
 }
 
 #parameters .toggle::before {
-    content: "TOGGLE PARAMETERS";
+    content: "HIDE PARAMETERS";
 }
 
 #parameters.active .toggle {
     background: var(--neutral-color);
     color: var(--dark-color);
 }
-  
 
 /* SIZE ADJUSTMENTS */
 #dialogue-box, :root.bigmode #dialogue-box {
     transform: unset;
     left: 0;
     right: 0;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
     width: 40vw;
     box-shadow: 0px 0px 50px black;
     border: solid 5px black;

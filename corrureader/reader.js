@@ -65,6 +65,8 @@ var currentTextName = "custom"
 var currentPage = "custom"
 var dialogueMenuLatest
 var dialogueStack
+var conditions = {}
+var checks = []
 
 $(()=>{
     fetch('dialogue.json').then((response) => response.json()).then((json) => {
@@ -101,7 +103,7 @@ function getPages(){
         var entListHTML = ``
         var mothChat = false
         if (pageName == "js\\combat\\combatActorsJson.js") return
-        if (Object.keys(page).length == 1 && page[0].type == 2) {
+        if (Object.keys(page).length == 1 && page[0].type == 1) {
             entListHTML = `
             <div class="message moth" actor="moth">
                 <img src="assets/img/blank.gif">
@@ -170,8 +172,10 @@ function getPages(){
 }
 
 function parseDialogue(page, dialogueName){
+    conditions = {}
+    checks = []
     currentPage = page
-    var dialogue = data[page].find((value)=>{return value.context==dialogueName})
+    var dialogue = data[page].find((value)=>{return value.context==dialogueName}) || console.error(Error(`dialogue "${dialogueName} was not found on page "${page}"`))
     switch(dialogue.type){
         case 0:
             dialogueStack = [dialogueName=="mth++${page.dialoguePrefix}"?"moth_chat":dialogueName]
@@ -198,7 +202,7 @@ function parseDialogue(page, dialogueName){
                 <h2>!!__moth__!!</h2>
                 <p><pre>${mothComment}</pre></p>
             </div>`:""}`
-            document.getElementById("dialogue-box").style.marginTop = String(document.getElementById("textheader").offsetHeight)+"px"
+            document.getElementById("dialogue-box").style.setProperty("--margintop", String(document.getElementById("textheader").offsetHeight)+"px")
             dialogueMenuLatest = -1
             display(currentText.start)
             break;
@@ -228,16 +232,19 @@ function display(text){
         var showIfText = ""
         if (dialogue.showIf) {
             showIfText = []
+            var thischecks = []
             dialogue.showIf.forEach(condition=>{
                 var isFalse = condition.includes(false) ? "¬" : ""
-                showIfText.push(isFalse+condition[0])
+                showIfText.push(isFalse+condition[0]+(condition[1]?" == "+condition[1]:""))
+                conditions[condition[0]] = condition.length==2?condition[1]:true
+                thischecks.push([condition[0], condition.length==2?condition[1]:true])
             })
-            showIfText = "SHOWIF::" + String(showIfText)
+            checks.push(thischecks)
+            showIfText = "SHOWIF::" + showIfText.join(", ")
         }
-        
         if (actor != previousActor && actor.image) portrait = `<div class="dialogue-portrait" style="--background-image: url(${actor.image});"></div>`
         dialogueHtml += `
-        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""}">
+        <div class="dialogue-message actor-${dialogue.actor.replace("::", " expression__")} ${actor.player ? "from-player" : ""} ${actor.type} ${dialogue.class || ""} ${dialogue.showIf?`showify" check="${checks.length-1}`:''} ${dialogue.wait?`showify" wait="${dialogue.wait}`:''}" actor="${actor.name}">
             ${dialogue.showIf||dialogue.showOnce?`<div class="dialogueheader">${showIfText}${dialogue.showIf&&dialogue.showOnce?" ":""}${dialogue.showOnce?"SHOWONCE":""}</div>`:""}
             ${portrait}
             <div class="dialogue-text">
@@ -272,20 +279,24 @@ function display(text){
                 var readState = checkUnread(reply)
                 if(readState == false) readState = "read"
                 var readAttribute = reply.hideRead ? 'read="hidden"' : `read=${readState}`
-                
+
                 var definition = ""
                 var showIfText = false
                 if (reply.showIf) {
                     showIfText = []
+                    var thischecks = []
                     reply.showIf.forEach(condition=>{
                         var isFalse = condition.includes(false) ? "¬" : ""
                         showIfText.push(isFalse+condition[0])
+                        if (!Object.hasOwn(conditions, condition[0])) conditions[condition[0]] = condition.length==2?condition[1]:true
+                        thischecks.push([condition[0], condition.length==2?condition[1]:true])
                     })
+                    checks.push(thischecks)
                 }
                 if (reply.exec || reply.showIf) definition = `definition='${reply.exec?"EXEC::"+String(reply.exec).escapeHtml():""}${reply.exec&&showIfText?"\n":""}${showIfText?"SHOWIF::"+showIfText.join(", "):""}${showIfText&&reply.showOnce?"\n":""}${reply.showOnce?"SHOWONCE":""}'`
 
                 options.insertAdjacentHTML("beforeend", `
-                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${definition}>${replyName}</span>
+                <span class="reply ${isEnd ? "end-reply" : ""} ${reply.class || ""} ${reply.showIf?`showify" check="${checks.length-1}`:``}" reply="${reply.destination}" name="${replyName}" ${isEnd ? `endtext="${isEnd}"` : ''} ${!isEnd ? readAttribute : ""} ${definition}>${replyName}</span>
                 `)
                 
                 var replyObj = Array.from(document.querySelectorAll(`#dialogue-menu-${dialogueMenuLatest} .dialogue-options span[name="${replyName}"]`)).at(-1)
@@ -321,6 +332,8 @@ function display(text){
             if (sameoptions > 1) options.classList.add("seen")
         })
     }
+    updateParameters()
+    if (body.getAttribute("mask") == "dream") showNext()
 }
 
 function changeDialogue(to){
@@ -362,4 +375,63 @@ function importDialogue(){
         })
     }
     getPages()
+}
+
+function updateParameters(){
+    paramsObj = document.getElementById("parameters")
+    var paramsHTML = `<div class="toggle" onclick="this.parentNode.classList.toggle('active')"></div>`
+    Object.keys(conditions).forEach(condition=>{
+        var isString = typeof(conditions[condition]) == "string"
+        paramsHTML += `
+        <div class="parameter ${isString?`string" oninput="updateShowIf('${condition}', this.children[0].value)"`:`${conditions[condition]?"":"false"}" onclick="this.classList.toggle('false'); updateShowIf('${condition}',!this.classList.contains('false'))"`}>
+            ${isString?`<input type='text' value='${conditions[condition]}'></input>`:""}
+            <span>${condition}</span>
+        </div>`
+    })
+    if (Object.keys(conditions).length == 0) {
+        paramsHTML += `<i>* empty *</i>`
+    }
+    paramsObj.innerHTML = paramsHTML
+    updateShowIf()
+}
+
+function updateShowIf(condition, value){
+    if (condition) conditions[condition] = value
+    if (checks.length == 0) return
+    document.querySelectorAll(".showify").forEach(element=>{
+        var show = true
+        checks[Number(element.getAttribute("check"))].forEach(check=>{
+            if (conditions[check[0]]!=check[1]) show = false
+        })
+        if (show) element.classList.remove("unshow")
+        else element.classList.add("unshow")
+    })
+}
+
+function startDream(){
+    showNext()
+    document.getElementById("dialogue-box").classList.add("dialogue-click-proceed")
+}
+
+function showNext(event){
+    if (event?.shiftKey) {
+        Array.from(document.querySelectorAll("#dialogue-box > .dialogue-message.sent:not(.unshow), #dialogue-box > .dialogue-menu.sent")).at(-1).classList.remove("sent")
+    } else {
+        var next = document.querySelector("#dialogue-box > .dialogue-message:not(.sent):not(.unshow), #dialogue-box > .dialogue-menu:not(.sent)")
+        if (!next) return
+        next.classList.add("sent")
+        var actor = next.getAttribute("actor")
+        if (env.dialogueActors[actor]?.voice) env.dialogueActors[actor].voice()
+        else play("muiReadout")
+        if (next.classList.contains("dialogue-menu") || !document.querySelector("#dialogue-box > .dialogue-message:not(.sent):not(.unshow), #dialogue-box > .dialogue-menu:not(.sent)")) document.getElementById("dialogue-box").classList.remove("dialogue-click-proceed")
+        else {
+            var wait = next.getAttribute("wait")
+            if (wait) setTimeout(() => document.getElementById("dialogue-box").classList.add("dialogue-click-proceed"), Number(wait))
+            else document.getElementById("dialogue-box").classList.add("dialogue-click-proceed")
+        }
+    }
+}
+
+function endDream(){
+    document.getElementById("dialogue-box").classList.remove("dialogue-click-proceed")
 }

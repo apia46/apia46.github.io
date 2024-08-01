@@ -152,10 +152,10 @@ var env = {
 
         dream: {
             sound: "hungermask",
-            on: ()=>{},
-            off: ()=>{},
+            on: ()=>{startDream()},
+            off: ()=>{endDream()},
             maskImage: `url(assets/img/sprites/daemons/genericscan.gif)`,
-            definition: "'reenacts the dialogue sequence'"
+            definition: "'reenacts the dialogue sequence'\nNOTE::'shift-click to go back a message'"
         },
     },
 
@@ -431,6 +431,11 @@ function MUI(state) {
             env.mui = false
         break
     }
+}
+
+//basic rand
+function rand(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
 /* AUDIO */

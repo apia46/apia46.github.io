@@ -112,7 +112,7 @@
         
         <div id="parameters" class="active">
             <div class="toggle" onclick="this.parentNode.classList.toggle('active')"></div>
-            <div class="parameter completed" onclick="this.classList.toggle('completed')"><span>akhskjsf</span></div>
+            <i>* empty *</i>
         </div>
 
         <div id="entity-menu" class="menu-box menu" menu="entities">
@@ -127,7 +127,7 @@
         </div>
 
         <div id="content">
-            <div id="dialogue-box" class="menu-box" menu="dialogue">
+            <div id="dialogue-box" class="menu-box" menu="dialogue" onclick="if(this.classList.contains('dialogue-click-proceed')) showNext(event)">
                 <div class="dialogue-message actor-moth external moth sent">
                     <div class="dialogue-portrait" style="--background-image: ../img/sprites/moth/mothman.gif;"></div>
                     <div class="dialogue-text">
