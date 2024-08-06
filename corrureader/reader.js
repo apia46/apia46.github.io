@@ -225,7 +225,7 @@ function display(text){
         document.querySelector(".headertext").innerHTML = `${currentPage}::${dialogueStack.join("​::")}`
     }
     text.body.forEach(dialogue=>{
-        var actor = getDialogueActor(dialogue.actor, true)
+        var actor = getDialogueActor(dialogue.actor, true, currentPage)
 
         var portrait = ``
 
@@ -260,7 +260,7 @@ function display(text){
     document.getElementById("dialogue-box").insertAdjacentHTML('beforeend', dialogueHtml)
     if (text.responses) {
         text.responses.forEach(response=>{
-            var actor = getDialogueActor(response.name, true)
+            var actor = getDialogueActor(response.name, true, currentPage)
             document.getElementById(`dialogue-menu-${dialogueMenuLatest}`).insertAdjacentHTML('beforeend', `
                 <div class="dialogue-actor ${actor.type} dialogue-options-${actor.name} actor-${actor.name}">
                     <div class="dialogue-portrait" style="--background-image: url(${actor.image})"></div>

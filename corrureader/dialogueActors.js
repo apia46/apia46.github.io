@@ -39,7 +39,6 @@ if(fakeGeli) {
             exec: ()=>document.querySelectorAll('#geli').forEach(el=>el.setAttribute('expression', 'blueeyes'))
         },
     }
-
 } else {
     env.dialogueActors["geli"].expressions = {
         default: {
@@ -507,9 +506,27 @@ env.dialogueActors["cv i k"] = {
 //clemens romanus.html
 //origin:: redundant
 env.dialogueActors["other"] = {
-    type: "thoughtform portrait-contain obesk qou portrait-dark",
-    image: 'assets/img/textures/ceyetran.gif',
-    voice: ()=>play('talksignal', 1.5)
+    pageSpecific: true,
+    "local\\uncosm\\clemens romanus.html": {
+        type: "thoughtform portrait-contain obesk qou portrait-dark",
+        image: 'assets/img/textures/ceyetran.gif',
+        voice: ()=>play('talksignal', 1.5)   
+    },
+    "local\\uncosm\\dull.html": {
+        type: "thoughtform portrait-contain obesk qou portrait-dark loose-thought",
+        image: 'assets/img/sprites/obesk/larval/larval5.gif',
+        voice: ()=>play('talksignal', 1)
+    },
+    "local\\uncosm\\spire.html": {
+        type: "thoughtform portrait-contain obesk qou portrait-dark",
+        image: 'assets/img/textures/ceyetran.gif',
+        voice: ()=>play('talksignal', 1.25)
+    },
+    "local\\uncosm\\yuzku.html": {
+        type: "thoughtform portrait-contain obesk portrait-dark",
+        image: 'assets/img/textures/eyetran.gif',
+        voice: ()=>play('talkcore', 1.5)
+    }
 }
 
 env.dialogueActors["mind"] = {

@@ -205,7 +205,7 @@ function upgradeShowIf(showIf) {
 }
 
 //takes an actor slug, with or without expression (denoted with ::), and returns an object with relevant info
-function getDialogueActor(inputSlug, noExec) {
+function getDialogueActor(inputSlug, noExec, page) {
     if(!inputSlug) return null
     let actorSlug = inputSlug
     let expression = 'default'
@@ -218,6 +218,7 @@ function getDialogueActor(inputSlug, noExec) {
 
     let actorObj = env.dialogueActors[actorSlug]
     if(!actorObj) throw `no actor object found for ${actorSlug}`
+    if (actorObj.pageSpecific) actorObj = actorObj[page] //page specific actors (just other as of v1)
     if(!actorObj.name) actorObj.name = actorSlug //throw a proper name in for later use if there ain't one already
 
     //anything without expressions is just a regular actor object so we return it immediately
