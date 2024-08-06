@@ -1499,7 +1499,7 @@ body[menu="system"] .warning h3::before {
     pointer-events: initial;
     overflow: hidden;
     margin-top: var(--margintop);
-    transition: margin-top 1s;
+    transition: 1s;
 }
 
 body[mask="dream"] #dialogue-box {
@@ -1527,7 +1527,7 @@ body[mask="dream"] #dialogue-box {
     100% { opacity: 0; transform: translateY(10px)}
 }
 
-.in-menu #content {
+.in-menu #dialogue-box {
     transform: translateX(var(--contentDialogueOffset));
 }
 
@@ -2734,7 +2734,7 @@ body[mask="dream"] .dialogueheader {
 }
   
 /* MUI Activation */
-.mui-active #content,
+.mui-active #dialogue-box,
 .mui-active #textheader {
     transform: translateX(calc(var(--contentDialogueOffset) * -1));
 }

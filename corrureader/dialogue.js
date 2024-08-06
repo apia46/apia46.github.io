@@ -225,7 +225,7 @@ function getDialogueActor(inputSlug, noExec, page) {
     if(!actorObj.expressions) return actorObj
 
     //however, anything with expressions will be modified based on the input expression first
-    if((!actorObj.expression || actorObj.expression != expression) && !noExec) {
+    if((!actorObj.expression || actorObj.expression != expression)) { //we'll see how it goes
         actorObj.expression = expression
 
         if(actorObj.expressions[expression].image) actorObj.image = actorObj.expressions[expression].image
@@ -233,7 +233,7 @@ function getDialogueActor(inputSlug, noExec, page) {
         if(actorObj.expressions[expression].type) actorObj.type = actorObj.expressions[expression].type
 
         //the exec on an expression happens whenever the expression changes, so we execute it
-        if(actorObj.expressions[expression].exec) actorObj.expressions[expression].exec()
+        if(!noExec && actorObj.expressions[expression].exec) actorObj.expressions[expression].exec()
     }
     return actorObj
 }
