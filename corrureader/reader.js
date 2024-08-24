@@ -314,7 +314,7 @@ function display(text){
                         //endDialogue(env.currentDialogue.chain.end) ehh?
                     } else {
                         [].slice.call(options.children).forEach(thisReply=>{if (!thisReply.classList.contains("end-reply") && !(thisReply.getAttribute("read") == "hidden")) thisReply.setAttribute("read", "unread")})
-                        document.getElementById("dialogue-box").classList.add("dialogue-click-proceed")
+                        if(body.getAttribute("mask") == "dream") document.getElementById("dialogue-box").classList.add("dialogue-click-proceed")
                         if(!(replyObj.getAttribute("read") == "hidden")) replyObj.setAttribute("read", "read")
                         if(replyValue.includes('CHANGE::')) { //changing to different dialogue
                         changeDialogue(replyValue.replace('CHANGE::', ''))
@@ -420,7 +420,6 @@ function showNext(event){
     } else {
         var next = document.querySelector("#dialogue-box > .dialogue-message:not(.sent):not(.unshow), #dialogue-box > .dialogue-menu:not(.sent)")
         if (!next) return
-        console.log(event, next)
         next.classList.add("sent")
         var actor = next.getAttribute("actor")
         if (env.dialogueActors[actor]?.voice) env.dialogueActors[actor].voice()
