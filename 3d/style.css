@@ -1,0 +1,50 @@
+body {
+    background: #222233;
+    margin: 0;
+    backface-visibility: hidden;
+    perspective: 550px;
+    perspective-origin: 50vw 50vh;
+    overflow: hidden;
+}
+
+#base {
+    --size: 200px;
+    transform-style: preserve-3d;
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    top: calc(50vh - var(--size)/2);
+    left: calc(50vw - var(--size)/2);
+}
+
+#grid {
+    transform-style: preserve-3d;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    --camera-offset: translateY(200px) translateZ(400px) rotateX(80deg);
+    transform: var(--camera-offset) rotateZ(calc(-1deg * var(--playerrotate)));
+    transition: 400ms ease-in-out;
+}
+
+.tile {
+    transform-style: preserve-3d;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(assets/empty.gif);
+    transition: 400ms linear;
+
+    --player-offset: translateX(calc(-1 * var(--size) * var(--playerx))) translateY(calc(-1 * var(--size) * (var(--playery))));
+    transform: var(--player-offset) translateX(calc(var(--size) * var(--xpos))) translateY(calc(var(--size) * var(--ypos)));
+}
+
+#player {
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #00ffff;
+    border: 10px solid #000000;
+}
