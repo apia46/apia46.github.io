@@ -1,22 +1,47 @@
 const player = {x: 0, y: 0, rotate: 0}
+var loading = true
 
 document.addEventListener("DOMContentLoaded", ()=>{
-    loadStage()
+    loadStage(plans.hub)
 })
 
-function loadStage(){
+function loadStage(stage, startx = undefined, starty = undefined, startangle = undefined){
+    clearTimeout(loadingtimeout)
+    loading = true
+    document.body.classList.add("loading")
+    var loadingtimeout = window.setTimeout(()=>{document.body.classList.remove("loading"); loading = false}, 300)
     const grid = document.getElementById("grid")
+    grid.innerHTML = ''
+    var plan = stage.plan
 
     plan.grid.forEach((piece, i)=>{
         let entity = plan.entities[piece]
+        let tileattributes = ''
         if (entity) {
             if (entity.exec) {entity.exec(i)}
             let attributes = ''
             attributes += entity.id ? `id="${entity.id}"`: ''
-            attributes += entity.class ? `class="${entity.class}"`: ''
+            attributes += entity.class ? `class="${entity.class}"` : ''
+            
+            tileattributes += entity.tileclass ? `class="tile ${entity.tileclass}"` : 'class="tile"'
+            if (entity.tileattributes) {
+                Object.keys(entity.tileattributes).forEach((attribute)=>{
+                    tileattributes += `${attribute}="${entity.tileattributes[attribute]}"`
+                })
+            }
+
             var element = `<div ${attributes}>${entity.content || ''}</div>`
+            if (entity.id == 'player') {
+                player.x = startx || i % plan.width
+                player.y = starty || Math.floor(i / plan.width)
+                player.rotate = startangle || plan.startangle || 0
+            }
+        } else {
+            tileattributes = 'class="tile"'
         }
-        grid.innerHTML += `<div class="tile ${entity?.tileclass || ''}" style="--xpos: ${i % plan.width}; --ypos: ${Math.floor(i / plan.width)};">${element || ""}</div>`
+
+
+        if (!entity || !entity.nonexistent) { grid.innerHTML += `<div ${tileattributes} style="--xpos: ${i % plan.width}; --ypos: ${Math.floor(i / plan.width)};">${element || ""}</div>` }
     })
     step()
 }
@@ -44,9 +69,11 @@ function step(event = undefined) {
         case "d":
             side += 1
         break
+        case "z":
         case "q":
             turn -= 90
         break
+        case "x":
         case "e":
             turn += 90
         break
@@ -72,9 +99,14 @@ function step(event = undefined) {
             to_y -= side
         break
     }
-    if (document.querySelector(`.tile[style*="--xpos: ${to_x}; --ypos: ${to_y};"]`) && !document.querySelector(`.tile[style*="--xpos: ${to_x}; --ypos: ${to_y};"]`).classList.contains('nowalk')){
+    let goingto = document.querySelector(`.tile[style*="--xpos: ${to_x}; --ypos: ${to_y};"]`)
+    if (!loading && goingto && !goingto.classList.contains('nowalk')){
         player.x = to_x
         player.y = to_y
+        if (goingto.classList.contains('exit')) {
+            console.log(goingto.getAttribute("dest"))
+            loadStage(plans[goingto.getAttribute("dest")], Number(goingto.getAttribute("exitx")), Number(goingto.getAttribute("exity")), Number(goingto.getAttribute("exitangle")))
+        }
     }
     grid.style.setProperty('--playerx', player.x)
     grid.style.setProperty('--playery', player.y)
