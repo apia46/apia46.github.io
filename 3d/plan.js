@@ -10,7 +10,6 @@ const plans = {
             #######
             `.replace(/\s/g, '').split(''),
             width: 7,
-            height: 6,
             startangle: 270,
             entities: {
                 'S': {
@@ -51,7 +50,7 @@ const plans = {
                     tileattributes: {
                         dest: 'room2',
                         exitx: '2',
-                        exity: '4',
+                        exity: '3',
                         exitangle: '0',
                     }
                 },
@@ -76,7 +75,6 @@ const plans = {
             ..!..
             `.replace(/\s/g, '').split(''),
             width: 5,
-            height: 13,
             entities: {
                 'S': {
                     id: 'player',
@@ -119,14 +117,12 @@ const plans = {
         plan: {
             grid: `
             #####
-            #####
             ##p##
             #####
             ##S##
             ..!..
             `.replace(/\s/g, '').split(''),
             width: 5,
-            height: 6,
             entities: {
                 'S': {
                     id: 'player',
