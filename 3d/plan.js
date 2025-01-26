@@ -1,15 +1,21 @@
 const plans = {
     hub: {
         plan: {
-            grid: `
-            ..1.2..
-            #######
-            =######
-            !#S####
-            =######
-            #######
-            `.replace(/\s/g, '').split(''),
-            width: 7,
+            floors: {
+                '0': {
+                    grid: `
+                    ..1.2.3..
+                    HHHHHHHHH
+                    =#######H
+                    !#S#####H
+                    =#######H
+                    HHHHHHHHH
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "0px"
+                }
+                
+            },
+            width: 9,
             startangle: 270,
             entities: {
                 'S': {
@@ -19,18 +25,21 @@ const plans = {
                     nonexistent: true
                 },
                 '=': {
-                    tileclass: 'nowalk'
+                    tileclass: 'nowalk tile2'
+                },
+                'H': {
+                    tileclass: 'tile2'
                 },
                 '!': {
                     id: 'infoboard',
                     class: 'turn270 spacemono',
-                    tileclass: 'nowalk alwaysvisible',
+                    tileclass: 'nowalk alwaysvisible tile2',
                     content: `<h1>3d tech demo thing</h1>
                     <h2>everything you see is an html element</h2>
                     based on <a href="https://corru.observer">corru.observer</a>; <a href="https://corru.observer/local/beneath?force">this page</a> is a good example<br>
                     i wanted to figure it out for myself, so i recreated it.<br>
                     with some additional features of my own, of course<br>
-                    no mobile support, sorry :(<br>
+                    tested on firefox win11; not sure if other configurations work<br>
                     <br>
                     <img src="assets/controls.png">`,
                 },
@@ -54,26 +63,41 @@ const plans = {
                         exitangle: '0',
                     }
                 },
+                '3': {
+                    tileclass: 'exit alwaysvisible',
+                    class: 'floatyindicator three',
+                    tileattributes: {
+                        dest: 'room3',
+                        exitx: '2',
+                        exity: '3',
+                        exitangle: '0',
+                    }
+                },
             }
         }
     },
     room1: {
         plan: {
-            grid: `
-            ##3#5
-            #3#3#
-            3###3
-            ###$#
-            ..#..
-            ..#..
-            ..#..
-            #####
-            ##3##
-            ###s#
-            ##S##
-            #####
-            ..!..
-            `.replace(/\s/g, '').split(''),
+            floors: {
+                '0': {
+                    grid: `
+                    ##3#5
+                    #3#3#
+                    3###3
+                    ###$#
+                    ..#..
+                    ..#..
+                    ..#..
+                    #####
+                    ##3##
+                    ###s#
+                    ##S##
+                    #####
+                    ..!..
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "0px",
+                }
+            },
             width: 5,
             entities: {
                 'S': {
@@ -115,13 +139,28 @@ const plans = {
     },
     room2: {
         plan: {
-            grid: `
-            #####
-            ##p##
-            #####
-            ##S##
-            ..!..
-            `.replace(/\s/g, '').split(''),
+            floors: {
+                '0': {
+                    grid: `
+                    #1u##
+                    ##s##
+                    #####
+                    ##S##
+                    ..!..
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "0px"
+                },
+                '1': {
+                    grid: `
+                    ..d2#
+                    HHHHH
+                    HH5HH
+                    HHHHH
+                    .....
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "400px"
+                }
+            },
             width: 5,
             entities: {
                 'S': {
@@ -130,10 +169,13 @@ const plans = {
                 '.': {
                     nonexistent: true
                 },
-                'p': {
+                's': {
                     class: 'sign spacemono',
                     tileclass: 'dontbullshit nowalk',
-                    content: '<p>placeholder</p>'
+                    content: '<p>i have done what corru could not. i have implemented the third dimension</p>'
+                },
+                'H': {
+                    tileclass: 'tile2'
                 },
                 '!': {
                     tileclass: 'exit',
@@ -143,6 +185,101 @@ const plans = {
                         exity: '1',
                         exitangle: '180',
                     }
+                },
+                '1': {
+                    tileclass: 'zoffset',
+                    tilestyles: {
+                        '--zoffset': '100px',
+                    }
+                },
+                'u': {
+                    tileclass: 'zoffset changefloor cantfrom',
+                    tilestyles: {
+                        '--zoffset': '200px',
+                    },
+                    tileattributes: {
+                        dest: '1',
+                        changefloordirections: [90, 180],
+                        cantfromdirections: [270]
+                    }
+                },
+                'd': {
+                    tileclass: 'empty zoffset changefloor',
+                    tilestyles: {
+                        '--zoffset': '-200px',
+                    },
+                    tileattributes: {
+                        dest: '0',
+                        changefloordirections: [270]
+                    }
+                },
+                '2': {
+                    tileclass: 'zoffset',
+                    tilestyles: {
+                        '--zoffset': '-100px',
+                    }
+                },
+                '5': {
+                    class: 'sign spacemono turn180 smallfont',
+                    tileclass: 'dontbullshit nowalk tile2',
+                    content: '<p>yeah. i know. incredible, right?</p>'
+                },
+            }
+        }
+    },
+    room3: {
+        plan: {
+            floors: {
+                '0': {
+                    grid: `
+                    #####
+                    ##s##
+                    #####
+                    ##S##
+                    ..!..
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "0px"
+                },
+                '1': {
+                    grid: `
+                    #####
+                    #####
+                    ##g##
+                    #####
+                    #####
+                    `.replace(/\s/g, '').split(''),
+                    floorheight: "1000px"
+                }
+            },
+            width: 5,
+            entities: {
+                'S': {
+                    id: 'player',
+                },
+                '.': {
+                    nonexistent: true
+                },
+                's': {
+                    class: 'sign spacemono',
+                    tileclass: 'dontbullshit nowalk',
+                    content: '<p>look up, using the lookaround feature that corru also doesnt have</p>'
+                },
+                'H': {
+                    tileclass: 'tile2'
+                },
+                '!': {
+                    tileclass: 'exit',
+                    tileattributes: {
+                        dest: 'hub',
+                        exitx: '6',
+                        exity: '1',
+                        exitangle: '180',
+                    }
+                },
+                'g': {
+                    id: 'gullible',
+                    tileclass: 'dontbullshit',
+                    content: 'gullible'
                 }
             }
         }
