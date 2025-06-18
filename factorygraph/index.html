@@ -3,15 +3,17 @@
     <head>
         <title>factorygraph</title>
         <link href="style.css" rel="stylesheet">
+        <link rel="icon" type="image/png" href="assets/recipeArrow.png">
         <script src="index.js"></script>
     </head>
     <body>
         <div id="header">
-            hi
+            this is the header
         </div>
-        <div id="graph">
-            <div class="node"></div>
+        <div id="wrapper">
+            <div id="graph">
+            </div>
         </div>
-        <script>load()</script>
+        <script>fetch('assets/testing/data.json').then(response=>response.json()).then(parsed=>{data = parsed; load()}).catch(error => console.error('Error fetching JSON:', error));</script>
     </body>
 </html>

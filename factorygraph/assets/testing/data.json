@@ -1,0 +1,22 @@
+{
+    "items": {
+        "molten.plastic":           { "name": "Molten Polyethylene",                    "image": "assets/testing/images/molten.plastic.png", "unit": "L" },
+        "ethylene":                 { "name": "Ethylene",                               "image": "assets/testing/images/ethylene.png",     "unit": "L" },
+        "severelysteamcracked.gas": { "name": "Severely Steam-Cracked Refinery Gas",    "image": "assets/testing/images/gas_gas.png",      "unit": "L" },
+        "oxygen":                   { "name": "Oxygen Gas",                             "image": "assets/testing/images/oxygen.png",       "unit": "L" },
+
+        "dustTinyCarbon":           { "name": "Tiny Pile of Carbon Dust",               "image": "assets/testing/images/dustTinyCarbon.png"}
+    },
+    "recipes": {
+        "polyethylene": {
+            "time": 8,
+            "inputs":   [ ["ethylene", 144], ["oxygen", 1000] ],
+            "outputs":  [ ["molten.plastic", 216] ]
+        },
+        "ethylene": {
+            "time": 12,
+            "inputs":   [ ["severelysteamcracked.gas", 1000] ],
+            "outputs":  [ ["dustTinyCarbon", 1], ["ethylene", 300] ]
+        }
+    }
+}

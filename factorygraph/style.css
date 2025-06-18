@@ -4,6 +4,7 @@
     font-weight: 400;
 }
 
+* { image-rendering: pixelated; user-select: none; }
 body {
     height: 100vh;
     width: 100vw;
@@ -19,19 +20,119 @@ body {
     height: 48px;
 }
 
-#graph {
+#wrapper {
     width: 100%;
     height: calc(100% - 48px); /* surely theres a better way to do this but i kind of just dont care */
     background: #333333;
+    overflow: hidden;
+}
+#graph {
+    position: relative;
     --posX: 0;
     --posY: 0;
+    --scale: 1;
+    width: 0;
+    height: 0;
+    left: calc(var(--posX) * 1px);
+    top: calc(var(--posY) * 1px);
+    transform: scale(var(--scale));
 }
 
-.node {
-    position: relative;
-    left: calc(200px + var(--posX) * 1px);
-    top: calc(100px + var(--posY) * 1px);
-    width: 200px;
-    height: 150px;
+node {
+    font-size: 0;
+    position: absolute;
+    display: block;
     background: #111111;
+    box-sizing: border-box;
+    --posX: 0;
+    --posY: 0;
+    padding: 8px;
+    left: calc(var(--posX) * 1px);
+    top: calc(var(--posY) * 1px);
+}
+.delete {
+    position: absolute;
+    font-size: 8px;
+    top: -12px;
+    right: 0px;
+    height: 12px;
+    width: 12px;
+    background: #111111;
+    text-align: center;
+    cursor: pointer;
+}
+
+item {
+    position: relative;
+    display: block;
+    width: 32px;
+    height: 32px;
+    background: #222222 var(--image);
+    background-size: contain;
+    transition: outline 0.05s;
+    --outline-width-multiplier: 1;
+    outline: 0px solid;
+}
+item::after {
+    content: attr(quantity);
+    font-size: 8px;
+    text-shadow: 1px 1px #000000;
+    position: absolute;
+    right: 2px;
+    bottom: 0px;
+}
+item:hover, item.connecting {
+    outline: calc(2px * var(--outline-width-multiplier)) solid #ffffff;
+}
+
+/* RECIPENODE */
+.recipeNode {
+    width: 200px;
+}
+
+.inputs, .outputs {
+    display: inline-grid;
+    grid-template-columns: 32px 32px;
+    gap: 2px;
+}
+.recipe-arrow {
+    position: absolute;
+    display: block;
+    width: 40px;
+    height: 30px;
+    background: left top/contain url(assets/recipeArrow.png);
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+}
+.outputs {
+    float: right;
+}
+
+/* ITEMNODE */
+.itemNode item {
+    width: 64px;
+    height: 64px;
+    --outline-width-multiplier: 2;
+}
+
+/* LINE */
+line {
+    position: absolute;
+    --aX: 0;
+    --aY: 0;
+    --bX: 0;
+    --bY: 0;
+    --width: 2px;
+    --distance: calc(sqrt(
+        pow(var(--aX) - var(--bX), 2) + pow(var(--aY) - var(--bY), 2)
+    ));
+    left: calc(var(--aX) * 1px - var(--width));
+    top: calc(var(--aY) * 1px - var(--width));
+    transform-origin: var(--width) var(--width);
+    height: 4px;
+    width: calc(var(--distance) * 1px + 4px);
+    rotate: calc(atan2(var(--bY) - var(--aY), var(--bX) - var(--aX)));
+    background: #fff;
+    pointer-events: none;
 }
