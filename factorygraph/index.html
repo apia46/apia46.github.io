@@ -8,7 +8,10 @@
     </head>
     <body>
         <div id="header">
-            this is the header
+            <select id="recipeidselect"></select>
+            <button onclick="newNode(recipeNode, -Number(graph.style.getPropertyValue('--posX')||0) / Number(graph.style.getPropertyValue('--scale')||1), -Number(graph.style.getPropertyValue('--posY')||0) / Number(graph.style.getPropertyValue('--scale')||1), recipeidselect.value)">add recipe node</button>
+            <select id="itemidselect"></select>
+            <button onclick="newNode(itemNode, -Number(graph.style.getPropertyValue('--posX')||0) / Number(graph.style.getPropertyValue('--scale')||1), -Number(graph.style.getPropertyValue('--posY')||0) / Number(graph.style.getPropertyValue('--scale')||1), itemidselect.value)">add item node</button>
         </div>
         <div id="wrapper">
             <div id="graph">

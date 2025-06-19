@@ -1,5 +1,6 @@
 let data;
-let idIter = 0;
+let nodeIdIter = 0;
+let itemIdIter = 0;
 
 let previousMouseX;
 let previousMouseY;
@@ -9,7 +10,6 @@ let nodes = {};
 let draggingConnection = false;
 let dragConnectionElement;
 let draggingLine;
-let dragStart;
 let updateLineFunction;
 
 function drag(event, element, accountForScaling) {
@@ -47,32 +47,31 @@ function load() {
                     fromInstance = itemGetInstance(dragConnectionElement), 
                     toInstance = itemGetInstance(connectedToElement)
             )) {
-                updateLine(draggingLine, dragStart, getGraphPositionFromCenter(connectedToElement));
+                updateLine(draggingLine, getGraphPositionFromCenter(dragConnectionElement), getGraphPositionFromCenter(connectedToElement));
                 var isFromInput = fromInstance.type == "inputs" || toInstance.type == "outputs";
+                if (fromInstance.type == "node") fromInstance.effectiveType = isFromInput?"inputs":"outputs";
+                if (toInstance.type == "node") toInstance.effectiveType = isFromInput?"outputs":"inputs";
                 var connection = {
-                    input: isFromInput?fromInstance:toInstance,
-                    output: isFromInput?toInstance:fromInstance,
+                    inputs: isFromInput?fromInstance:toInstance,
+                    outputs: isFromInput?toInstance:fromInstance,
                     line: draggingLine
                 }
                 fromInstance.connection = connection;
                 toInstance.connection = connection;
                 draggingLine.addEventListener("click", ()=>{removeConnection(connection)})
-                console.log(fromInstance)
-                console.log(toInstance)
             } else {
                 draggingLine.remove();
             }
         }
     }));
 
-    console.log(newNode(recipeNode, 40, 40, "ethylene"));
-    console.log(newNode(recipeNode, 300, 40, "polyethylene"));
-    console.log(newNode(itemNode, 560, 40, "molten.plastic"));
+    recipeidselect.innerHTML += Object.keys(data.recipes).map(recipe=>`<option value="${recipe}">${recipe}</option>`).join("");
+    itemidselect.innerHTML += Object.keys(data.items).map(item=>`<option value="${item}">${item}</option>`).join("");
 }
 
 function newNode(generatorFunction, posX, posY, params) {
     var node = document.createElement("node");
-    node.id = idIter;
+    node.id = nodeIdIter;
     node.style.setProperty("--posX", posX);
     node.style.setProperty("--posY", posY);
     
@@ -81,12 +80,11 @@ function newNode(generatorFunction, posX, posY, params) {
     wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
     wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
     
-    node.innerHTML += `<div class="delete" onclick="removeNode(${idIter})">X</div>`;
+    node.innerHTML += `<div class="delete" onclick="removeNode(${nodeIdIter})">X</div>`;
     
     var nodeData = generatorFunction(node, params);
     node.classList.add(nodeData.type)
     graph.appendChild(node);
-
     nodes[nodeData.id] = nodeData;
     return nodeData;
 }
@@ -104,34 +102,42 @@ function recipeNode(node, recipe) {
         <div class="recipe-arrow"></div>
         <div class="outputs"></div>
     `;
+    var nodeInstance = {
+        id: nodeIdIter++,
+        type: "recipeNode",
+        element: node,
+        recipe: recipe
+    }
     var inputs = recipeData.inputs.map((input, index) => {
         var item = generateItem(input[0], input[1], "inputs", index);
         node.querySelector(".inputs").appendChild(item);
-        return {type:"inputs", index:index, item:input[0], baseQuantity:input[1], element:item}
+        return {type:"inputs", index:index, item:input[0], baseQuantity:input[1], element:item, node:nodeInstance, id:itemIdIter++}
     });
     var outputs = recipeData.outputs.map((output, index) => {
         var item = generateItem(output[0], output[1], "outputs", index);
         node.querySelector(".outputs").appendChild(item);
-        return {type:"outputs", index:index, item:output[0], baseQuantity:output[1], element:item}
+        return {type:"outputs", index:index, item:output[0], baseQuantity:output[1], element:item, node:nodeInstance, id:itemIdIter++}
     });
-    return {
-        id: idIter++,
-        type: "recipeNode",
-        element: node,
-        inputs: inputs,
-        outputs: outputs,
-        recipe: recipe
-    }
+    nodeInstance.inputs = inputs;
+    nodeInstance.outputs = outputs;
+    return nodeInstance;
 }
 
 function itemNode(node, item) {
-    node.appendChild(generateItem(item, null, "", ""));
-    return {
-        id: idIter++,
+    node.innerHTML += `
+        <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[item].unit||""}</span></div>
+        <button>SET</button>
+    `
+    var nodeInstance = {
+        id: nodeIdIter++,
         type: "itemNode",
         element: node,
-        item: {type:"node", item:item, element:node}
     }
+    var itemElement = generateItem(item, null, "", "");
+    nodeInstance.item = {type:"node", item:item, element:itemElement, node:nodeInstance, id:itemIdIter++};
+    node.querySelector("button").addEventListener("click", ()=>{propagate(nodeInstance.item, Number(node.querySelector("input").value))});
+    node.insertBefore(itemElement, node.firstChild);
+    return nodeInstance;
 }
 // end node generators
 
@@ -152,17 +158,17 @@ function startConnection(element) {
     dragConnectionElement = element;
     draggingLine = document.createElement("line");
     graph.appendChild(draggingLine);
-    dragStart = getGraphPositionFromCenter(dragConnectionElement);
 
     var scale = Number(graph.style.getPropertyValue("--scale")||1);
     updateLineFunction = event=>{updateLine(draggingLine,
-        dragStart,
+        getGraphPositionFromCenter(dragConnectionElement),
         [
             (event.clientX - wrapper.offsetLeft - Number(graph.style.getPropertyValue("--posX")||0)) / scale,
             (event.clientY - wrapper.offsetTop - Number(graph.style.getPropertyValue("--posY")||0)) / scale
         ]);
     }
     wrapper.addEventListener("mousemove", updateLineFunction);
+    var dragStart = getGraphPositionFromCenter(dragConnectionElement);
     updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
 }
 
@@ -179,8 +185,8 @@ function getGraphPositionFromCenter(element) {
 
 function updateLine(lineOrConnection, from, to) {
     if (!lineOrConnection.nodeName) {
-        from = getGraphPositionFromCenter(lineOrConnection.input.element);
-        to = getGraphPositionFromCenter(lineOrConnection.output.element);
+        from = getGraphPositionFromCenter(lineOrConnection.inputs.element);
+        to = getGraphPositionFromCenter(lineOrConnection.outputs.element);
         lineOrConnection = lineOrConnection.line;
     }
     var aPos = from;
@@ -195,6 +201,7 @@ function canConnect(fromInstance, toInstance) {
     if (fromInstance.item != toInstance.item) return false
     if (fromInstance.type == "inputs" && toInstance.type == "inputs") return false
     if (fromInstance.type == "outputs" && toInstance.type == "outputs") return false
+    if (fromInstance.connection || toInstance.connection) return false
     return true
 }
 
@@ -217,6 +224,40 @@ function allItemsInNode(element) {
 
 function removeConnection(connection) {
     connection.line.remove();
-    delete connection.input.connection;
-    delete connection.output.connection;
+    delete connection.inputs.connection;
+    delete connection.outputs.connection;
 }
+
+function propagate(itemInstance, value, previous) {
+    if (!value && value !== 0) {
+        console.log("error in propagation", itemInstance);
+        return;
+    }
+    itemInstance.quantity = value;
+    switch (itemInstance.node.type) {
+        case "recipeNode":
+            var node = itemInstance.node;
+            node.multiplier = itemInstance.quantity / itemInstance.baseQuantity;
+            allItemsInNode(node).forEach(item=>{
+                if (item != itemInstance) {
+                    item.quantity = item.baseQuantity * node.multiplier;
+                    var connection = item.connection;
+                    if (connection) {
+                        propagate(connection[oppositeType(item.type)], item.quantity, item);
+                    }
+                }
+                item.element.setAttribute("quantity", item.quantity.toFixed(2) + (data.items[item.item].unit||""));
+            })
+        break;
+        case "itemNode":
+            var connection = itemInstance.connection;
+            if (connection && connection[oppositeType(itemInstance.effectiveType)] != previous) {
+                propagate(connection[oppositeType(itemInstance.effectiveType)], value, itemInstance);
+            }
+            itemInstance.node.element.querySelector("input").value = itemInstance.quantity;
+        break;
+    }
+}
+
+function oppositeType(type) { return type == "outputs" ? "inputs" : "outputs" }
+

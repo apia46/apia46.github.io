@@ -1,11 +1,12 @@
 {
     "items": {
-        "molten.plastic":           { "name": "Molten Polyethylene",                    "image": "assets/testing/images/molten.plastic.png", "unit": "L" },
-        "ethylene":                 { "name": "Ethylene",                               "image": "assets/testing/images/ethylene.png",     "unit": "L" },
-        "severelysteamcracked.gas": { "name": "Severely Steam-Cracked Refinery Gas",    "image": "assets/testing/images/gas_gas.png",      "unit": "L" },
-        "oxygen":                   { "name": "Oxygen Gas",                             "image": "assets/testing/images/oxygen.png",       "unit": "L" },
+        "molten.plastic":               { "name": "Molten Polyethylene",                    "image": "assets/testing/images/molten.plastic.png",    "unit": "L" },
+        "ethylene":                     { "name": "Ethylene",                               "image": "assets/testing/images/ethylene.png",          "unit": "L" },
+        "severelysteamcracked.gas":     { "name": "Severely Steam-Cracked Refinery Gas",    "image": "assets/testing/images/gas_gas.png",           "unit": "L" },
+        "severelysteamcracked.naphtha": { "name": "Severely Steam-Cracked Naphtha",         "image": "assets/testing/images/liquid_naphtha.png",    "unit": "L" },
+        "oxygen":                       { "name": "Oxygen Gas",                             "image": "assets/testing/images/oxygen.png",            "unit": "L" },
 
-        "dustTinyCarbon":           { "name": "Tiny Pile of Carbon Dust",               "image": "assets/testing/images/dustTinyCarbon.png"}
+        "dustTinyCarbon":               { "name": "Tiny Pile of Carbon Dust",               "image": "assets/testing/images/dustTinyCarbon.png"}
     },
     "recipes": {
         "polyethylene": {
@@ -13,10 +14,15 @@
             "inputs":   [ ["ethylene", 144], ["oxygen", 1000] ],
             "outputs":  [ ["molten.plastic", 216] ]
         },
-        "ethylene": {
+        "ethylenefromgas": {
             "time": 12,
             "inputs":   [ ["severelysteamcracked.gas", 1000] ],
             "outputs":  [ ["dustTinyCarbon", 1], ["ethylene", 300] ]
+        },
+        "ethylenefromnaphtha": {
+            "time": 12,
+            "inputs":   [ ["severelysteamcracked.naphtha", 1000] ],
+            "outputs":  [ ["dustTinyCarbon", 3], ["ethylene", 500] ]
         }
     }
 }
