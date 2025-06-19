@@ -18,7 +18,10 @@ function drag(event, element, accountForScaling) {
     element.style.setProperty("--posY", Number(element.style.getPropertyValue("--posY")||0) + (event.clientY - previousMouseY) * multiplier)
     previousMouseX = event.clientX;
     previousMouseY = event.clientY;
+    if (element.nodeName == "NODE") {
+        allItemsInNode(element).forEach(item=>{if (item.connection) updateLine(item.connection)})
     }
+}
 
 function load() {
     var dragGraph = event=>{drag(event, graph)};
@@ -40,26 +43,31 @@ function load() {
             draggingConnection = false;
             dragConnectionElement.classList.remove("connecting");
             var connectedToElement = document.elementFromPoint(event.clientX, event.clientY);
-            var fromData = itemGetData(dragConnectionElement);
-            var toData = itemGetData(connectedToElement);
-            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && canConnect(fromData, toData)) {
+            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && canConnect(
+                    fromInstance = itemGetInstance(dragConnectionElement), 
+                    toInstance = itemGetInstance(connectedToElement)
+            )) {
                 updateLine(draggingLine, dragStart, getGraphPositionFromCenter(connectedToElement));
-                console.log(fromData)
-                console.log(toData)
+                var isFromInput = fromInstance.type == "inputs" || toInstance.type == "outputs";
                 var connection = {
-                    input: "",
-                    output: "",
+                    input: isFromInput?fromInstance:toInstance,
+                    output: isFromInput?toInstance:fromInstance,
                     line: draggingLine
                 }
+                fromInstance.connection = connection;
+                toInstance.connection = connection;
+                draggingLine.addEventListener("click", ()=>{removeConnection(connection)})
+                console.log(fromInstance)
+                console.log(toInstance)
             } else {
                 draggingLine.remove();
             }
         }
     }));
 
-    console.log(newNode(recipeNode, 40, 40, data.recipes.ethylene));
-    console.log(newNode(recipeNode, 300, 40, data.recipes.polyethylene));
-    console.log(newNode(itemNode, 560, 40, data.items["molten.plastic"]));
+    console.log(newNode(recipeNode, 40, 40, "ethylene"));
+    console.log(newNode(recipeNode, 300, 40, "polyethylene"));
+    console.log(newNode(itemNode, 560, 40, "molten.plastic"));
 }
 
 function newNode(generatorFunction, posX, posY, params) {
@@ -90,44 +98,52 @@ function removeNode(id) {
 
 // node generators
 function recipeNode(node, recipe) {
+    var recipeData = data.recipes[recipe];
     node.innerHTML += `
-        <div class="inputs">
-            ${recipe.inputs.map((input, index) => generateItem(data.items[input[0]], input[1], "inputs", index)).join("")}
-        </div>
+        <div class="inputs"></div>
         <div class="recipe-arrow"></div>
-        <div class="outputs">
-            ${recipe.outputs.map((output, index) => generateItem(data.items[output[0]], output[1], "outputs", index)).join("")}
-        </div>
+        <div class="outputs"></div>
     `;
+    var inputs = recipeData.inputs.map((input, index) => {
+        var item = generateItem(input[0], input[1], "inputs", index);
+        node.querySelector(".inputs").appendChild(item);
+        return {type:"inputs", index:index, item:input[0], baseQuantity:input[1], element:item}
+    });
+    var outputs = recipeData.outputs.map((output, index) => {
+        var item = generateItem(output[0], output[1], "outputs", index);
+        node.querySelector(".outputs").appendChild(item);
+        return {type:"outputs", index:index, item:output[0], baseQuantity:output[1], element:item}
+    });
     return {
         id: idIter++,
         type: "recipeNode",
         element: node,
-        inputs: recipe.inputs.map((input, index) => ({array:"inputs", index:index, item:input[0], baseQuantity:input[1]})), // use the clone instead
-        outputs: recipe.outputs.map((output, index) => ({array:"outputs", index:index, item:output[0], baseQuantity:output[1]})),
-        recipeData: structuredClone(recipe)
+        inputs: inputs,
+        outputs: outputs,
+        recipe: recipe
     }
 }
 
 function itemNode(node, item) {
-    node.innerHTML += generateItem(item, null, "", "");
+    node.appendChild(generateItem(item, null, "", ""));
     return {
         id: idIter++,
         type: "itemNode",
         element: node,
-        item: structuredClone(item)
+        item: {type:"node", item:item, element:node}
     }
 }
 // end node generators
 
-function generateItem(item, quantity, array, index) {
-    return `<item
-        style="--image:url('${item.image}');"
-        quantity="${quantity||""}${quantity?(item.unit||""):""}"
-        onmousedown="event.stopPropagation(); startConnection(this);"
-        array="${array}"
-        index="${index}"
-    ></item>`;
+function generateItem(item, quantity, type, index) {
+    var itemData = data.items[item];
+    var item = document.createElement("item");
+    item.style.setProperty("--image", `url('${itemData.image}')`);
+    if (quantity || quantity === 0) item.setAttribute("quantity", `${quantity}${itemData.unit||""}`);
+    item.addEventListener("mousedown", event=>{event.stopPropagation(); startConnection(item);});
+    item.setAttribute("type", type);
+    item.setAttribute("index", index);
+    return item;
 }
 
 function startConnection(element) {
@@ -144,7 +160,7 @@ function startConnection(element) {
         [
             (event.clientX - wrapper.offsetLeft - Number(graph.style.getPropertyValue("--posX")||0)) / scale,
             (event.clientY - wrapper.offsetTop - Number(graph.style.getPropertyValue("--posY")||0)) / scale
-        ])
+        ]);
     }
     wrapper.addEventListener("mousemove", updateLineFunction);
     updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
@@ -161,25 +177,46 @@ function getGraphPositionFromCenter(element) {
     return [posX, posY];
 }
 
-function updateLine(line, from, to) {
+function updateLine(lineOrConnection, from, to) {
+    if (!lineOrConnection.nodeName) {
+        from = getGraphPositionFromCenter(lineOrConnection.input.element);
+        to = getGraphPositionFromCenter(lineOrConnection.output.element);
+        lineOrConnection = lineOrConnection.line;
+    }
     var aPos = from;
     var bPos = to;
-    line.style.setProperty("--aX", aPos[0]);
-    line.style.setProperty("--aY", aPos[1]);
-    line.style.setProperty("--bX", bPos[0]);
-    line.style.setProperty("--bY", bPos[1]);
+    lineOrConnection.style.setProperty("--aX", aPos[0]);
+    lineOrConnection.style.setProperty("--aY", aPos[1]);
+    lineOrConnection.style.setProperty("--bX", bPos[0]);
+    lineOrConnection.style.setProperty("--bY", bPos[1]);
 }
 
-function canConnect(fromData, toData) {
+function canConnect(fromInstance, toInstance) {
+    if (fromInstance.item != toInstance.item) return false
+    if (fromInstance.type == "inputs" && toInstance.type == "inputs") return false
+    if (fromInstance.type == "outputs" && toInstance.type == "outputs") return false
     return true
 }
 
-function itemGetData(element) {
+function itemGetInstance(element) {
     var nodeElement = element;
     while ((nodeElement = nodeElement.offsetParent).nodeName != "NODE");
-    console.log([nodes[nodeElement.id].type, nodes[nodeElement.id], element.getAttribute("array")])
     switch (nodes[nodeElement.id].type) {
-        case "recipeNode": return nodes[nodeElement.id][element.getAttribute("array")][element.getAttribute("index")];
+        case "recipeNode": return nodes[nodeElement.id][element.getAttribute("type")][element.getAttribute("index")];
         case "itemNode": return nodes[nodeElement.id].item;
     }
+}
+
+function allItemsInNode(element) {
+    var node = nodes[element.id];
+    switch (node.type) {
+        case "recipeNode": return [...node.inputs, ...node.outputs];
+        case "itemNode": return [node.item];
+    }
+}
+
+function removeConnection(connection) {
+    connection.line.remove();
+    delete connection.input.connection;
+    delete connection.output.connection;
 }

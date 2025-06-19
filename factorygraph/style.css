@@ -127,12 +127,15 @@ line {
     --distance: calc(sqrt(
         pow(var(--aX) - var(--bX), 2) + pow(var(--aY) - var(--bY), 2)
     ));
-    left: calc(var(--aX) * 1px - var(--width));
+    left: calc(var(--aX) * 1px + 1px);
     top: calc(var(--aY) * 1px - var(--width));
-    transform-origin: var(--width) var(--width);
-    height: 4px;
-    width: calc(var(--distance) * 1px + 4px);
+    transform-origin: -1px var(--width);
+    height: calc(var(--width) * 2);
+    width: calc(var(--distance) * 1px - 2px);
     rotate: calc(atan2(var(--bY) - var(--aY), var(--bX) - var(--aX)));
     background: #fff;
-    pointer-events: none;
+    transition: --width 0.1s;
+}
+line:hover {
+    --width: 4px;
 }
