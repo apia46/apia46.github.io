@@ -40,8 +40,17 @@ function load() {
             draggingConnection = false;
             dragConnectionElement.classList.remove("connecting");
             var connectedToElement = document.elementFromPoint(event.clientX, event.clientY);
-            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement) {
+            var fromData = itemGetData(dragConnectionElement);
+            var toData = itemGetData(connectedToElement);
+            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && canConnect(fromData, toData)) {
                 updateLine(draggingLine, dragStart, getGraphPositionFromCenter(connectedToElement));
+                console.log(fromData)
+                console.log(toData)
+                var connection = {
+                    input: "",
+                    output: "",
+                    line: draggingLine
+                }
             } else {
                 draggingLine.remove();
             }
@@ -83,23 +92,25 @@ function removeNode(id) {
 function recipeNode(node, recipe) {
     node.innerHTML += `
         <div class="inputs">
-            ${recipe.inputs.map((input, index) => generateItem(data.items[input[0]], input[1])).join("")}
+            ${recipe.inputs.map((input, index) => generateItem(data.items[input[0]], input[1], "inputs", index)).join("")}
         </div>
         <div class="recipe-arrow"></div>
         <div class="outputs">
-            ${recipe.outputs.map((output, index) => generateItem(data.items[output[0]], output[1])).join("")}
+            ${recipe.outputs.map((output, index) => generateItem(data.items[output[0]], output[1], "outputs", index)).join("")}
         </div>
     `;
     return {
         id: idIter++,
         type: "recipeNode",
         element: node,
+        inputs: recipe.inputs.map((input, index) => ({array:"inputs", index:index, item:input[0], baseQuantity:input[1]})), // use the clone instead
+        outputs: recipe.outputs.map((output, index) => ({array:"outputs", index:index, item:output[0], baseQuantity:output[1]})),
         recipeData: structuredClone(recipe)
     }
 }
 
 function itemNode(node, item) {
-    node.innerHTML += generateItem(item, null, `nodes[${idIter}].item`);
+    node.innerHTML += generateItem(item, null, "", "");
     return {
         id: idIter++,
         type: "itemNode",
@@ -109,12 +120,13 @@ function itemNode(node, item) {
 }
 // end node generators
 
-function generateItem(item, quantity, pointer) {
+function generateItem(item, quantity, array, index) {
     return `<item
         style="--image:url('${item.image}');"
         quantity="${quantity||""}${quantity?(item.unit||""):""}"
         onmousedown="event.stopPropagation(); startConnection(this);"
-        pointer="pointer"
+        array="${array}"
+        index="${index}"
     ></item>`;
 }
 
@@ -130,9 +142,9 @@ function startConnection(element) {
     updateLineFunction = event=>{updateLine(draggingLine,
         dragStart,
         [
-            (event.clientX - Number(graph.style.getPropertyValue("--posX")||0)) / scale,
-            (event.clientY - 48 - Number(graph.style.getPropertyValue("--posY")||0)) / scale
-        ]) // header height ^^^^
+            (event.clientX - wrapper.offsetLeft - Number(graph.style.getPropertyValue("--posX")||0)) / scale,
+            (event.clientY - wrapper.offsetTop - Number(graph.style.getPropertyValue("--posY")||0)) / scale
+        ])
     }
     wrapper.addEventListener("mousemove", updateLineFunction);
     updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
@@ -156,4 +168,18 @@ function updateLine(line, from, to) {
     line.style.setProperty("--aY", aPos[1]);
     line.style.setProperty("--bX", bPos[0]);
     line.style.setProperty("--bY", bPos[1]);
+}
+
+function canConnect(fromData, toData) {
+    return true
+}
+
+function itemGetData(element) {
+    var nodeElement = element;
+    while ((nodeElement = nodeElement.offsetParent).nodeName != "NODE");
+    console.log([nodes[nodeElement.id].type, nodes[nodeElement.id], element.getAttribute("array")])
+    switch (nodes[nodeElement.id].type) {
+        case "recipeNode": return nodes[nodeElement.id][element.getAttribute("array")][element.getAttribute("index")];
+        case "itemNode": return nodes[nodeElement.id].item;
+    }
 }
