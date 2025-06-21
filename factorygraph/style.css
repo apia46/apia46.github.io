@@ -13,6 +13,7 @@ body {
     color: #fff;
     font-family: notosansmono;
     margin: 0;
+    font-size: 0;
     
     --highlight: #fff;
     --bright: #999;
@@ -20,16 +21,135 @@ body {
     --background: #111;
 }
 
-#header {
+button {
+    --this-background: var(--background);
+    border: none;
+    outline: none;
+    background: var(--this-background);
+    color: var(--highlight);
+    cursor: pointer;
+}
+button:hover, dropdown:hover {
+    --this-background: var(--dark);
+    outline: 2px solid var(--highlight);
+    outline-offset: -2px;
+}
+
+header {
     box-sizing: border-box;
     padding: 4px;
     width: 100%;
-    height: 48px;
+    height: 52px;
+    font-size: 0;
+    display: none;
 }
+
+body[state="normal"] #header {display: block}
+body[state="recipeSearch"] #recipeSearchHeader, body[state="recipeSearch"] #searchOverlay {display: block}
+body[state="itemSearch"] #itemSearchHeader, body[state="itemSearch"] #searchOverlay {display: block}
+#header > button {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    margin: 4px;
+    padding: 2px;
+    background-size: 32px;
+    background-position: 2px 2px;
+}
+#newRecipeButton { background: var(--this-background) no-repeat url(assets/newRecipe.png) }
+#newItemButton { background: var(--this-background) no-repeat url(assets/newItem.png) }
+dropdown {
+    --this-background: var(--background);
+    position: relative;
+    font-size: 16px;
+    background: var(--this-background);
+    height: 36px;
+    width: 200px;
+    margin: 4px;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle;
+    cursor: pointer;
+    float: right;
+    z-index: 1;
+}
+dropdown > div {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    line-height: normal;
+    display: none;
+    font-size: 0px;
+    button {
+        width: 100%;
+        border-top: 2px solid var(--dark);
+    }
+}
+dropdown.open > div {display: block}
+#infoText {
+    margin: 8px;
+    line-height: 36px;
+    vertical-align: middle;
+    font-size: 16px;
+}
+
+#itemSearchBar {
+    border: none;
+    outline: none;
+    width: 300px;
+    height: 36px;
+    font-size: 16px;
+    padding: 0px 8px;
+    margin: 4px;
+    background: var(--background);
+    color: var(--highlight);
+}
+#searchOverlay {
+    --scroll-offset: 0;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 52px);
+    top: 52px;
+    background: #1115;
+    z-index: 0;
+    display: none;
+    padding: 8px;
+    overflow: hidden;
+}
+#searchOverlay node {
+    position: relative;
+    display: inline-block;
+    margin: 8px;
+    cursor: pointer;
+    top: calc(var(--scroll-offset) * -1px);
+    font-size: 0px;
+}
+#searchOverlay item:hover {
+    outline: none;
+}
+
+#hover {
+    --posX: 0;
+    --posY: 0;
+    position: absolute;
+    font-size: 12px;
+    padding: 2px;
+    background: var(--dark);
+    left: calc(var(--posX) * 1px + 12px);
+    top: calc(var(--posY) * 1px);
+    display: none;
+    z-index: 3;
+    pointer-events: none;
+}
+#hover.show {
+    display: block;
+}
+
+/* GRAPH STUFF STARTS HERE */
 
 #wrapper {
     width: 100%;
-    height: calc(100% - 48px); /* surely theres a better way to do this but i kind of just dont care */
+    height: calc(100% - 52px); /* surely theres a better way to do this but i kind of just dont care */
     background: #333333;
     overflow: hidden;
 }
@@ -86,21 +206,62 @@ item::after {
     font-size: 12px;
     text-shadow: 1px 1px var(--dark);
     position: absolute;
-    right: 4px;
-    bottom: 0px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: var(--imageOverlay);
+    background-size: contain;
+    text-align: right;
+    line-height: 116px;
 }
 item:hover, item.connecting {
     outline: calc(4px * var(--outline-width-multiplier)) solid #ffffff;
 }
+item[style*="--imageModulation"]::before {
+    content: " ";
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: var(--image);
+    mask-size: contain;
+    background: var(--imageModulation);
+    mix-blend-mode: multiply;
+}
 
 /* RECIPENODE */
 .recipeNode {
-    width: 400px;
+    width: 300px;
 }
 
+.machine {
+    position: absolute;
+    top: -48px;
+    left: 0px;
+    height: 48px;
+    width: 48px;
+    padding: 8px;
+    padding-bottom: 0;
+    background: no-repeat 8px 8px/48px var(--background) var(--image);
+    text-align: center;
+}
+.machine::after {
+    position: absolute;
+    top: 0px;
+    left: 64px;
+    height: 64px;
+    padding: 8px 16px 0px 0px;
+    content: attr(amount);
+    font-size: 24px;
+    line-height: 48px;
+    vertical-align: center;
+    background: var(--background);
+}
 .inputs, .outputs {
     display: inline-grid;
-    grid-template-columns: 64px 64px;
+    grid-template-columns: 64px;
     gap: 4px;
 }
 .recipe-arrow {
@@ -156,7 +317,6 @@ item:hover, item.connecting {
 .itemNode button {
     height: 24px;
     color: var(--highlight);
-    cursor: pointer;
 }
 .itemNode button:hover {
     background: var(--bright);

@@ -1,4 +1,7 @@
 {
+    "metadata": {
+        "dataStructure":"normal"
+    },
     "items": {
         "molten.plastic":               { "name": "Molten Polyethylene",                    "image": "assets/testing/images/molten.plastic.png",    "unit": "L" },
         "ethylene":                     { "name": "Ethylene",                               "image": "assets/testing/images/ethylene.png",          "unit": "L" },
@@ -8,21 +11,36 @@
 
         "dustTinyCarbon":               { "name": "Tiny Pile of Carbon Dust",               "image": "assets/testing/images/dustTinyCarbon.png"}
     },
-    "recipes": {
-        "polyethylene": {
+    "recipes": [
+        {
             "time": 8,
+            "machines": [ "chemicalReactor" ],
             "inputs":   [ ["ethylene", 144], ["oxygen", 1000] ],
             "outputs":  [ ["molten.plastic", 216] ]
         },
-        "ethylenefromgas": {
+        {
             "time": 12,
+            "machines": [ "distillery" ],
             "inputs":   [ ["severelysteamcracked.gas", 1000] ],
             "outputs":  [ ["dustTinyCarbon", 1], ["ethylene", 300] ]
         },
-        "ethylenefromnaphtha": {
+        {
             "time": 12,
+            "machines": [ "distillery" ],
             "inputs":   [ ["severelysteamcracked.naphtha", 1000] ],
             "outputs":  [ ["dustTinyCarbon", 3], ["ethylene", 500] ]
+        }
+    ],
+    "machines": {
+        "chemicalReactor": {
+            "name": "Chemical Reactor",
+            "image": "assets/testing/images/chemicalReactor.png",
+            "speed": 1
+        },
+        "distillery": {
+            "name": "Distillery",
+            "image": "assets/testing/images/distillery.png",
+            "speed": 1
         }
     }
 }
