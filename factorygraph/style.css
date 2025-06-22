@@ -93,7 +93,7 @@ dropdown.open > div {display: block}
     font-size: 16px;
 }
 
-#itemSearchBar {
+#itemSearchBar, #recipeSearchBar {
     border: none;
     outline: none;
     width: 300px;
@@ -123,9 +123,52 @@ dropdown.open > div {display: block}
     cursor: pointer;
     top: calc(var(--scroll-offset) * -1px);
     font-size: 0px;
+    transform-origin: top left;
+    padding: calc(16px * var(--scale));
+}
+#searchOverlay node.itemNode item {
+    margin-bottom: 0;
+    width: calc(128px * var(--scale));
+    height: calc(128px * var(--scale));
 }
 #searchOverlay item:hover {
     outline: none;
+}
+#searchOverlay node.recipeNode {
+    width: calc(300px * var(--scale));
+    margin-top: calc(56px * var(--scale));
+}
+#searchOverlay .recipe-arrow {
+    width: calc(80px * var(--scale));
+    height: calc(60px * var(--scale));
+}
+#searchOverlay node item {
+    width: calc(64px * var(--scale));
+    height: calc(64px * var(--scale));
+}
+#searchOverlay .inputs, #searchOverlay .outputs {
+    grid-template-columns: calc(64px * var(--scale));
+    gap: calc(4px * var(--scale));
+}
+#searchOverlay .machine {
+    top: calc(-48px * var(--scale));
+    height: calc(48px * var(--scale));
+    width: calc(48px * var(--scale));
+    padding: calc(8px * var(--scale));
+    background: no-repeat calc(8px * var(--scale)) calc(8px * var(--scale))/calc(48px * var(--scale)) var(--background) var(--image);
+}
+#searchOverlay .machine::after {
+    left: calc(64px * var(--scale));
+    height: calc(64px * var(--scale));
+    padding-top: calc(8px * var(--scale));
+    padding-right: calc(16px * var(--scale));
+    font-size: calc(24px * var(--scale));
+    line-height: calc(48px * var(--scale));
+}
+#searchOverlay item::after {
+    font-size: calc(12px * var(--scale));
+    text-shadow: calc(1px * var(--scale)) calc(1px * var(--scale)) var(--dark);
+    line-height: calc(116px * var(--scale));
 }
 
 #hover {
@@ -148,16 +191,18 @@ dropdown.open > div {display: block}
 /* GRAPH STUFF STARTS HERE */
 
 #wrapper {
+    --posX: 0;
+    --posY: 0;
+    --scale: 1;
     width: 100%;
     height: calc(100% - 52px); /* surely theres a better way to do this but i kind of just dont care */
-    background: #333333;
+    background: url(assets/grid.png);
+    background-size: calc(256px * var(--scale));
+    background-position: calc(var(--posX) * 1px) calc(var(--posY) * 1px);
     overflow: hidden;
 }
 #graph {
     position: relative;
-    --posX: 0;
-    --posY: 0;
-    --scale: 1;
     width: 0;
     height: 0;
     left: calc(var(--posX) * 1px);
@@ -256,7 +301,7 @@ item[style*="--imageModulation"]::before {
     content: attr(amount);
     font-size: 24px;
     line-height: 48px;
-    vertical-align: center;
+    vertical-align: middle;
     background: var(--background);
 }
 .inputs, .outputs {
