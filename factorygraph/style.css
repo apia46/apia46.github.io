@@ -106,6 +106,7 @@ dropdown.open > div {display: block}
 }
 #searchOverlay {
     --scroll-offset: 0;
+    box-sizing: border-box;
     position: absolute;
     width: 100%;
     height: calc(100% - 52px);

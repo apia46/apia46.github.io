@@ -1,6 +1,6 @@
 let parsedJson;
 
-let data = {items:{}, recipes:{}, machines: {}};
+let data = {items:{}, recipes:[], machines: {}};
 let nodeIdIter = 0;
 let itemIdIter = 0;
 
@@ -14,16 +14,20 @@ let dragConnectionElement;
 let draggingLine;
 let updateLineFunction;
 
+let previousRecipeSearchQuery = "";
 let searchResults = [];
 let searchScroll = 0;
-let rowsScrolledPrevious = 0;
+let previousScrollDeltaY;
+let previousRowsScrolled = 0;
+let previousElementsWide;
+let previousSearchMode;
 
 let animFrame = 0;
 
 let mouseX = 0;
 let mouseY = 0;
 
-function drag(event, element, accountForScaling) {
+function drag(element, accountForScaling) {
     var multiplier = (accountForScaling ? 1/Number(wrapper.style.getPropertyValue("--scale")||1) : 1);
     element.style.setProperty("--posX", Number(element.style.getPropertyValue("--posX")||0) + (mouseX - previousMouseX) * multiplier)
     element.style.setProperty("--posY", Number(element.style.getPropertyValue("--posY")||0) + (mouseY - previousMouseY) * multiplier)
@@ -39,15 +43,11 @@ function loadDataset(dataset) {
             parsedJson = parsed;
             switch (parsed.metadata.dataStructure) {
                 case "normal":
-                    data = parsed;
+                    Object.assign(data.items, parsed.items);
+                    data.recipes.push(...parsed.recipes);
+                    Object.assign(data.machines, parsed.machines);
                 break;
                 case "recexM": // extra-minified
-                    data = {
-                        metadata: parsed.metadata,
-                        items: {},
-                        recipes: [],
-                        machines: {}
-                    }
 
                     function addItem(item, unit) {
                         var itemId = (item.i||item.N).replace("GT$", "gregtech:") + (item.m||item.m===0?"#"+item.m:"");
@@ -97,7 +97,7 @@ function load() {
         mouseY = event.clientY;
     });
 
-    var dragGraph = event=>{drag(event, wrapper)};
+    var dragGraph = ()=>{drag(wrapper)};
     wrapper.addEventListener("mousedown", ()=>{previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", dragGraph)});
     wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", dragGraph)});
     wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", dragGraph)});
@@ -151,7 +151,8 @@ function load() {
 
     searchOverlay.addEventListener("wheel", event=>{
         searchScroll += event.deltaY * 0.5;
-        searchScroll = Math.max(searchScroll, 0);
+        previousScrollDeltaY = event.deltaY * 0.5;
+        if (previousRowsScrolled == 0 && searchScroll < 0) searchScroll = 0;
         switch (document.body.getAttribute("state")) {
             case "itemSearch": displaySearchedItems(); return;
             case "recipeSearch": displaySearchedRecipes(); return;
@@ -165,7 +166,7 @@ function newNode(generatorFunction, posX, posY, params) {
     nodeElement.style.setProperty("--posX", posX);
     nodeElement.style.setProperty("--posY", posY);
     
-    var dragNode = event=>{drag(event, nodeElement, true)};
+    var dragNode = ()=>{drag(nodeElement, true)};
     nodeElement.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", dragNode)});
     wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
     wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
@@ -399,35 +400,43 @@ function testAllItems() {
 function searchItems() {
     searchScroll = 0;
     var query = itemSearchBar.value.toLowerCase();
-    searchResults = Object.keys(data.items).filter(item=>data.items[item].name.toLowerCase().includes(query)); // i wish i could do this for the recipes but it would probably be too slow
+    searchResults = Object.keys(data.items).filter(item=>data.items[item].name.toLowerCase().includes(query));
     if (searchResults.length < 4000) searchResults.sort((a,b)=>{
         return searchScore(data.items[b].name.toLowerCase(), query) - searchScore(data.items[a].name.toLowerCase(), query);
     });
+    previousRecipeSearchQuery = "";
+    previousSearchMode = "items";
     displaySearchedItems(true);
 }
 
 function searchRecipes() {
     searchScroll = 0;
+    previousRowsScrolled = 0;
     var queries = recipeSearchBar.value.toLowerCase().split(",").map(query=>query.trim());
 
-    var inputQueries = [true]
-    var outputQueries = [true]
-    var eitherQueries = [true]
+    var inputQueries = []
+    var outputQueries = []
+    var eitherQueries = []
     for (let query of queries) {
         if (query.slice(0,2) == "i:") inputQueries.push(query.slice(2));
         else if (query.slice(0,2) == "o:") outputQueries.push(query.slice(2));
         else eitherQueries.push(query);
     }
-    searchResults = Object.keys(data.recipes).filter(recipe=>{
+    var toSearchFrom;
+    if (previousSearchMode == "recipes" && recipeSearchBar.value.includes(previousRecipeSearchQuery)) toSearchFrom = searchResults;
+    else toSearchFrom = Object.keys(data.recipes);
+    searchResults = toSearchFrom.filter(recipe=>{
         var recipeData = data.recipes[recipe];
         var inputs = recipeData.inputs.map(input=>data.items[input[0]].name.toLowerCase());
         var outputs = recipeData.outputs.map(output=>data.items[output[0]].name.toLowerCase());
         var eithers = [...inputs, ...outputs];
-        return eitherQueries.reduce((total, thisQuery)=>total&&eithers.find(name=>name.includes(thisQuery)))
-            && inputQueries.reduce((total, thisQuery)=>total&&inputs.find(name=>name.includes(thisQuery)))
-            && outputQueries.reduce((total, thisQuery)=>total&&outputs.find(name=>name.includes(thisQuery)));
+        return eitherQueries.every(thisQuery=>eithers.some(name=>name.includes(thisQuery)))
+            && inputQueries.every(thisQuery=>inputs.some(name=>name.includes(thisQuery)))
+            && outputQueries.every(thisQuery=>outputs.some(name=>name.includes(thisQuery)));
     });
     // sort recipes
+    previousRecipeSearchQuery = recipeSearchBar.value;
+    previousSearchMode = "recipes";
     displaySearchedRecipes(true);
 }
 
@@ -444,12 +453,12 @@ function searchScore(target, query) {
 function displaySearchedItems(searchUpdated) {
     var scale = Number(wrapper.style.getPropertyValue("--scale")||1);
     searchOverlay.style.setProperty("--scale", scale);
-    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / scale / 176);
-    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / scale / 176);
+    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / (160*scale+16));
+    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / (160*scale+16));
     var rowsScrolled = Math.floor(searchScroll / scale / 176);
     searchOverlay.style.setProperty("--scroll-offset", searchScroll % (176 * scale));
     var elementsTotal = elementsTall * elementsWide;
-    if (searchUpdated || rowsScrolled != rowsScrolledPrevious) {
+    if (searchUpdated || rowsScrolled != previousRowsScrolled) {
         searchOverlay.innerHTML = "";
         searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(item=>{
             var itemContainer = document.createElement("node");
@@ -460,18 +469,32 @@ function displaySearchedItems(searchUpdated) {
             searchOverlay.appendChild(itemContainer);
         });
     }
-    rowsScrolledPrevious = rowsScrolled;
+    previousRowsScrolled = rowsScrolled;
 }
 
 function displaySearchedRecipes(searchUpdated) {
     var scale = Number(wrapper.style.getPropertyValue("--scale")||1);
     searchOverlay.style.setProperty("--scale", scale);
-    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / scale / 316);
-    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / scale / 176);
-    var rowsScrolled = Math.floor(searchScroll / scale / 176);
-    searchOverlay.style.setProperty("--scroll-offset", searchScroll % (176 * scale) - 48*scale);
+    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / (300*scale+16));
+    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / (160*scale+16));
+    var rowsScrolled = previousRowsScrolled;
+    if (previousElementsWide && elementsWide != previousElementsWide) {
+        rowsScrolled = Math.floor(rowsScrolled * previousElementsWide / elementsWide);
+        var addUpScroll = false;
+    }
+    if (searchOverlay.childElementCount) {
+        var bottomOfFirstRow = Array.from(searchOverlay.children).slice(0,elementsWide).map(element=>element.offsetTop+element.offsetHeight).reduce((total, bottom)=>Math.max(total,bottom));
+        if (bottomOfFirstRow < 0) {
+            searchScroll = previousScrollDeltaY - bottomOfFirstRow;
+            rowsScrolled++;
+        }
+        if (searchScroll < 0) {
+            addUpScroll = true;
+            rowsScrolled--;
+        }
+    }
     var elementsTotal = elementsTall * elementsWide;
-    if (searchUpdated || rowsScrolled != rowsScrolledPrevious) {
+    if (searchUpdated || rowsScrolled != previousRowsScrolled) {
         searchOverlay.innerHTML = "";
         searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(recipe=>{
             var node = document.createElement("node");
@@ -482,7 +505,18 @@ function displaySearchedRecipes(searchUpdated) {
             searchOverlay.appendChild(node);
         });
     }
-    rowsScrolledPrevious = rowsScrolled;
+    if (addUpScroll) {
+        var rowsAccountedFor = 0;
+        var amountToAdd = 0;
+        do {
+            amountToAdd += Array.from(searchOverlay.children).slice(elementsWide*rowsAccountedFor,elementsWide*(rowsAccountedFor+1)).map(element=>element.offsetHeight+8).reduce((total, height)=>Math.max(total,height)) + 56*scale;
+            rowsAccountedFor++;
+        } while (amountToAdd < -previousScrollDeltaY);
+        searchScroll += amountToAdd;
+    }
+    searchOverlay.style.setProperty("--scroll-offset", searchScroll);
+    previousElementsWide = elementsWide;
+    previousRowsScrolled = rowsScrolled;
 }
 
 function resolveSearchItem(element) {
