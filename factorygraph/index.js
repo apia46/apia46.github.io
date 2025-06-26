@@ -230,8 +230,10 @@ function itemNode(node, item) {
         type: "itemNode",
         element: node,
     }
-    var itemElement = generateItem(item, "", "");
-    nodeInstance.item = {type:"node", item:item, element:itemElement, node:nodeInstance, id:itemIdIter++};
+    var itemNode = new Item(item, "node", itemIdIter++);
+    nodeInstance.item = itemNode;
+    var itemElement = itemNode.element;
+    itemNode.node = node;
     node.querySelector("button").addEventListener("click", ()=>{propagate(nodeInstance.item, Number(node.querySelector("input").value));});
     node.insertBefore(itemElement, node.firstChild);
     return nodeInstance;
