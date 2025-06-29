@@ -1,3 +1,13 @@
+// "instance" refers to the js object version of the thing
+// "element" refers to the html element version of the thing
+// sometimes they are implied though and it kind of sucks
+
+// "node"s are the draggable thingies in the graph
+// "item"s are the item display thingies you can hover over in the graph. they are the indivisible units of the calculation or whatever
+// sometimes "item" also means like, the data of items, but that should just be in dataset loading code
+// in other places that is referred to by "contentId" and known as "itemData"
+// same thing with "recipe" and "recipeData"
+
 let parsedJson;
 
 let data = {items:{}, recipes:[], machines: {}};
@@ -87,6 +97,7 @@ function loadDataset(dataset) {
             }
             console.log("loaded!");
             infoText.textContent = "";
+            previousSearchMode = ""; // really jank. fix this please
         }
     );
 }
@@ -116,10 +127,8 @@ function load() {
             draggingConnection = false;
             dragConnectionElement.classList.remove("connecting");
             var connectedToElement = document.elementFromPoint(mouseX, mouseY);
-            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && canConnect(
-                    fromInstance = itemGetInstance(dragConnectionElement), 
-                    toInstance = itemGetInstance(connectedToElement)
-            )) {
+            var fromInstance = Item.getFromElement(dragConnectionElement);
+            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && fromInstance.canConnect(toInstance = Item.getFromElement(connectedToElement))) {
                 updateLine(draggingLine, getGraphPositionFromCenter(dragConnectionElement), getGraphPositionFromCenter(connectedToElement));
                 var isFromInput = fromInstance.type == "inputs" || toInstance.type == "outputs";
                 if (fromInstance.type == "node") fromInstance.effectiveType = isFromInput?"inputs":"outputs";
@@ -206,13 +215,13 @@ function recipeNode(node, recipe, functionless) {
         <div class="outputs"></div>
     `;
     var inputs = recipeData.inputs.map((input, index) => {
-        var item = new Item(input[0], "inputs", itemIdIter++, node, index, functionless);
+        var item = new Item(input[0], "inputs", itemIdIter++, nodeInstance, index, functionless);
         item.baseQuantity = input[1];
         node.querySelector(".inputs").appendChild(item.element);
         return item;
     });
     var outputs = recipeData.outputs.map((output, index) => {
-        var item = new Item(output[0], "outputs", itemIdIter++, node, index, functionless);
+        var item = new Item(output[0], "outputs", itemIdIter++, nodeInstance, index, functionless);
         item.baseQuantity = output[1];
         node.querySelector(".outputs").appendChild(item.element);
         return item;
@@ -232,35 +241,14 @@ function itemNode(node, item) {
         type: "itemNode",
         element: node,
     }
-    var itemNode = new Item(item, "node", itemIdIter++, node);
+    var itemNode = new Item(item, "node", itemIdIter++, nodeInstance);
     nodeInstance.item = itemNode;
     var itemElement = itemNode.element;
-    itemNode.node = node;
     node.querySelector("button").addEventListener("click", ()=>{propagate(nodeInstance.item, Number(node.querySelector("input").value));});
     node.insertBefore(itemElement, node.firstChild);
     return nodeInstance;
 }
 // end node generators
-
-function startConnection(element) {
-    element.classList.add("connecting");
-    draggingConnection = true;
-    dragConnectionElement = element;
-    draggingLine = document.createElement("line");
-    graph.appendChild(draggingLine);
-
-    var scale = Number(wrapper.style.getPropertyValue("--scale")||1);
-    updateLineFunction = event=>{updateLine(draggingLine,
-        getGraphPositionFromCenter(dragConnectionElement),
-        [
-            (mouseX - wrapper.offsetLeft - Number(wrapper.style.getPropertyValue("--posX")||0)) / scale,
-            (mouseY - wrapper.offsetTop - Number(wrapper.style.getPropertyValue("--posY")||0)) / scale
-        ]);
-    }
-    wrapper.addEventListener("mousemove", updateLineFunction);
-    var dragStart = getGraphPositionFromCenter(dragConnectionElement);
-    updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
-}
 
 // https://www.quirksmode.org/js/findpos.html
 function getGraphPositionFromCenter(element) {
@@ -285,23 +273,6 @@ function updateLine(lineOrConnection, from, to) {
     lineOrConnection.style.setProperty("--aY", aPos[1]);
     lineOrConnection.style.setProperty("--bX", bPos[0]);
     lineOrConnection.style.setProperty("--bY", bPos[1]);
-}
-
-function canConnect(fromInstance, toInstance) {
-    if (fromInstance.contentId != toInstance.contentId) return false
-    if (fromInstance.type == "inputs" && toInstance.type == "inputs") return false
-    if (fromInstance.type == "outputs" && toInstance.type == "outputs") return false
-    if (fromInstance.connection || toInstance.connection) return false
-    return true
-}
-
-function itemGetInstance(element) {
-    var nodeElement = element;
-    while ((nodeElement = nodeElement.offsetParent).nodeName != "NODE");
-    switch (nodes[nodeElement.id].type) {
-        case "recipeNode": return nodes[nodeElement.id][element.getAttribute("type")][element.getAttribute("index")];
-        case "itemNode": return nodes[nodeElement.id].item;
-    }
 }
 
 function allItemsInNode(elementOrNode) {
