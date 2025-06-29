@@ -206,14 +206,16 @@ function recipeNode(node, recipe, functionless) {
         <div class="outputs"></div>
     `;
     var inputs = recipeData.inputs.map((input, index) => {
-        var item = generateItem(input[0], "inputs", index, functionless);
-        node.querySelector(".inputs").appendChild(item);
-        return {type:"inputs", index:index, item:input[0], baseQuantity:input[1], element:item, node:nodeInstance, id:itemIdIter++}
+        var item = new Item(input[0], "inputs", itemIdIter++, node, index, functionless);
+        item.baseQuantity = input[1];
+        node.querySelector(".inputs").appendChild(item.element);
+        return item;
     });
     var outputs = recipeData.outputs.map((output, index) => {
-        var item = generateItem(output[0], "outputs", index, functionless);
-        node.querySelector(".outputs").appendChild(item);
-        return {type:"outputs", index:index, item:output[0], baseQuantity:output[1], element:item, node:nodeInstance, id:itemIdIter++}
+        var item = new Item(output[0], "outputs", itemIdIter++, node, index, functionless);
+        item.baseQuantity = output[1];
+        node.querySelector(".outputs").appendChild(item.element);
+        return item;
     });
     nodeInstance.inputs = inputs;
     nodeInstance.outputs = outputs;
@@ -230,7 +232,7 @@ function itemNode(node, item) {
         type: "itemNode",
         element: node,
     }
-    var itemNode = new Item(item, "node", itemIdIter++);
+    var itemNode = new Item(item, "node", itemIdIter++, node);
     nodeInstance.item = itemNode;
     var itemElement = itemNode.element;
     itemNode.node = node;
@@ -239,20 +241,6 @@ function itemNode(node, item) {
     return nodeInstance;
 }
 // end node generators
-
-function generateItem(item, type, index, functionless) {
-    var itemData = data.items[item];
-    var itemElement = document.createElement("item");
-    itemElement.style.setProperty("--image", `url('${itemData.image}')`);
-    if (itemData.imageModulation) itemElement.style.setProperty("--imageModulation", itemData.imageModulation);
-    if (itemData.imageOverlay) itemElement.style.setProperty("--imageOverlay", `url('${itemData.imageOverlay}')`);
-    if (!functionless) itemElement.addEventListener("mousedown", event=>{event.stopPropagation(); startConnection(itemElement);});
-    itemElement.setAttribute("name", itemData.name);
-    itemElement.setAttribute("id", item);
-    itemElement.setAttribute("type", type);
-    itemElement.setAttribute("index", index);
-    return itemElement;
-}
 
 function startConnection(element) {
     element.classList.add("connecting");
@@ -300,7 +288,7 @@ function updateLine(lineOrConnection, from, to) {
 }
 
 function canConnect(fromInstance, toInstance) {
-    if (fromInstance.item != toInstance.item) return false
+    if (fromInstance.contentId != toInstance.contentId) return false
     if (fromInstance.type == "inputs" && toInstance.type == "inputs") return false
     if (fromInstance.type == "outputs" && toInstance.type == "outputs") return false
     if (fromInstance.connection || toInstance.connection) return false
@@ -369,7 +357,7 @@ function nodeDisplayBaseCase(node) {
         case "recipeNode":
             node.element.querySelector(".machine").setAttribute("amount", `${data.recipes[node.recipe].time}s`);
             allItemsInNode(node).forEach(item=>{
-                item.element.setAttribute("quantity", `${item.baseQuantity}${data.items[item.item].unit||""}`);
+                item.element.setAttribute("quantity", `${item.baseQuantity}${data.items[item.contentId].unit||""}`);
             });
         break;
         case "itemNode": break;
@@ -381,7 +369,7 @@ function nodeDisplayMultipliedCase(node) {
         case "recipeNode":
             node.element.querySelector(".machine").setAttribute("amount", "x" + node.machine.amount.toFixed(2));
             allItemsInNode(node).forEach(item=>{
-                if (item.quantity || item.quantity === 0) item.element.setAttribute("quantity", `${item.quantity.toFixed(2)}${data.items[item.item].unit||""}`);
+                if (item.quantity || item.quantity === 0) item.element.setAttribute("quantity", `${item.quantity.toFixed(2)}${data.items[item.contentId].unit||""}`);
                 else item.element.setAttribute("quantity", "");
             });
         break;
@@ -467,7 +455,7 @@ function displaySearchedItems(searchUpdated) {
             itemContainer.classList.add("itemNode");
             itemContainer.addEventListener("mousedown", ()=>resolveSearchItem(itemContainer));
             itemContainer.setAttribute("item", item);
-            itemContainer.appendChild(generateItem(item, "", "", true));
+            itemContainer.appendChild(new Item(item, null, null, null, null, true).element);
             searchOverlay.appendChild(itemContainer);
         });
     }
