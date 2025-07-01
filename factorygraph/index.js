@@ -1,6 +1,7 @@
 // "instance" refers to the js object version of the thing
 // "element" refers to the html element version of the thing
 // sometimes they are implied though and it kind of sucks
+// if implied it should be the instance
 
 // "node"s are the draggable thingies in the graph
 // "item"s are the item display thingies you can hover over in the graph. they are the indivisible units of the calculation or whatever
@@ -43,7 +44,7 @@ function drag(element, accountForScaling) {
     element.style.setProperty("--posY", Number(element.style.getPropertyValue("--posY")||0) + (mouseY - previousMouseY) * multiplier)
     previousMouseX = mouseX;
     previousMouseY = mouseY;
-    if (element.nodeName == "NODE") allItemsInNode(element).forEach(item=>{if (item.connection) updateLine(item.connection)});
+    if (element.nodeName == "NODE") Node.getFromElement(element).allItems().forEach(item=>{if (item.connection) updateLine(item.connection)});
 }
 
 function loadDataset(dataset) {
@@ -169,86 +170,6 @@ function load() {
     });
 }
 
-function newNode(generatorFunction, posX, posY, params) {
-    var nodeElement = document.createElement("node");
-    nodeElement.id = nodeIdIter;
-    nodeElement.style.setProperty("--posX", posX);
-    nodeElement.style.setProperty("--posY", posY);
-    
-    var dragNode = ()=>{drag(nodeElement, true)};
-    nodeElement.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", dragNode)});
-    wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
-    wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", dragNode)});
-    
-    nodeElement.innerHTML += `<div class="delete" onclick="removeNode(${nodeIdIter})">X</div>`;
-    
-    var nodeInstance = generatorFunction(nodeElement, params);
-    nodeElement.classList.add(nodeInstance.type);
-    graph.appendChild(nodeElement);
-    nodes[nodeInstance.id] = nodeInstance;
-    nodeDisplayBaseCase(nodeInstance);
-    return [nodeInstance, dragNode];
-}
-
-function removeNode(id) {
-    document.getElementById(id).remove();
-    delete nodes[id];
-}
-
-// node generators
-function recipeNode(node, recipe, functionless) {
-    var recipeData = data.recipes[recipe];
-    var nodeInstance = {
-        id: nodeIdIter++,
-        type: "recipeNode",
-        element: node,
-        recipe: recipe,
-        machine: { // properties of machine running the recipe
-            machine: recipeData.machines[0], // type of machine
-        }
-    }
-    var machineData = data.machines[nodeInstance.machine.machine];
-    node.innerHTML += `
-        <div class="machine" style="--image:url('${machineData.image}');"></div>
-        <div class="inputs"></div>
-        <div class="recipe-arrow"></div>
-        <div class="outputs"></div>
-    `;
-    var inputs = recipeData.inputs.map((input, index) => {
-        var item = new Item(input[0], "inputs", itemIdIter++, nodeInstance, index, functionless);
-        item.baseQuantity = input[1];
-        node.querySelector(".inputs").appendChild(item.element);
-        return item;
-    });
-    var outputs = recipeData.outputs.map((output, index) => {
-        var item = new Item(output[0], "outputs", itemIdIter++, nodeInstance, index, functionless);
-        item.baseQuantity = output[1];
-        node.querySelector(".outputs").appendChild(item.element);
-        return item;
-    });
-    nodeInstance.inputs = inputs;
-    nodeInstance.outputs = outputs;
-    return nodeInstance;
-}
-
-function itemNode(node, item) {
-    node.innerHTML += `
-        <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[item].unit||""}</span></div>
-        <button>SET</button>
-    `
-    var nodeInstance = {
-        id: nodeIdIter++,
-        type: "itemNode",
-        element: node,
-    }
-    var itemNode = new Item(item, "node", itemIdIter++, nodeInstance);
-    nodeInstance.item = itemNode;
-    var itemElement = itemNode.element;
-    node.querySelector("button").addEventListener("click", ()=>{propagate(nodeInstance.item, Number(node.querySelector("input").value));});
-    node.insertBefore(itemElement, node.firstChild);
-    return nodeInstance;
-}
-// end node generators
 
 // https://www.quirksmode.org/js/findpos.html
 function getGraphPositionFromCenter(element) {
@@ -275,14 +196,6 @@ function updateLine(lineOrConnection, from, to) {
     lineOrConnection.style.setProperty("--bY", bPos[1]);
 }
 
-function allItemsInNode(elementOrNode) {
-    var node = elementOrNode.nodeName ? nodes[elementOrNode.id] : elementOrNode;
-    switch (node.type) {
-        case "recipeNode": return [...node.inputs, ...node.outputs];
-        case "itemNode": return [node.item];
-    }
-}
-
 function removeConnection(connection) {
     connection.line.remove();
     delete connection.inputs.connection;
@@ -296,67 +209,29 @@ function propagate(itemInstance, value, previous) {
     }
     itemInstance.quantity = value;
     var node = itemInstance.node;
-    switch (node.type) {
-        case "recipeNode":
-            node.multiplier = itemInstance.quantity / itemInstance.baseQuantity;
-            node.machine.amount = data.recipes[node.recipe].time * node.multiplier / data.machines[node.machine.machine].speed;
-            allItemsInNode(node).forEach(item=>{
-                if (item != itemInstance) {
-                    item.quantity = item.baseQuantity * node.multiplier;
-                    var connection = item.connection;
-                    if (connection) {
-                        propagate(connection[oppositeType(item.type)], item.quantity, item);
-                    }
+    if (node instanceof RecipeNode) {
+        node.multiplier = itemInstance.quantity / itemInstance.baseQuantity;
+        node.machine.amount = data.recipes[node.recipeId].time * node.multiplier / data.machines[node.machine.machineId].speed;
+        node.allItems().forEach(item=>{
+            if (item != itemInstance) {
+                item.quantity = item.baseQuantity * node.multiplier;
+                var connection = item.connection;
+                if (connection) {
+                    propagate(connection[oppositeType(item.type)], item.quantity, item);
                 }
-            })
-        break;
-        case "itemNode":
-            var connection = itemInstance.connection;
-            if (connection && connection[oppositeType(itemInstance.effectiveType)] != previous) {
-                propagate(connection[oppositeType(itemInstance.effectiveType)], value, itemInstance);
             }
-            node.element.querySelector("input").value = itemInstance.quantity;
-        break;
+        })
+        node.displayMultipliedCase();
+    } else if (node instanceof ItemNode) {
+        var connection = itemInstance.connection;
+        if (connection && connection[oppositeType(itemInstance.effectiveType)] != previous) {
+            propagate(connection[oppositeType(itemInstance.effectiveType)], value, itemInstance);
+        }
+        node.element.querySelector("input").value = itemInstance.quantity;
     }
-    nodeDisplayMultipliedCase(node);
 }
 
 function oppositeType(type) { return type == "outputs" ? "inputs" : "outputs" }
-
-function nodeDisplayBaseCase(node) {
-    switch (node.type) {
-        case "recipeNode":
-            node.element.querySelector(".machine").setAttribute("amount", `${data.recipes[node.recipe].time}s`);
-            allItemsInNode(node).forEach(item=>{
-                item.element.setAttribute("quantity", `${item.baseQuantity}${data.items[item.contentId].unit||""}`);
-            });
-        break;
-        case "itemNode": break;
-    }
-}
-
-function nodeDisplayMultipliedCase(node) {
-    switch (node.type) {
-        case "recipeNode":
-            node.element.querySelector(".machine").setAttribute("amount", "x" + node.machine.amount.toFixed(2));
-            allItemsInNode(node).forEach(item=>{
-                if (item.quantity || item.quantity === 0) item.element.setAttribute("quantity", `${item.quantity.toFixed(2)}${data.items[item.contentId].unit||""}`);
-                else item.element.setAttribute("quantity", "");
-            });
-        break;
-        case "itemNode": break;
-    }
-}
-
-function testAllItems() {
-    var index = 0;
-    Object.keys(data.items).forEach(item=>{
-        if (data.items[item].image) {
-            newNode(itemNode, (index % 100) * 200, (index / 100) * 240, item);
-            index += 1;
-        }
-    });
-}
 
 function searchItems() {
     searchScroll = 0;
@@ -421,12 +296,12 @@ function displaySearchedItems(searchUpdated) {
     var elementsTotal = elementsTall * elementsWide;
     if (searchUpdated || rowsScrolled != previousRowsScrolled) {
         searchOverlay.innerHTML = "";
-        searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(item=>{
+        searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(itemId=>{
             var itemContainer = document.createElement("node");
             itemContainer.classList.add("itemNode");
             itemContainer.addEventListener("mousedown", ()=>resolveSearchItem(itemContainer));
-            itemContainer.setAttribute("item", item);
-            itemContainer.appendChild(new Item(item, null, null, null, null, true).element);
+            itemContainer.setAttribute("itemId", itemId);
+            itemContainer.appendChild(new Item(itemId, null, null, null, null, true).element);
             searchOverlay.appendChild(itemContainer);
         });
     }
@@ -457,13 +332,11 @@ function displaySearchedRecipes(searchUpdated) {
     var elementsTotal = elementsTall * elementsWide;
     if (searchUpdated || rowsScrolled != previousRowsScrolled) {
         searchOverlay.innerHTML = "";
-        searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(recipe=>{
-            var node = document.createElement("node");
-            node.classList.add("recipeNode");
-            node.addEventListener("mousedown", ()=>resolveSearchRecipe(node));
-            node.setAttribute("recipe", recipe);
-            nodeDisplayBaseCase(recipeNode(node, recipe, true));
-            searchOverlay.appendChild(node);
+        searchResults.slice(rowsScrolled*elementsWide, elementsTotal + (rowsScrolled+1)*elementsWide).forEach(recipeId=>{
+            var node = new RecipeNode(0, 0, recipeId, true);
+            node.element.addEventListener("mousedown", ()=>resolveSearchRecipe(node.element));
+            node.displayBaseCase();
+            searchOverlay.appendChild(node.element);
         });
     }
     if (addUpScroll) {
@@ -481,25 +354,29 @@ function displaySearchedRecipes(searchUpdated) {
 }
 
 function resolveSearchItem(element) {
-    var item = element.getAttribute("item");
-    var graphScale = Number(wrapper.style.getPropertyValue('--scale')||1)
-    var dragNode = newNode(itemNode, 
+    const itemId = element.getAttribute("itemId");
+    const graphScale = Number(wrapper.style.getPropertyValue('--scale')||1);
+    const nodeInstance = new ItemNode( 
         (element.offsetLeft - Number(wrapper.style.getPropertyValue('--posX')||0)) / graphScale,
         (element.offsetTop - Number(wrapper.style.getPropertyValue('--posY')||0)) / graphScale,
-    item)[1];
+        itemId
+    );
+    nodeInstance.attachToGraph();
     previousMouseX = mouseX;
     previousMouseY = mouseY;
-    wrapper.addEventListener("mousemove", dragNode);
+    wrapper.addEventListener("mousemove", nodeInstance.dragFunction);
 }
 
 function resolveSearchRecipe(element) {
-    var recipe = element.getAttribute("recipe");
-    var graphScale = Number(wrapper.style.getPropertyValue('--scale')||1)
-    var dragNode = newNode(recipeNode, 
+    const recipeId = element.getAttribute("recipeId");
+    const graphScale = Number(wrapper.style.getPropertyValue('--scale')||1);
+    const nodeInstance = new RecipeNode( 
         (element.offsetLeft - Number(wrapper.style.getPropertyValue('--posX')||0)) / graphScale,
         (element.offsetTop - Number(wrapper.style.getPropertyValue('--posY')||0)) / graphScale,
-    recipe)[1];
+        recipeId,
+    );
+    nodeInstance.attachToGraph();
     previousMouseX = mouseX;
     previousMouseY = mouseY;
-    wrapper.addEventListener("mousemove", dragNode);
+    wrapper.addEventListener("mousemove", nodeInstance.dragFunction);
 }

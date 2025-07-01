@@ -7,7 +7,8 @@ class Item {
         this.instanceId = instanceId;
         this.nodeIndex = nodeIndex;
         this.node = node;
-        var itemData = data.items[contentId];
+        const itemData = data.items[contentId];
+        this.unit = itemData.unit||"";
         this.element = document.createElement("item");
         this.element.style.setProperty("--image", `url('${itemData.image}')`);
         if (itemData.imageModulation) this.element.style.setProperty("--imageModulation", itemData.imageModulation);
@@ -34,7 +35,7 @@ class Item {
         draggingLine = document.createElement("line");
         graph.appendChild(draggingLine);
 
-        var scale = Number(wrapper.style.getPropertyValue("--scale")||1);
+        const scale = Number(wrapper.style.getPropertyValue("--scale")||1);
         updateLineFunction = ()=>{updateLine(draggingLine,
             getGraphPositionFromCenter(dragConnectionElement),
             [
@@ -43,17 +44,15 @@ class Item {
             ]);
         }
         wrapper.addEventListener("mousemove", updateLineFunction);
-        var dragStart = getGraphPositionFromCenter(dragConnectionElement);
+        const dragStart = getGraphPositionFromCenter(dragConnectionElement);
         updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
     }
 
     static getFromElement(element) {
-        var nodeElement = element;
+        let nodeElement = element;
         while ((nodeElement = element.offsetParent).nodeName != "NODE");
 
-        switch (nodes[nodeElement.id].type) {
-            case "recipeNode": return nodes[nodeElement.id][element.getAttribute("type")][element.getAttribute("nodeindex")];
-            case "itemNode": return nodes[nodeElement.id].item;
-        }
+        if (nodes[nodeElement.id] instanceof RecipeNode) return nodes[nodeElement.id][element.getAttribute("type")][element.getAttribute("nodeindex")];
+        else if (nodes[nodeElement.id] instanceof ItemNode) return nodes[nodeElement.id].item;
     }
 }
