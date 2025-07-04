@@ -1,5 +1,8 @@
+let itemIdIter = 0;
+
 class Item {
     baseQuantity;
+    connection;
 
     constructor(contentId, type, instanceId, node, nodeIndex, functionless) {
         this.contentId = contentId;
@@ -13,7 +16,7 @@ class Item {
         this.element.style.setProperty("--image", `url('${itemData.image}')`);
         if (itemData.imageModulation) this.element.style.setProperty("--imageModulation", itemData.imageModulation);
         if (itemData.imageOverlay) this.element.style.setProperty("--imageOverlay", `url('${itemData.imageOverlay}')`);
-        if (!functionless) this.element.addEventListener("mousedown", event=>{event.stopPropagation(); this.startConnection();});
+        if (!functionless) this.element.addEventListener("mousedown", event=>{event.stopPropagation(); this.dragConnection();});
         this.element.setAttribute("name", itemData.name);
         this.element.setAttribute("instanceId", instanceId);
         this.element.setAttribute("type", type);
@@ -28,24 +31,17 @@ class Item {
         return true
     }
 
-    startConnection() {
+    dragConnection() {
         this.element.classList.add("connecting");
-        draggingConnection = true;
-        dragConnectionElement = this.element;
-        draggingLine = document.createElement("line");
-        graph.appendChild(draggingLine);
-
-        const scale = Number(wrapper.style.getPropertyValue("--scale")||1);
-        updateLineFunction = ()=>{updateLine(draggingLine,
-            getGraphPositionFromCenter(dragConnectionElement),
-            [
-                (mouseX - wrapper.offsetLeft - Number(wrapper.style.getPropertyValue("--posX")||0)) / scale,
-                (mouseY - wrapper.offsetTop - Number(wrapper.style.getPropertyValue("--posY")||0)) / scale
-            ]);
-        }
-        wrapper.addEventListener("mousemove", updateLineFunction);
-        const dragStart = getGraphPositionFromCenter(dragConnectionElement);
-        updateLineFunction({clientX:dragStart.x, clientY:dragStart.y});
+        new DraggedLine(this, resultElement=>{
+            this.element.classList.remove("connecting");
+            if (resultElement?.nodeName == "ITEM") {
+                const toItem = Item.getFromElement(resultElement);
+                if (!(this.connection || toItem.connection || this.node instanceof ItemNode || toItem.node instanceof ItemNode) && this.contentId == toItem.contentId) {
+                    new Connection(this, toItem);
+                }
+            }
+        });
     }
 
     static getFromElement(element) {

@@ -12,18 +12,16 @@
 let parsedJson;
 
 let data = {items:{}, recipes:[], machines: {}};
-let nodeIdIter = 0;
-let itemIdIter = 0;
 
 let previousMouseX;
 let previousMouseY;
 
-let nodes = {};
-
+/*
 let draggingConnection = false;
 let dragConnectionElement;
 let draggingLine;
 let updateLineFunction;
+*/
 
 let previousRecipeSearchQuery = "";
 let searchResults = [];
@@ -38,13 +36,18 @@ let animFrame = 0;
 let mouseX = 0;
 let mouseY = 0;
 
-function drag(element, accountForScaling) {
+function drag(element, accountForScaling, property="--pos", returnRelative) {
     var multiplier = (accountForScaling ? 1/Number(wrapper.style.getPropertyValue("--scale")||1) : 1);
-    element.style.setProperty("--posX", Number(element.style.getPropertyValue("--posX")||0) + (mouseX - previousMouseX) * multiplier)
-    element.style.setProperty("--posY", Number(element.style.getPropertyValue("--posY")||0) + (mouseY - previousMouseY) * multiplier)
+    const changeX = (mouseX - previousMouseX) * multiplier;
+    const changeY = (mouseY - previousMouseY) * multiplier;
+    const posX = Number(element.style.getPropertyValue(`${property}X`)||0) + changeX;
+    const posY = Number(element.style.getPropertyValue(`${property}Y`)||0) + changeY;
+    element.style.setProperty(`${property}X`, posX);
+    element.style.setProperty(`${property}Y`, posY);
     previousMouseX = mouseX;
     previousMouseY = mouseY;
-    if (element.nodeName == "NODE") Node.getFromElement(element).allItems().forEach(item=>{if (item.connection) updateLine(item.connection)});
+    if (returnRelative) return [changeX, changeY];
+    else return [posX, posY];
 }
 
 function loadDataset(dataset) {
@@ -121,33 +124,7 @@ function load() {
         wrapper.style.setProperty("--posX", posX + (1 - scaleFactor) * (mouseX - posX));
         wrapper.style.setProperty("--posY", posY + (1 - scaleFactor) * (mouseY - posY));
     });
-
-    ["mouseleave", "mouseup"].forEach(action=>wrapper.addEventListener(action, ()=>{
-        if (draggingConnection) {
-            wrapper.removeEventListener("mousemove", updateLineFunction);
-            draggingConnection = false;
-            dragConnectionElement.classList.remove("connecting");
-            var connectedToElement = document.elementFromPoint(mouseX, mouseY);
-            var fromInstance = Item.getFromElement(dragConnectionElement);
-            if (connectedToElement.nodeName == "ITEM" && connectedToElement != dragConnectionElement && fromInstance.canConnect(toInstance = Item.getFromElement(connectedToElement))) {
-                updateLine(draggingLine, getGraphPositionFromCenter(dragConnectionElement), getGraphPositionFromCenter(connectedToElement));
-                var isFromInput = fromInstance.type == "inputs" || toInstance.type == "outputs";
-                if (fromInstance.type == "node") fromInstance.effectiveType = isFromInput?"inputs":"outputs";
-                if (toInstance.type == "node") toInstance.effectiveType = isFromInput?"outputs":"inputs";
-                var connection = {
-                    inputs: isFromInput?fromInstance:toInstance,
-                    outputs: isFromInput?toInstance:fromInstance,
-                    line: draggingLine
-                }
-                fromInstance.connection = connection;
-                toInstance.connection = connection;
-                draggingLine.addEventListener("click", ()=>{removeConnection(connection)})
-            } else {
-                draggingLine.remove();
-            }
-        }
-    }));
-
+   
     setInterval(()=>{
         var element = document.elementFromPoint(mouseX, mouseY);
         if (!element) return;
@@ -194,41 +171,6 @@ function updateLine(lineOrConnection, from, to) {
     lineOrConnection.style.setProperty("--aY", aPos[1]);
     lineOrConnection.style.setProperty("--bX", bPos[0]);
     lineOrConnection.style.setProperty("--bY", bPos[1]);
-}
-
-function removeConnection(connection) {
-    connection.line.remove();
-    delete connection.inputs.connection;
-    delete connection.outputs.connection;
-}
-
-function propagate(itemInstance, value, previous) {
-    if (!value && value !== 0) {
-        console.log("error in propagation", itemInstance);
-        return;
-    }
-    itemInstance.quantity = value;
-    var node = itemInstance.node;
-    if (node instanceof RecipeNode) {
-        node.multiplier = itemInstance.quantity / itemInstance.baseQuantity;
-        node.machine.amount = data.recipes[node.recipeId].time * node.multiplier / data.machines[node.machine.machineId].speed;
-        node.allItems().forEach(item=>{
-            if (item != itemInstance) {
-                item.quantity = item.baseQuantity * node.multiplier;
-                var connection = item.connection;
-                if (connection) {
-                    propagate(connection[oppositeType(item.type)], item.quantity, item);
-                }
-            }
-        })
-        node.displayMultipliedCase();
-    } else if (node instanceof ItemNode) {
-        var connection = itemInstance.connection;
-        if (connection && connection[oppositeType(itemInstance.effectiveType)] != previous) {
-            propagate(connection[oppositeType(itemInstance.effectiveType)], value, itemInstance);
-        }
-        node.element.querySelector("input").value = itemInstance.quantity;
-    }
 }
 
 function oppositeType(type) { return type == "outputs" ? "inputs" : "outputs" }
@@ -289,10 +231,10 @@ function searchScore(target, query) {
 function displaySearchedItems(searchUpdated) {
     var scale = Number(wrapper.style.getPropertyValue("--scale")||1);
     searchOverlay.style.setProperty("--scale", scale);
-    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / (160*scale+16));
-    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / (160*scale+16));
-    var rowsScrolled = Math.floor(searchScroll / scale / 176);
-    searchOverlay.style.setProperty("--scroll-offset", searchScroll % (176 * scale));
+    var elementsWide = Math.floor((searchOverlay.offsetWidth - 16) / (96*scale+16));
+    var elementsTall = Math.ceil((searchOverlay.offsetHeight - 16) / (96*scale+16));
+    var rowsScrolled = Math.floor(searchScroll / scale / 112);
+    searchOverlay.style.setProperty("--scroll-offset", searchScroll % (112 * scale));
     var elementsTotal = elementsTall * elementsWide;
     if (searchUpdated || rowsScrolled != previousRowsScrolled) {
         searchOverlay.innerHTML = "";

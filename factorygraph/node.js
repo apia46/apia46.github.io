@@ -1,12 +1,20 @@
+let nodeIdIter = 0;
+let nodes = {};
+
 class Node {
+    visitId;
+
     constructor(posX, posY, functionless) {
-        this.id = nodeIdIter++
+        if (!functionless) this.id = nodeIdIter++
         this.element = document.createElement("node");
-        this.element.id = this.id;
+        if (!functionless) this.element.id = this.id;
         this.element.style.setProperty("--posX", posX);
         this.element.style.setProperty("--posY", posY);
 
-        this.dragFunction = ()=>{drag(this.element, true)}
+        this.dragFunction = ()=>{
+            drag(this.element, true);
+            this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item, item.type)});
+        }
         if (!functionless) {
             this.element.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", this.dragFunction)});
             wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", this.dragFunction)});
@@ -29,7 +37,7 @@ class Node {
 
     remove() {
         this.allItems().forEach(item=>{
-            if (item.connection) removeConnection(item.connection);
+            if (item.connection) item.connection.removeConnectionTo(item);
         });
         this.element.remove();
         delete nodes[this.id];
@@ -40,11 +48,16 @@ class ItemNode extends Node {
     constructor(posX, posY, itemId, functionless) {
         super(posX, posY, functionless);
         this.element.insertAdjacentHTML("beforeend", `
-            <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[itemId].unit||""}</span></div>
-            <button>SET</button>
+            <div class="right-side">
+                <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[itemId].unit||""}</span></div>
+                <button>SET</button>
+            </div>
         `);
-        this.item = new Item(itemId, "node", itemIdIter++, this, null, functionless);
-        this.element.querySelector("button").addEventListener("click", ()=>{propagate(this.item, Number(this.element.querySelector("input").value));});
+        this.item = new Item(itemId, null, itemIdIter++, this, null, functionless);
+        this.element.querySelector("button").addEventListener("click", ()=>{
+            this.item.quantity = Number(this.element.querySelector("input").value);
+            console.log(propagate(this));
+        });
         this.element.insertBefore(this.item.element, this.element.firstChild);
         this.element.classList.add("itemNode");
     }

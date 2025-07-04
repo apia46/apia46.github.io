@@ -125,19 +125,18 @@ dropdown.open > div {display: block}
     top: calc(var(--scroll-offset) * -1px);
     font-size: 0px;
     transform-origin: top left;
-    padding: calc(16px * var(--scale));
+    padding: calc(13px * var(--scale));
 }
-#searchOverlay node.itemNode item {
-    margin-bottom: 0;
-    width: calc(128px * var(--scale));
-    height: calc(128px * var(--scale));
+#searchOverlay node.itemNode {
+    box-sizing: content-box;
+    width: calc(64px * var(--scale));
 }
 #searchOverlay item:hover {
     outline: none;
 }
 #searchOverlay node.recipeNode {
-    width: calc(300px * var(--scale));
-    margin-top: calc(56px * var(--scale));
+    width: calc(282px * var(--scale));
+    margin-top: calc(30px * var(--scale));
 }
 #searchOverlay .recipe-arrow {
     width: calc(80px * var(--scale));
@@ -149,22 +148,22 @@ dropdown.open > div {display: block}
 }
 #searchOverlay .inputs, #searchOverlay .outputs {
     grid-template-columns: calc(64px * var(--scale));
-    gap: calc(4px * var(--scale));
+    gap: calc(8px * var(--scale));
 }
 #searchOverlay .machine {
-    top: calc(-48px * var(--scale));
-    height: calc(48px * var(--scale));
-    width: calc(48px * var(--scale));
-    padding: calc(8px * var(--scale));
-    background: no-repeat calc(8px * var(--scale)) calc(8px * var(--scale))/calc(48px * var(--scale)) var(--background) var(--image);
+    top: calc(-30px * var(--scale));
+    height: calc(32px * var(--scale));
+    width: calc(32px * var(--scale));
+    padding: calc(6px * var(--scale));
+    background: no-repeat calc(6px * var(--scale)) calc(6px * var(--scale))/calc(32px * var(--scale)) var(--background) var(--image);
 }
 #searchOverlay .machine::after {
-    left: calc(64px * var(--scale));
-    height: calc(64px * var(--scale));
-    padding-top: calc(8px * var(--scale));
-    padding-right: calc(16px * var(--scale));
+    left: calc(44px * var(--scale));
+    height: calc(32px * var(--scale));
+    padding-top: calc(5px * var(--scale));
+    padding-right: calc(17.5px * var(--scale));
     font-size: calc(24px * var(--scale));
-    line-height: calc(48px * var(--scale));
+    line-height: calc(32px * var(--scale));
 }
 #searchOverlay item::after {
     font-size: calc(12px * var(--scale));
@@ -198,7 +197,7 @@ dropdown.open > div {display: block}
     width: 100%;
     height: calc(100% - 52px); /* surely theres a better way to do this but i kind of just dont care */
     background: url(assets/grid.png);
-    background-size: calc(256px * var(--scale));
+    background-size: calc(384px * var(--scale));
     background-position: calc(var(--posX) * 1px) calc(var(--posY) * 1px);
     overflow: hidden;
 }
@@ -219,9 +218,9 @@ node {
     box-sizing: border-box;
     --posX: 0;
     --posY: 0;
-    padding: 16px;
-    left: calc(round(down, var(--posX)) * 1px);
-    top: calc(round(down, var(--posY)) * 1px);
+    padding: 13px;
+    left: calc(round(down, (var(--posX) + 3) / 6) * 6px - 3px);
+    top: calc(round(down, (var(--posY) + 3) / 6) * 6px - 3px);
 }
 .delete {
     position: absolute;
@@ -249,7 +248,7 @@ item {
 }
 item::after {
     content: attr(quantity);
-    font-size: 12px;
+    font-size: 16px;
     text-shadow: 1px 1px var(--dark);
     position: absolute;
     display: block;
@@ -279,7 +278,7 @@ item[style*="--imageModulation"]::before {
 
 /* RECIPENODE */
 .recipeNode {
-    width: 300px;
+    width: 282px;
 }
 
 .machine {
@@ -288,19 +287,19 @@ item[style*="--imageModulation"]::before {
     left: 0px;
     height: 48px;
     width: 48px;
-    padding: 8px;
+    padding: 6px;
     padding-bottom: 0;
-    background: no-repeat 8px 8px/48px var(--background) var(--image);
+    background: no-repeat 6px 6px/48px var(--background) var(--image);
     text-align: center;
 }
 .machine::after {
     position: absolute;
     top: 0px;
-    left: 64px;
-    height: 64px;
-    padding: 8px 16px 0px 0px;
+    left: 60px;
+    height: 48px;
+    padding: 5px 17.5px 0px 0px;
     content: attr(amount);
-    font-size: 24px;
+    font-size: 27px;
     line-height: 48px;
     vertical-align: middle;
     background: var(--background);
@@ -308,7 +307,7 @@ item[style*="--imageModulation"]::before {
 .inputs, .outputs {
     display: inline-grid;
     grid-template-columns: 64px;
-    gap: 4px;
+    gap: 8px;
 }
 .recipe-arrow {
     position: absolute;
@@ -325,19 +324,24 @@ item[style*="--imageModulation"]::before {
 }
 
 /* ITEMNODE */
+.itemNode {
+    width: 282px;
+    display: flex;
+}
 .itemNode item {
-    width: 128px;
-    height: 128px;
-    --outline-width-multiplier: 2;
-    margin-bottom: 4px;
+    flex-shrink: 0;
+}
+.itemNode .right-side {
+    margin-left: 8px;
+    min-width: 0;
 }
 .itemNode .number-container {
     display: flex;
-    width: 128px;
+    margin-bottom: 8px;
 }
 .itemNode input, .itemNode button, .itemNode span {
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 24px;
     padding: 0px 4px;
     outline: none;
     border: none;
@@ -347,7 +351,6 @@ item[style*="--imageModulation"]::before {
     min-width: 0;
     color: var(--highlight);
     text-align: right;
-    margin-bottom: 4px;
     flex-shrink: 1;
 }
 .itemNode input:focus {
@@ -357,16 +360,72 @@ item[style*="--imageModulation"]::before {
     outline: 2px solid var(--highlight);
 }
 .itemNode span {
-    margin-bottom: 4px;
+    line-height: 24px;
     padding-left: 0;
 }
 .itemNode button {
-    height: 24px;
+    font-size: 20px;
+    height: 27px;
     color: var(--highlight);
 }
 .itemNode button:hover {
     background: var(--bright);
 }
+
+/* CONNECTION */
+connection {
+    position: absolute;
+    --posX: 0;
+    --posY: 0;
+    --radius: 2;
+    left: calc((var(--posX) - var(--radius)) * 1px);
+    top: calc((var(--posY) - var(--radius)) * 1px);
+    --perpC: 0;
+    --paraMin: 0;
+    --paraMax: 0;
+    background: var(--highlight);
+}
+connection:not(.dragging):hover {
+    --radius: 4;
+}
+connection line {
+    --toX: 0;
+    --toY: 0;
+    --aX: var(--radius);
+    --aY: var(--radius);
+    --bX: calc(var(--toX) - var(--posX) + var(--radius));
+    --bY: calc(var(--toY) - var(--posY) + var(--radius));
+    --shortenBy: 32;
+    background: var(--highlight);
+}
+connection line.inputs {
+    --shortenBy: 40;
+}
+connection line.inputs::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: calc(var(--distance) * 1px);
+    border-left: 10px solid var(--highlight);
+    border-top: 10px solid #0000;
+    border-bottom: 10px solid #0000;
+    translate: -50% -50%;
+}
+
+connection.vertical {
+    --posX: var(--perpC);
+    --posY: var(--paraMin);
+    width: calc(var(--radius) * 2px);
+    height: calc((var(--paraMax) - var(--paraMin)) * 1px + var(--radius) * 2px);
+}
+connection.vertical line { --aY: var(--bY); }
+connection.horizontal {
+    --posX: var(--paraMin);
+    --posY: var(--perpC);
+    width: calc((var(--paraMax) - var(--paraMin)) * 1px + var(--radius) * 2px);
+    height: calc(var(--radius) * 2px);
+}
+connection.horizontal line { --aX: var(--bX); }
 
 /* LINE */
 line {
@@ -375,19 +434,23 @@ line {
     --aY: 0;
     --bX: 0;
     --bY: 0;
+    --shortenBy: 0;
     --width: 2px;
-    --distance: calc(sqrt(
+    --distance: calc(max(sqrt(
         pow(var(--aX) - var(--bX), 2) + pow(var(--aY) - var(--bY), 2)
-    ));
+    ) - var(--shortenBy), 12));
     left: calc(var(--aX) * 1px + 2px);
     top: calc(var(--aY) * 1px - var(--width));
     transform-origin: -2px var(--width);
     height: calc(var(--width) * 2);
     width: calc(var(--distance) * 1px - 4px);
     rotate: calc(atan2(var(--bY) - var(--aY), var(--bX) - var(--aX)));
-    background: url(assets/dashedline.png);
+    background: url(assets/dashedLine.png);
     background-size: contain;
     background-position: calc(var(--distance) * 0.5px) 0px;
+}
+line.dragged {
+    pointer-events: none;
 }
 line:hover {
     background: var(--highlight);
