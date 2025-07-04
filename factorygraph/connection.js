@@ -32,7 +32,7 @@ class DraggedLine {
 }
 
 class Connection {
-    // we work with ""perpendicular"", "perp" and ""parallel"", "para"; defined according to direction
+    // we work with ""perpendicular"" ("perp") and ""parallel"" ("para") coordinates; defined relative to direction
     
     inputs = [];
     inputLines = [];
