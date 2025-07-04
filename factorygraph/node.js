@@ -13,7 +13,7 @@ class Node {
 
         this.dragFunction = ()=>{
             drag(this.element, true);
-            this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item, item.type)});
+            this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
         }
         if (!functionless) {
             this.element.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", this.dragFunction)});

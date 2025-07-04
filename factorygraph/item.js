@@ -40,6 +40,8 @@ class Item {
                 if (!(this.connection || toItem.connection || this.node instanceof ItemNode || toItem.node instanceof ItemNode) && this.contentId == toItem.contentId) {
                     new Connection(this, toItem);
                 }
+            } else if (resultElement?.nodeName == "CONNECTION") {
+                Connection.getFromElement(resultElement).connectTo(this);
             }
         });
     }

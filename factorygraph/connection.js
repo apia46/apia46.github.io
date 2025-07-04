@@ -97,6 +97,15 @@ class Connection {
             this.outputs.push(item);
             this.outputLines.push(element);
         }
+        this.calculateParallelBounds();
+    }
+
+    updateLineTo(item) {
+        const element = [...this.inputLines, ...this.outputLines][[...this.inputs, ...this.outputs].findIndex(check=>check===item)];
+        const [toX, toY] = getGraphPositionFromCenter(item.element);
+        element.style.setProperty("--toX", toX);
+        element.style.setProperty("--toY", toY);
+        this.calculateParallelBounds();
     }
 
     remove() {
@@ -124,6 +133,7 @@ class Connection {
     }
 
     calculateDefaultPerpendicularCoordinate() {
+        // designed for many connections but only ever called when there are two
         const inputCoordinates = this.perpendicularComponents(this.inputs.map(item=>getGraphPositionFromCenter(item.element)));
         const outputCoordinates = this.perpendicularComponents(this.outputs.map(item=>getGraphPositionFromCenter(item.element)));
         if (inputCoordinates.length == 0) return this.element.style.setProperty("--perpC", Math.max(...outputCoordinates) + 48);
@@ -153,6 +163,10 @@ class Connection {
 
     parallelComponents(coordinates) { return coordinates.map(coordinate=>coordinate[this.direction=="vertical"?1:0]); }
     perpendicularComponents(coordinates) { return coordinates.map(coordinate=>coordinate[this.direction=="vertical"?0:1]); }
+
+    static getFromElement(element) {
+        return connections[element.getAttribute("connectionId")];
+    }
 }
 
 function mouseRelativeToGrid() {
