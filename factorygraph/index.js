@@ -127,13 +127,22 @@ function load() {
    
     setInterval(()=>{
         var element = document.elementFromPoint(mouseX, mouseY);
-        if (!element) return;
-        var name = element.getAttribute("name");
-        hover.textContent = name;
         hover.style.setProperty("--posX", mouseX);
         hover.style.setProperty("--posY", mouseY);
-        if (name) hover.classList.add("show");
-        else hover.classList.remove("show");
+        if (!element) {
+            hover.classList.remove("show");
+        } else if (element.nodeName == "ITEM") {
+            hover.innerHTML = element.getAttribute("name");
+            if (element.getAttribute("accurateQuantity")) hover.innerHTML += `<br>${element.getAttribute("accurateQuantity")}`;
+            hover.classList.add("show");
+        } else if (element.nodeName == "MACHINE") {
+            hover.innerHTML = element.getAttribute("name");
+            if (element.getAttribute("accurateAmount")) hover.innerHTML += `<br>${element.getAttribute("accurateAmount")}`;
+            hover.classList.add("show");
+        } else if (text = element.getAttribute("name")) {
+            hover.innerHTML = text;
+            hover.classList.add("show");
+        } else hover.classList.remove("show");
     }, 0);
 
     searchOverlay.addEventListener("wheel", event=>{

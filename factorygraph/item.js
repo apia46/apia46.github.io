@@ -1,7 +1,6 @@
 let itemIdIter = 0;
 
 class Item {
-    baseQuantity;
     connection;
 
     constructor(contentId, type, instanceId, node, nodeIndex, functionless) {
@@ -10,17 +9,17 @@ class Item {
         this.instanceId = instanceId;
         this.nodeIndex = nodeIndex;
         this.node = node;
-        const itemData = data.items[contentId];
-        this.unit = itemData.unit||"";
+        this.itemData = data.items[contentId];
+        this.unit = this.itemData.unit||"";
         this.element = document.createElement("item");
-        this.element.style.setProperty("--image", `url('${itemData.image}')`);
-        if (itemData.imageModulation) this.element.style.setProperty("--imageModulation", itemData.imageModulation);
-        if (itemData.imageOverlay) this.element.style.setProperty("--imageOverlay", `url('${itemData.imageOverlay}')`);
+        this.element.style.setProperty("--image", `url('${this.itemData.image}')`);
+        if (this.itemData.imageModulation) this.element.style.setProperty("--imageModulation", this.itemData.imageModulation);
+        if (this.itemData.imageOverlay) this.element.style.setProperty("--imageOverlay", `url('${this.itemData.imageOverlay}')`);
         if (!functionless) this.element.addEventListener("mousedown", event=>{event.stopPropagation(); this.dragConnection();});
-        this.element.setAttribute("name", itemData.name);
         this.element.setAttribute("instanceId", instanceId);
         this.element.setAttribute("type", type);
         this.element.setAttribute("nodeIndex", nodeIndex);
+        this.element.setAttribute("name", this.itemData.name);
     }
 
     dragConnection() {

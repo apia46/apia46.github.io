@@ -150,14 +150,14 @@ dropdown.open > div {display: block}
     grid-template-columns: calc(64px * var(--scale));
     gap: calc(8px * var(--scale));
 }
-#searchOverlay .machine {
+#searchOverlay machine {
     top: calc(-48px * var(--scale));
     height: calc(48px * var(--scale));
     width: calc(48px * var(--scale));
     padding: calc(6px * var(--scale));
     background: no-repeat calc(6px * var(--scale)) calc(6px * var(--scale))/calc(48px * var(--scale)) var(--background) var(--image);
 }
-#searchOverlay .machine::after {
+#searchOverlay machine::after {
     left: calc(60px * var(--scale));
     height: calc(48px * var(--scale));
     padding-top: calc(5px * var(--scale));
@@ -281,7 +281,7 @@ item[style*="--imageModulation"]::before {
     width: 282px;
 }
 
-.machine {
+machine {
     position: absolute;
     top: -48px;
     left: 0px;
@@ -292,7 +292,7 @@ item[style*="--imageModulation"]::before {
     background: no-repeat 6px 6px/48px var(--background) var(--image);
     text-align: center;
 }
-.machine::after {
+machine::after {
     position: absolute;
     top: 0px;
     left: 60px;
@@ -340,7 +340,7 @@ item[style*="--imageModulation"]::before {
     margin-bottom: 8px;
     direction: ltr;
 }
-.itemNode input, .itemNode button, .itemNode span {
+.itemNode .quantity, .itemNode button, .itemNode span {
     box-sizing: border-box;
     font-size: 24px;
     padding: 0px 4px;
@@ -348,34 +348,65 @@ item[style*="--imageModulation"]::before {
     border: none;
     background: var(--dark);
 }
-.itemNode input {
+.itemNode .quantity {
     min-width: 0;
     color: var(--highlight);
     text-align: right;
     flex-shrink: 1;
 }
-.itemNode input:focus {
+.itemNode .quantity:focus {
     outline: 2px solid var(--highlight);
 }
-.itemNode input:focus + span {
+.itemNode .quantity:focus + span {
     outline: 2px solid var(--highlight);
 }
 .itemNode span {
-    line-height: 24px;
+    line-height: 28px;
     padding-left: 0;
 }
-.itemNode button {
-    font-size: 20px;
-    height: 27px;
-    color: var(--highlight);
+.itemNode .constrain {
+    display: none;
 }
-.itemNode button:hover {
+.itemNode label::after {
+    content: "\f09c";
+    font-family: fontawesome;
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    font-size: 20px;
+    line-height: 27px;
+    width: 27px;
+    height: 27px;
+    background: var(--dark);
+    color: var(--highlight);
+    cursor: pointer;
+}
+.itemNode label:hover::after {
     background: var(--bright);
 }
+.itemNode label:has(input:checked)::after {
+    content: "\f023";
+}
+.itemNode .error {
+    font-family: fontawesome;
+    vertical-align: top;
+    height: 27px;
+    width: 27px;
+    padding: 0;
+    text-align: center;
+    margin-left: 8px;
+    display: none;
+}
+.itemNode .error[name] {
+    display:inline-block;
+}
+
 .itemNode button.flipper {
     font-family: fontawesome;
     float: right;
+    font-size: 20px;
     width: 27px;
+    height: 27px;
     background: none;
     color: var(--dark);
 }

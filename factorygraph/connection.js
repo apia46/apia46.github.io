@@ -125,12 +125,23 @@ class Connection {
     remove() {
         this.element.remove();
         [...this.inputLines, ...this.outputLines].forEach(element=>element.remove());
+        [...this.inputs, ...this.outputs].forEach(item=>delete item.connection);
         delete connections[this.id];
+        if (this.itemNodeItem) {
+            delete this.itemNodeItem.connection;
+            this.itemNodeLine.remove();
+            delete this.itemNodeItem;
+            delete this.itemNodeLine;
+        }
     }
 
     removeConnectionTo(item) {
         delete item.connection;
-        if (item.type == "inputs") {
+        if (item.node instanceof ItemNode) {
+            this.itemNodeLine.remove();
+            delete this.itemNodeItem;
+            delete this.itemNodeLine;
+        } else if (item.type == "inputs") {
             const index = this.inputs.findIndex(check=>check===item);
             this.inputLines[index].remove();
             this.inputs.splice(index, 1);

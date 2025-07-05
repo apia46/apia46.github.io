@@ -32,13 +32,33 @@ class Network {
 function solve(network) {
     // read: gaussian elimination
     // the "variables" are nodes; the "equations" are connections
-    console.log(network);
-    //if (network.nodes.length + network.constrainedItemNodes != network.connections.length) return console.log("unsolvable");
-    //if (network.constrainedItemNodes == 0) return console.log("unsolvable");
-    // figure out the actual things that make it unsolvable
+    console.log("network:", network);
     
     let matrix = [];
     let augment = [];
+
+    let variablesAccountedForMask = array_fill(network.nodes.length, false);
+    let variablesAccountedFor = 0;
+    let checkMatrix = [];
+    let checkAugment = [];
+    // redo this; it doesnt actually work. fghjkfgjglk
+    const addRowToMatrix = (row, value)=>{
+        row.forEach((value, index)=>{
+            if (value && !variablesAccountedForMask[index]) {
+                variablesAccountedForMask[index] = true;
+                variablesAccountedFor++;
+            }
+        });
+        if (variablesAccountedFor > matrix.length) {
+            matrix.push(row);
+            augment.push(value);
+        } else {
+            // redundant equation
+            checkMatrix.push(row);
+            checkAugment.push(value);
+        }
+    }
+
     network.connections.forEach(connection=>{
         let row = array_fill(network.nodes.length, 0);
         if (connection instanceof DirectConnection) {
@@ -46,8 +66,7 @@ function solve(network) {
                 let extraRow = array_fill(network.nodes.length, 0);
                 // 1 * itemNode = quantity
                 extraRow[connection.itemItem.node.networkIndex] = 1;
-                matrix.push(extraRow);
-                augment.push(connection.itemItem.quantity);
+                addRowToMatrix(extraRow, connection.itemItem.quantity);
             }
             // throughput(recipeItem) * recipeNode = itemNode
             // :. throughPut(recipeItem) * recipeNode - itemNode = 0
@@ -66,25 +85,35 @@ function solve(network) {
                     let extraRow = array_fill(network.nodes.length, 0);
                     // 1 * itemNode = quantity
                     extraRow[connection.itemNodeItem.node.networkIndex] = 1;
-                    matrix.push(extraRow);
-                    augment.push(connection.itemNodeItem.quantity);
+                    addRowToMatrix(extraRow, connection.itemNodeItem.quantity);
                 }
             }
             connection.inputs.forEach(inputItem=>{
                 row[inputItem.node.networkIndex] = -throughput(inputItem);
             });
         }
-        matrix.push(row);
-        augment.push(0);
+        addRowToMatrix(row, 0);
     });
 
     // returns the multipliers for each recipeNode; amounts for each itemNode
+    console.log("matrix and augment: ", matrix, augment);
+    console.log("check matrix and augment: ", checkMatrix, checkAugment);
+    if (matrix.length < network.nodes.length) return "couldnt solve; node graph underconstrained";
     const result = gauss(matrix, augment);
-    console.log(result);
+    console.log("result: ", result);
+    if (result.includes(NaN)) return "couldnt solve; NaN error; this is probably a bug; report it please";
+
+    if (checkMatrix.some((checkRow, index)=>{
+        return checkRow.reduce((total, value, column)=>total + value*result[column]) - checkAugment[index] > 0.01;
+    })) return "couldnt solve; node graph overconstrained";
+
+    network.nodes.forEach(node=>{
+        if (node instanceof ItemNode) { if (!node.constrained) node.item.quantity = 0; }
+        else node.machine.multiplier = 0;
+    });
     result.forEach((value, nodeIndex)=>{
         const node = network.nodes[nodeIndex];
         if (node instanceof ItemNode) {
-            if (node.constrained && node.item.quantity - value > 0.01) console.log("constrained value will be changed! panic!")
             node.item.quantity = value;
         } else {
             node.machine.multiplier = value;

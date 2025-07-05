@@ -49,17 +49,30 @@ class ItemNode extends Node {
         super(posX, posY, functionless);
         this.element.insertAdjacentHTML("beforeend", `
             <div class="right-side">
-                <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[itemId].unit||""}</span></div>
-                <button class="setter">SET</button>
+                <div class="number-container"><input type="numeric" placeholder="unconstrained" class="quantity"></input><span>${data.items[itemId].unit||""}</span></div>
+                <label><input type="checkbox" class="constrain"></label>
+                <span class="error">\uf06a</span>
                 <button class="flipper">\uf2f1</button>
             </div>
         `);
+        const quantityInput = this.element.querySelector(".quantity");
         this.item = new Item(itemId, null, itemIdIter++, this, null, functionless);
-        this.element.querySelector(".setter").addEventListener("click", ()=>{
-            this.item.quantity = Number(this.element.querySelector("input").value);
-            this.constrained = true; // TODO: make this a toggle
-            solve(propagate(this));
+        quantityInput.addEventListener("mousedown", event=>{event.stopPropagation()}); // dont drag
+        quantityInput.addEventListener("input", ()=>{
+            this.constrained = true;
+            this.element.querySelector(".constrain").checked = true;
+            quantityInput.placeholder = "unset";
+        })
+        quantityInput.addEventListener("focusout", ()=>{
+            this.item.quantity = Number(quantityInput.value);
+            const result = solve(propagate(this));
+            if (result) this.element.querySelector(".error").setAttribute("name", result);
+            else this.element.querySelector(".error").removeAttribute("name");
         });
+        this.element.querySelector(".constrain").addEventListener("click", ()=>{
+            this.constrained = this.element.querySelector(".constrain").checked;
+            quantityInput.placeholder = this.constrained?"unset":"unconstrained";
+        })
         this.element.querySelector(".flipper").addEventListener("click",()=>{
             this.element.classList.toggle("flipped");
             this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
@@ -69,13 +82,15 @@ class ItemNode extends Node {
     }
 
     updateDisplay() {
-        this.element.querySelector("input").value = this.item.quantity;
+        this.element.querySelector(".quantity").value = this.item.quantity;
     }
 
     allItems() { return [this.item] }
 }
 
 class RecipeNode extends Node {
+    showingMultiplied = false;
+
     constructor(posX, posY, recipeId, functionless) {
         super(posX, posY, functionless);
         this.recipeData = data.recipes[recipeId];
@@ -87,13 +102,13 @@ class RecipeNode extends Node {
             speed: machineData.speed,
         }
         this.element.insertAdjacentHTML("beforeend", `
-            <div class="machine" style="--image:url('${machineData.image}');"></div>
+            <machine style="--image:url('${machineData.image}');" name="${machineData.name}"></machine>
             <div class="inputs"></div>
             <div class="recipe-arrow"></div>
             <div class="outputs"></div>
         `);
         
-        this.machine.element = this.element.querySelector(".machine");
+        this.machine.element = this.element.querySelector("machine");
 
         const inputs = this.element.querySelector(".inputs");
         this.inputs = this.recipeData.inputs.map(([itemId, quantity], index) => {
@@ -119,16 +134,23 @@ class RecipeNode extends Node {
     }
 
     displayBaseCase() {
+        this.showingMultiplied = false;
         this.machine.element.setAttribute("amount", `${this.recipeData.time}s`);
+        this.machine.element.setAttribute("accurateAmount", `${this.recipeData.time}s per recipe`);
         this.allItems().forEach(item=>{
             item.element.setAttribute("quantity", `${item.quantity}${item.unit}`);
+            item.element.setAttribute("accurateQuantity", `${item.quantity}${item.unit}`);
         });
     }
 
     displayMultipliedCase() {
-        this.element.querySelector(".machine").setAttribute("amount", "x" + this.machine.multiplier.toFixed(2));
+        this.showingMultiplied = true;
+        this.machine.element.setAttribute("amount", "x" + this.machine.multiplier.toFixed(2));
+        this.machine.element.setAttribute("accurateAmount", `${this.machine.multiplier} machines`);
         this.allItems().forEach(item=>{
-            item.element.setAttribute("quantity", `${(throughput(item) * this.machine.multiplier).toFixed(2)}${item.unit}`);
+            item.multipliedQuantity = throughput(item) * this.machine.multiplier;
+            item.element.setAttribute("quantity", `${item.multipliedQuantity.toFixed(2)}${item.unit}`);
+            item.element.setAttribute("accurateQuantity", `${item.multipliedQuantity}${item.unit}`);
         });
     }
 

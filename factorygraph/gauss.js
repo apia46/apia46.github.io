@@ -16,7 +16,10 @@ function array_fill(length, value, start=0) {
  * @param  array x vector
  * @return array x solution vector
  */
-function gauss(A, x) {
+function gauss(_A, _x) {
+    // use a copy
+    let A = _A.map(row=>row.slice());
+    let x = _x.slice();
 
     var i, k, j;
 
