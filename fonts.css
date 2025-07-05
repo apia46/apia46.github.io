@@ -68,12 +68,16 @@
 
 @font-face {
     font-family: 'corruicons';
-    src:  url('assets/css/f/onts/corruicons.eot?6mcqel');
-    src:  url('assets/fonts/corruicons.eot?6mcqel#iefix') format('embedded-opentype'),
-    url('assets/fonts/corruicons.ttf?6mcqel') format('truetype'),
-    url('assets/fonts/corruicons.woff?6mcqel') format('woff'),
-    url('assets/fonts/corruicons.svg?6mcqel#icomoon') format('svg');
+    src:  url('assets/fonts/corruicons.eot') format('embedded-opentype'),
+    url('assets/fonts/corruicons.ttf') format('truetype'),
+    url('assets/fonts/corruicons.woff') format('woff'),
+    url('assets/fonts/corruicons.svg') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
+}
+
+@font-face {
+    font-family: 'fontawesome';
+    src: url('assets/fonts/FontAwesome6Modified.ttf');
 }

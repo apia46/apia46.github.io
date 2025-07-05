@@ -23,25 +23,25 @@ class Item {
         this.element.setAttribute("nodeIndex", nodeIndex);
     }
 
-    canConnect(toInstance) {
-        if (this.contentId != toInstance.contentId) return false
-        if (this.type == "inputs" && toInstance.type == "inputs") return false
-        if (this.type == "outputs" && toInstance.type == "outputs") return false
-        if (this.connection || toInstance.connection) return false
-        return true
-    }
-
     dragConnection() {
         this.element.classList.add("connecting");
+        if (this.connection) return;
         new DraggedLine(this, resultElement=>{
             this.element.classList.remove("connecting");
             if (resultElement?.nodeName == "ITEM") {
                 const toItem = Item.getFromElement(resultElement);
-                if (!(this.connection || toItem.connection || this.node instanceof ItemNode || toItem.node instanceof ItemNode) && this.contentId == toItem.contentId) {
-                    new Connection(this, toItem);
+                if (!toItem.connection && this.contentId == toItem.contentId) {
+                    if (this.node instanceof ItemNode && toItem.node instanceof ItemNode) return;
+                    else if (this.node instanceof ItemNode) new DirectConnection(this, toItem);
+                    else if (toItem.node instanceof ItemNode) new DirectConnection(toItem, this);
+                    else new Connection(this, toItem);
                 }
             } else if (resultElement?.nodeName == "CONNECTION") {
-                Connection.getFromElement(resultElement).connectTo(this);
+                const connection = Connection.getFromElement(resultElement);
+                if (connection.contentId = this.contentId) {
+                    if (this.node instanceof RecipeNode) connection.connectTo(this);
+                    else if (!connection.itemNode) connection.addItemNode(this);
+                }
             }
         });
     }

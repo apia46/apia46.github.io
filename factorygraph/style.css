@@ -219,8 +219,8 @@ node {
     --posX: 0;
     --posY: 0;
     padding: 13px;
-    left: calc(round(down, (var(--posX) + 3) / 6) * 6px - 3px);
-    top: calc(round(down, (var(--posY) + 3) / 6) * 6px - 3px);
+    left: calc(round(var(--posX) + 3, 6) * 1px - 3px);
+    top: calc(round(var(--posY) + 3, 6) * 1px - 3px);
 }
 .delete {
     position: absolute;
@@ -338,6 +338,7 @@ item[style*="--imageModulation"]::before {
 .itemNode .number-container {
     display: flex;
     margin-bottom: 8px;
+    direction: ltr;
 }
 .itemNode input, .itemNode button, .itemNode span {
     box-sizing: border-box;
@@ -371,6 +372,26 @@ item[style*="--imageModulation"]::before {
 .itemNode button:hover {
     background: var(--bright);
 }
+.itemNode button.flipper {
+    font-family: fontawesome;
+    float: right;
+    width: 27px;
+    background: none;
+    color: var(--dark);
+}
+.itemNode button.flipper:hover {
+    color: var(--bright);
+}
+.itemNode.flipped {
+    direction: rtl;
+}
+.itemNode.flipped .right-side {
+    margin-left: 0;
+    margin-right: 8px;
+}
+.itemNode.flipped button.flipper {
+    float: left;
+}
 
 /* CONNECTION */
 connection {
@@ -396,8 +417,10 @@ connection line {
     --aY: var(--radius);
     --bX: calc(var(--toX) - var(--posX) + var(--radius));
     --bY: calc(var(--toY) - var(--posY) + var(--radius));
-    --shortenBy: 32;
+}
+connection line:not(.toItemNode) {
     background: var(--highlight);
+    --shortenBy: 32;
 }
 connection line.inputs {
     --shortenBy: 40;
@@ -414,19 +437,21 @@ connection line.inputs::after {
 }
 
 connection.vertical {
-    --posX: var(--perpC);
-    --posY: var(--paraMin);
+    --posX: round(var(--perpC), 6);
+    --posY: round(var(--paraMin), 6);
     width: calc(var(--radius) * 2px);
     height: calc((var(--paraMax) - var(--paraMin)) * 1px + var(--radius) * 2px);
 }
 connection.vertical line { --aY: var(--bY); }
+connection.vertical line.toItemNode { --aY: calc(var(--paraC) - var(--paraMin) + var(--radius)); }
 connection.horizontal {
-    --posX: var(--paraMin);
-    --posY: var(--perpC);
+    --posX: round(var(--paraMin), 6);
+    --posY: round(var(--perpC), 6);
     width: calc((var(--paraMax) - var(--paraMin)) * 1px + var(--radius) * 2px);
     height: calc(var(--radius) * 2px);
 }
 connection.horizontal line { --aX: var(--bX); }
+connection.horizontal line.toItemNode { --aX: calc(var(--paraC) - var(--paraMin) + var(--radius)); }
 
 /* LINE */
 line {

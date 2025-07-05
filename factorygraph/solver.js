@@ -1,26 +1,103 @@
-let visitIdIter = 0;
+let visitIdIter = 0; // we use a "visit id" for each propagation to check if we have been somewhere before. is this the best way to do it? dunno
 
-function propagate(node, graph) {
-    if (!graph) graph = new Graph();
+function propagate(node, network) {
+    if (!network) network = new Network();
 
-    if (node.visitId == graph.visitId) return graph;
-    node.visitId = graph.visitId;
-    graph.nodes.push(node);
+    if (node.visitId == network.visitId) return network;
+    node.visitId = network.visitId;
+    node.networkIndex = network.nodes.length;
+    network.nodes.push(node);
 
     node.allItems().forEach(item => {
-        if (item.connection) propagate(item.connection[oppositeType(item.type)].node, graph);
+        if (item.connection) {
+            if (item.connection.visitId != network.visitId) {
+                item.connection.visitId = network.visitId;
+                network.connections.push(item.connection);
+            }
+            item.connection.getAllExcept(item).forEach(thisItem=>propagate(thisItem.node, network));
+        }
     });
 
-    return graph;
+    return network;
 }
 
-class Graph {
+class Network {
     constructor() {
         this.visitId = visitIdIter++;
         this.nodes = [];
+        this.connections = [];
     }
 }
 
-function solve(matrix) {
+function solve(network) {
+    // read: gaussian elimination
+    // the "variables" are nodes; the "equations" are connections
+    console.log(network);
+    //if (network.nodes.length + network.constrainedItemNodes != network.connections.length) return console.log("unsolvable");
+    //if (network.constrainedItemNodes == 0) return console.log("unsolvable");
+    // figure out the actual things that make it unsolvable
     
+    let matrix = [];
+    let augment = [];
+    network.connections.forEach(connection=>{
+        let row = array_fill(network.nodes.length, 0);
+        if (connection instanceof DirectConnection) {
+            if (connection.itemItem.node.constrained) {
+                let extraRow = array_fill(network.nodes.length, 0);
+                // 1 * itemNode = quantity
+                extraRow[connection.itemItem.node.networkIndex] = 1;
+                matrix.push(extraRow);
+                augment.push(connection.itemItem.quantity);
+            }
+            // throughput(recipeItem) * recipeNode = itemNode
+            // :. throughPut(recipeItem) * recipeNode - itemNode = 0
+            row[connection.recipeItem.node.networkIndex] = throughput(connection.recipeItem);
+            row[connection.itemItem.node.networkIndex] = -1;
+        } else {
+            // remember, the types on the connection are given as relative to the node they come from
+            // Σ(throughput(outputRecipeItem) * outputRecipeNode) = itemNode + Σ(throughput(inputRecipeItem) * inputRecipeNode)
+            // :. Σ(throughput(outputRecipeItem) * outputRecipeNode) - itemNode - Σ(throughput(inputRecipeItem) * inputRecipeNode) = 0
+            connection.outputs.forEach(outputItem=>{
+                row[outputItem.node.networkIndex] = throughput(outputItem);
+            });
+            if (connection.itemNodeItem) {
+                row[connection.itemNodeItem.node.networkIndex] = -1;
+                if (connection.itemNodeItem.node.constrained) {
+                    let extraRow = array_fill(network.nodes.length, 0);
+                    // 1 * itemNode = quantity
+                    extraRow[connection.itemNodeItem.node.networkIndex] = 1;
+                    matrix.push(extraRow);
+                    augment.push(connection.itemNodeItem.quantity);
+                }
+            }
+            connection.inputs.forEach(inputItem=>{
+                row[inputItem.node.networkIndex] = -throughput(inputItem);
+            });
+        }
+        matrix.push(row);
+        augment.push(0);
+    });
+
+    // returns the multipliers for each recipeNode; amounts for each itemNode
+    const result = gauss(matrix, augment);
+    console.log(result);
+    result.forEach((value, nodeIndex)=>{
+        const node = network.nodes[nodeIndex];
+        if (node instanceof ItemNode) {
+            if (node.constrained && node.item.quantity - value > 0.01) console.log("constrained value will be changed! panic!")
+            node.item.quantity = value;
+        } else {
+            node.machine.multiplier = value;
+        }
+    });
+
+    network.nodes.forEach(node=>{
+        if (node instanceof RecipeNode) node.displayMultipliedCase();
+        if (node instanceof ItemNode && !node.constrained) node.updateDisplay();
+    })
+}
+
+function throughput(item) {
+    // the amount of item/[time unit] that pass through the recipe run with a single machine
+    return item.quantity / item.node.recipeData.time * item.node.machine.speed;
 }

@@ -50,16 +50,26 @@ class ItemNode extends Node {
         this.element.insertAdjacentHTML("beforeend", `
             <div class="right-side">
                 <div class="number-container"><input type="numeric" placeholder="quantity"></input><span>${data.items[itemId].unit||""}</span></div>
-                <button>SET</button>
+                <button class="setter">SET</button>
+                <button class="flipper">\uf2f1</button>
             </div>
         `);
         this.item = new Item(itemId, null, itemIdIter++, this, null, functionless);
-        this.element.querySelector("button").addEventListener("click", ()=>{
+        this.element.querySelector(".setter").addEventListener("click", ()=>{
             this.item.quantity = Number(this.element.querySelector("input").value);
-            console.log(propagate(this));
+            this.constrained = true; // TODO: make this a toggle
+            solve(propagate(this));
         });
+        this.element.querySelector(".flipper").addEventListener("click",()=>{
+            this.element.classList.toggle("flipped");
+            this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
+        })
         this.element.insertBefore(this.item.element, this.element.firstChild);
         this.element.classList.add("itemNode");
+    }
+
+    updateDisplay() {
+        this.element.querySelector("input").value = this.item.quantity;
     }
 
     allItems() { return [this.item] }
@@ -68,12 +78,14 @@ class ItemNode extends Node {
 class RecipeNode extends Node {
     constructor(posX, posY, recipeId, functionless) {
         super(posX, posY, functionless);
-        const recipeData = data.recipes[recipeId];
+        this.recipeData = data.recipes[recipeId];
         this.recipeId = recipeId;
+        const machineData = data.machines[this.recipeData.machines[0]];
         this.machine = { // make this an object probably
-            machineId: recipeData.machines[0] // not sure abiyt this
+            machineId: this.recipeData.machines[0],
+            machineData: machineData,
+            speed: machineData.speed,
         }
-        const machineData = data.machines[this.machine.machineId];
         this.element.insertAdjacentHTML("beforeend", `
             <div class="machine" style="--image:url('${machineData.image}');"></div>
             <div class="inputs"></div>
@@ -84,16 +96,16 @@ class RecipeNode extends Node {
         this.machine.element = this.element.querySelector(".machine");
 
         const inputs = this.element.querySelector(".inputs");
-        this.inputs = recipeData.inputs.map(([itemId, baseQuantity], index) => {
+        this.inputs = this.recipeData.inputs.map(([itemId, quantity], index) => {
             const item = new Item(itemId, "inputs", itemIdIter++, this, index, functionless);
-            item.baseQuantity = baseQuantity;
+            item.quantity = quantity;
             inputs.appendChild(item.element);
             return item;
         });
         const outputs = this.element.querySelector(".outputs");
-        this.outputs = recipeData.outputs.map(([itemId, baseQuantity], index) => {
+        this.outputs = this.recipeData.outputs.map(([itemId, quantity], index) => {
             const item = new Item(itemId, "outputs", itemIdIter++, this, index, functionless);
-            item.baseQuantity = baseQuantity;
+            item.quantity = quantity;
             outputs.appendChild(item.element);
             return item;
         });
@@ -107,17 +119,16 @@ class RecipeNode extends Node {
     }
 
     displayBaseCase() {
-        this.machine.element.setAttribute("amount", `${data.recipes[this.recipeId].time}s`);
+        this.machine.element.setAttribute("amount", `${this.recipeData.time}s`);
         this.allItems().forEach(item=>{
-            item.element.setAttribute("quantity", `${item.baseQuantity}${item.unit}`);
+            item.element.setAttribute("quantity", `${item.quantity}${item.unit}`);
         });
     }
 
     displayMultipliedCase() {
-        this.element.querySelector(".machine").setAttribute("amount", "x" + this.machine.amount.toFixed(2));
+        this.element.querySelector(".machine").setAttribute("amount", "x" + this.machine.multiplier.toFixed(2));
         this.allItems().forEach(item=>{
-            if (item.quantity || item.quantity === 0) item.element.setAttribute("quantity", `${item.quantity.toFixed(2)}${item.unit}`);
-            else item.element.setAttribute("quantity", "");
+            item.element.setAttribute("quantity", `${(throughput(item) * this.machine.multiplier).toFixed(2)}${item.unit}`);
         });
     }
 

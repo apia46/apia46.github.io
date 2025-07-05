@@ -39,9 +39,11 @@ class Connection {
     outputs = [];
     outputLines = [];
     direction = "vertical";
+    itemNodeItem; itemNodeLine;
 
     constructor(...items) {
         this.id = connectionIdIter++;
+        this.contentId = items[0].contentId;
         this.element = document.createElement("connection");
         this.element.setAttribute("connectionId", this.id);
         this.element.classList.add(this.direction);
@@ -100,8 +102,20 @@ class Connection {
         this.calculateParallelBounds();
     }
 
+    addItemNode(item) {
+        item.connection = this;
+        this.itemNodeItem = item;
+        this.itemNodeLine = document.createElement("line");
+        this.itemNodeLine.classList.add("toItemNode");
+        const [toX, toY] = getGraphPositionFromCenter(item.element);
+        this.itemNodeLine.style.setProperty("--toX", toX);
+        this.itemNodeLine.style.setProperty("--toY", toY);
+        this.element.appendChild(this.itemNodeLine);
+        this.calculateParallelBounds();
+    }
+
     updateLineTo(item) {
-        const element = [...this.inputLines, ...this.outputLines][[...this.inputs, ...this.outputs].findIndex(check=>check===item)];
+        var element = item.node instanceof RecipeNode?[...this.inputLines, ...this.outputLines][[...this.inputs, ...this.outputs].findIndex(check=>check===item)]:this.itemNodeLine;
         const [toX, toY] = getGraphPositionFromCenter(item.element);
         element.style.setProperty("--toX", toX);
         element.style.setProperty("--toY", toY);
@@ -150,6 +164,7 @@ class Connection {
         const parallelComponents = this.parallelComponents([...this.inputs, ...this.outputs].map(item=>getGraphPositionFromCenter(item.element)));
         this.element.style.setProperty("--paraMin", Math.min(...parallelComponents));
         this.element.style.setProperty("--paraMax", Math.max(...parallelComponents));
+        if (this.itemNodeLine) this.itemNodeLine.style.setProperty("--paraC", (Math.min(...parallelComponents) + Math.max(...parallelComponents))*0.5);
     }
 
     swapDirection(overridePerpendicularCoordinate) {
@@ -164,6 +179,11 @@ class Connection {
     parallelComponents(coordinates) { return coordinates.map(coordinate=>coordinate[this.direction=="vertical"?1:0]); }
     perpendicularComponents(coordinates) { return coordinates.map(coordinate=>coordinate[this.direction=="vertical"?0:1]); }
 
+    getAllExcept(item) {
+        if (this.itemNodeItem) return [...this.inputs, ...this.outputs, this.itemNodeItem].filter(checkItem=>checkItem!==item);
+        else return [...this.inputs, ...this.outputs].filter(checkItem=>checkItem!==item);
+    }
+    
     static getFromElement(element) {
         return connections[element.getAttribute("connectionId")];
     }
@@ -172,4 +192,41 @@ class Connection {
 function mouseRelativeToGrid() {
     const scale = Number(wrapper.style.getPropertyValue("--scale")||1);
     return [(mouseX - graph.offsetLeft) / scale, (mouseY - graph.offsetTop) / scale];
+}
+
+class DirectConnection {
+    // a direct connection between a recipenode item and an itemnode item
+    constructor(itemItem, recipeItem) {
+        this.itemItem = itemItem;
+        this.recipeItem = recipeItem;
+        itemItem.connection = this;
+        recipeItem.connection = this;
+        this.element = document.createElement("line");
+        this.element.addEventListener("click", ()=>{this.remove()});
+        this.updatePosition();
+        graph.appendChild(this.element);
+        console.log(this)
+    }
+
+    remove() {
+        delete this.itemItem.connection;
+        delete this.recipeItem.connection;
+        this.element.remove();
+    }
+
+    updatePosition() {
+        const [aX, aY] = getGraphPositionFromCenter(this.itemItem.element);
+        const [bX, bY] = getGraphPositionFromCenter(this.recipeItem.element);
+        this.element.style.setProperty("--aX", aX);
+        this.element.style.setProperty("--aY", aY);
+        this.element.style.setProperty("--bX", bX);
+        this.element.style.setProperty("--bY", bY);
+    }
+
+    getAllExcept(item) {
+        return [this.itemItem, this.recipeItem].filter(checkItem=>checkItem!==item);
+    }
+
+    updateLineTo() { this.updatePosition() }
+    removeConnectionTo() { this.remove() } // kind of a hack but it works so
 }
