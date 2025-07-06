@@ -1,41 +1,66 @@
-let visitIdIter = 0; // we use a "visit id" for each propagation to check if we have been somewhere before. is this the best way to do it? dunno
-
-function propagate(node, network) {
-    if (!network) network = new Network();
-
-    if (node.visitId == network.visitId) return network;
-    node.visitId = network.visitId;
-    node.networkIndex = network.nodes.length;
-    network.nodes.push(node);
-
-    node.allItems().forEach(item => {
-        if (item.connection) {
-            if (item.connection.visitId != network.visitId) {
-                item.connection.visitId = network.visitId;
-                network.connections.push(item.connection);
-            }
-            item.connection.getAllExcept(item).forEach(thisItem=>propagate(thisItem.node, network));
-        }
-    });
-
-    return network;
-}
-
 class Network {
-    constructor() {
-        this.visitId = visitIdIter++;
-        this.nodes = [];
+    constructor(node) {
+        if (node) this.nodes = [node];
+        else this.nodes = [];
         this.connections = [];
+    }
+
+    joinTo(network) {
+        if (network === this) return;
+        network.nodes.push(...this.nodes);
+        network.connections.push(...this.connections);
+        this.nodes.forEach(node=>node.network=network);
+        this.connections.forEach(connection=>connection.network=network);
+        network.updateSolve();
+    }
+
+    setNetworkIndices() {
+        this.nodes.forEach((node, index)=>node.networkIndex=index);
+    }
+
+    findDisconnected() {
+        let visitId = 0;
+        this.nodes.forEach(node=>delete node.visitId);
+        this.connections.forEach(connection=>delete connection.visitId);
+        let subnets = [];
+        this.nodes.forEach(node=>{
+            if (node.visitId) return;
+            visitId++;
+            let subnet = new Network();
+            subnets.push(subnet);
+            // flood fill from node
+            let queue = [node];
+            while (queue.length) {
+                let thisNode = queue.pop();
+                thisNode.visitId = visitId;
+                subnet.nodes.push(thisNode);
+                thisNode.network = subnet;
+                const [connectedNodes, connections] = thisNode.unvisitedConnectedNodesAndConnections(visitId);
+                subnet.connections.push(...connections);
+                connections.forEach(connection=>connection.network=subnet);
+                queue.push(...connectedNodes);
+            }
+        });
+        subnets.forEach(network=>network.updateSolve());
+    }
+
+    updateSolve() {
+        let itemNode;
+        if (itemNode = this.nodes.find(node=>node instanceof ItemNode)) itemNode.solveFromThis();
+        else this.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
     }
 }
 
 function solve(network) {
     // read: gaussian elimination
     // the "variables" are nodes; the "equations" are connections
-    console.log("network:", network);
     
+    if (network.nodes.length == 1) return;
+
     let matrix = [];
     let augment = [];
+
+    network.setNetworkIndices();
 
     const addRowToMatrix = (row, value)=>{
         matrix.push(row);
@@ -79,12 +104,19 @@ function solve(network) {
     });
 
     // returns the multipliers for each recipeNode; amounts for each itemNode
-    console.log("matrix and augment: ", matrix, augment);
-    if (matrix.length < network.nodes.length) return "couldnt solve; node graph underconstrained";
+    if (matrix.length < network.nodes.length) {
+        network.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
+        return "couldnt solve; node graph underconstrained";
+    }
     const result = gauss(matrix, augment);
-    console.log("result: ", result);
-    if (!result) return "couldnt solve; overconstrained";
-    if (result.includes(NaN)) return "couldnt solve; NaN error; this is probably a bug; report it please";
+    if (!result) {
+        network.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
+        return "couldnt solve; overconstrained";
+    }
+    if (result.includes(NaN)) {
+        network.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
+        return "couldnt solve; NaN error; this is probably a bug; report it please";
+    }
 
     network.nodes.forEach(node=>{
         if (node instanceof ItemNode) { if (!node.constrained) node.item.quantity = 0; }

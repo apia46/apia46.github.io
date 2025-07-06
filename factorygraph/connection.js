@@ -40,10 +40,13 @@ class Connection {
     outputLines = [];
     direction = "vertical";
     itemNodeItem; itemNodeLine;
+    network;
 
     constructor(...items) {
         this.id = connectionIdIter++;
         this.contentId = items[0].contentId;
+        this.network = items[0].node.network;
+        this.network.connections.push(this);
         this.element = document.createElement("connection");
         this.element.setAttribute("connectionId", this.id);
         this.element.classList.add(this.direction);
@@ -100,6 +103,7 @@ class Connection {
             this.outputLines.push(element);
         }
         this.calculateParallelBounds();
+        item.node.network.joinTo(this.network);
     }
 
     addItemNode(item) {
@@ -112,6 +116,7 @@ class Connection {
         this.itemNodeLine.style.setProperty("--toY", toY);
         this.element.appendChild(this.itemNodeLine);
         this.calculateParallelBounds();
+        item.node.network.joinTo(this.network);
     }
 
     updateLineTo(item) {
@@ -133,6 +138,8 @@ class Connection {
             delete this.itemNodeItem;
             delete this.itemNodeLine;
         }
+        delete this.network.connections[this.network.connections.findIndex(check=>check===this)];
+        this.network.findDisconnected();
     }
 
     removeConnectionTo(item) {
@@ -155,6 +162,7 @@ class Connection {
         }
         if (this.inputs.length + this.outputs.length < 2) return this.remove();
         this.calculateParallelBounds();
+        this.network.findDisconnected();
     }
 
     calculateDefaultPerpendicularCoordinate() {
@@ -212,17 +220,21 @@ class DirectConnection {
         this.recipeItem = recipeItem;
         itemItem.connection = this;
         recipeItem.connection = this;
+        this.network = itemItem.node.network;
+        this.network.connections.push(this);
+        recipeItem.node.network.joinTo(itemItem.node.network);
         this.element = document.createElement("line");
         this.element.addEventListener("click", ()=>{this.remove()});
         this.updatePosition();
         graph.appendChild(this.element);
-        console.log(this)
     }
 
     remove() {
         delete this.itemItem.connection;
         delete this.recipeItem.connection;
         this.element.remove();
+        delete this.network.connections[this.network.connections.findIndex(check=>check===this)];
+        this.network.findDisconnected();
     }
 
     updatePosition() {

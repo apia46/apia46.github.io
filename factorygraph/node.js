@@ -2,8 +2,6 @@ let nodeIdIter = 0;
 let nodes = {};
 
 class Node {
-    visitId;
-
     constructor(posX, posY, functionless) {
         if (!functionless) this.id = nodeIdIter++
         this.element = document.createElement("node");
@@ -32,6 +30,7 @@ class Node {
 
     attachToGraph() {
         graph.appendChild(this.element);
+        this.network = new Network(this);
         nodes[this.id] = this;
     }
 
@@ -41,6 +40,23 @@ class Node {
         });
         this.element.remove();
         delete nodes[this.id];
+        delete this.network.nodes[this.network.nodes.findIndex(check=>check===this)];
+    }
+
+    unvisitedConnectedNodesAndConnections(visitId) {
+        let connections = [];
+        let nodes = [];
+        this.allItems().forEach(item=>{
+            if (item.connection && !item.connection.visitId) {
+                connections.push(item.connection);
+                item.connection.visitId = visitId;
+                item.connection.getAllExcept(item).forEach(otherItem=>{
+                    if (!otherItem.node.visitId) nodes.push(otherItem.node);
+                    otherItem.node.visitId = visitId;
+                });
+            }
+        });
+        return [nodes, connections];
     }
 }
 
@@ -79,13 +95,14 @@ class ItemNode extends Node {
 
     solveFromThis() {
         this.item.quantity = Number(this.element.querySelector(".quantity").value)||0;
-        const result = solve(propagate(this));
+        const result = solve(this.network);
         if (result) this.element.querySelector(".error").setAttribute("name", result);
         else this.element.querySelector(".error").removeAttribute("name");
     }
 
     updateDisplay() {
         this.element.querySelector(".quantity").value = this.item.quantity;
+        this.element.querySelector(".error").removeAttribute("name");
     }
 
     allItems() { return [this.item] }
