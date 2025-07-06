@@ -79,11 +79,14 @@ class ItemNode extends Node {
             this.element.querySelector(".constrain").checked = true;
             quantityInput.placeholder = "0";
         })
-        quantityInput.addEventListener("input", ()=>{this.solveFromThis();});
+        quantityInput.addEventListener("input", ()=>{
+            this.item.quantity = Number(this.element.querySelector(".quantity").value)||0;
+            this.network.updateSolve();
+        });
         this.element.querySelector(".constrain").addEventListener("click", ()=>{
             this.constrained = this.element.querySelector(".constrain").checked;
             quantityInput.placeholder = this.constrained?"0":"unconstrained";
-            this.solveFromThis();
+            this.network.updateSolve();
         });
         this.element.querySelector(".flipper").addEventListener("click",()=>{
             this.element.classList.toggle("flipped");
@@ -93,16 +96,13 @@ class ItemNode extends Node {
         this.element.classList.add("itemNode");
     }
 
-    solveFromThis() {
-        this.item.quantity = Number(this.element.querySelector(".quantity").value)||0;
-        const result = solve(this.network);
-        if (result) this.element.querySelector(".error").setAttribute("name", result);
-        else this.element.querySelector(".error").removeAttribute("name");
+    displayGood() {
+        this.element.querySelector(".error").removeAttribute("name");
+        if (!this.constrained) this.element.querySelector(".quantity").value = this.item.quantity;
     }
 
-    updateDisplay() {
-        this.element.querySelector(".quantity").value = this.item.quantity;
-        this.element.querySelector(".error").removeAttribute("name");
+    displayBad(error) {
+        this.element.querySelector(".error").setAttribute("name", error);
     }
 
     allItems() { return [this.item] }

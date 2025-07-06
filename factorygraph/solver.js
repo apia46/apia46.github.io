@@ -45,9 +45,11 @@ class Network {
     }
 
     updateSolve() {
-        let itemNode;
-        if (itemNode = this.nodes.find(node=>node instanceof ItemNode)) itemNode.solveFromThis();
-        else this.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
+        let itemNodes = this.nodes.filter(node=>node instanceof ItemNode);
+        if (itemNodes.length) {
+            let result = solve(this);
+            if (result) itemNodes.forEach(node=>node.displayBad(result));
+        } else this.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
     }
 }
 
@@ -133,7 +135,7 @@ function solve(network) {
 
     network.nodes.forEach(node=>{
         if (node instanceof RecipeNode) node.displayMultipliedCase();
-        if (node instanceof ItemNode && !node.constrained) node.updateDisplay();
+        if (node instanceof ItemNode) node.displayGood();
     });
 }
 
