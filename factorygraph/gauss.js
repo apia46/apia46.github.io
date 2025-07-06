@@ -28,8 +28,9 @@ function gauss(_A, _x) {
         A[i].push(x[i]);
     }
     var n = A.length;
-
-    for (i=0; i < n; i++) { 
+    var m = A[0].length - 1;
+    console.assert(n >= m);
+    for (i=0; i < m; i++) { 
         // Search for maximum in this column
         var maxEl = abs(A[i][i]),
             maxRow = i;
@@ -40,18 +41,17 @@ function gauss(_A, _x) {
             }
         }
 
-
         // Swap maximum row with current row (column by column)
-        for (k=i; k < n+1; k++) { 
+        for (k=i; k < m+1; k++) { 
             var tmp = A[maxRow][k];
             A[maxRow][k] = A[i][k];
             A[i][k] = tmp;
         }
 
         // Make all rows below this one 0 in current column
-        for (k=i+1; k < n; k++) { 
+        for (k=i+1; k < n; k++) {
             var c = -A[k][i]/A[i][i];
-            for (j=i; j < n+1; j++) { 
+            for (j=i; j < m+1; j++) {
                 if (i===j) {
                     A[k][j] = 0;
                 } else {
@@ -62,13 +62,14 @@ function gauss(_A, _x) {
     }
 
     // Solve equation Ax=b for an upper triangular matrix A
-    x = array_fill(n, 0);
-    for (i=n-1; i > -1; i--) { 
-        x[i] = A[i][n]/A[i][i];
+    x = array_fill(m, 0);
+    for (i=m-1; i > -1; i--) { 
+        x[i] = A[i][m]/A[i][i];
         for (k=i-1; k > -1; k--) { 
-            A[k][n] -= A[k][i] * x[i];
+            A[k][m] -= A[k][i] * x[i];
         }
     }
-
+    // if the zeroed out rows at the bottom have nonzero augments, this system is inconsistent
+    if (A.slice(m).some(array=>array[m])) return undefined;
     return x;
 }

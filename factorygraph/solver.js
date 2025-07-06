@@ -37,26 +37,9 @@ function solve(network) {
     let matrix = [];
     let augment = [];
 
-    let variablesAccountedForMask = array_fill(network.nodes.length, false);
-    let variablesAccountedFor = 0;
-    let checkMatrix = [];
-    let checkAugment = [];
-    // redo this; it doesnt actually work. fghjkfgjglk
     const addRowToMatrix = (row, value)=>{
-        row.forEach((value, index)=>{
-            if (value && !variablesAccountedForMask[index]) {
-                variablesAccountedForMask[index] = true;
-                variablesAccountedFor++;
-            }
-        });
-        if (variablesAccountedFor > matrix.length) {
-            matrix.push(row);
-            augment.push(value);
-        } else {
-            // redundant equation
-            checkMatrix.push(row);
-            checkAugment.push(value);
-        }
+        matrix.push(row);
+        augment.push(value);
     }
 
     network.connections.forEach(connection=>{
@@ -97,15 +80,11 @@ function solve(network) {
 
     // returns the multipliers for each recipeNode; amounts for each itemNode
     console.log("matrix and augment: ", matrix, augment);
-    console.log("check matrix and augment: ", checkMatrix, checkAugment);
     if (matrix.length < network.nodes.length) return "couldnt solve; node graph underconstrained";
     const result = gauss(matrix, augment);
     console.log("result: ", result);
+    if (!result) return "couldnt solve; overconstrained";
     if (result.includes(NaN)) return "couldnt solve; NaN error; this is probably a bug; report it please";
-
-    if (checkMatrix.some((checkRow, index)=>{
-        return checkRow.reduce((total, value, column)=>total + value*result[column]) - checkAugment[index] > 0.01;
-    })) return "couldnt solve; node graph overconstrained";
 
     network.nodes.forEach(node=>{
         if (node instanceof ItemNode) { if (!node.constrained) node.item.quantity = 0; }
@@ -123,7 +102,7 @@ function solve(network) {
     network.nodes.forEach(node=>{
         if (node instanceof RecipeNode) node.displayMultipliedCase();
         if (node instanceof ItemNode && !node.constrained) node.updateDisplay();
-    })
+    });
 }
 
 function throughput(item) {
