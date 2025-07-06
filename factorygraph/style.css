@@ -479,7 +479,7 @@ connection.vertical {
     height: calc((var(--paraMax) - var(--paraMin)) * 1px + var(--radius) * 2px);
 }
 connection.vertical line { --aY: var(--bY); }
-connection.vertical line.toItemNode { --aY: calc(var(--paraC) - var(--paraMin) + var(--radius)); }
+connection.vertical line.toItemNode { --aY: calc(max(min(round(var(--paraC) - 48, 96) + 48 - var(--paraMin), (var(--paraMax) - var(--paraMin))), 0) + var(--radius)); }
 connection.horizontal {
     --posX: round(var(--paraMin), 6);
     --posY: round(var(--perpC), 6);
@@ -487,7 +487,7 @@ connection.horizontal {
     height: calc(var(--radius) * 2px);
 }
 connection.horizontal line { --aX: var(--bX); }
-connection.horizontal line.toItemNode { --aX: calc(var(--paraC) - var(--paraMin) + var(--radius)); }
+connection.horizontal line.toItemNode { --aX: calc(max(min(round(var(--paraC) - 48, 96) + 48 - var(--paraMin), (var(--paraMax) - var(--paraMin))), 0) + var(--radius)); }
 
 /* LINE */
 line {
