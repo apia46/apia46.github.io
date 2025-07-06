@@ -19,9 +19,9 @@ class Node {
             this.element.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", this.dragFunction)});
             wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", this.dragFunction)});
             wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", this.dragFunction)});
+            this.element.insertAdjacentHTML("beforeend", `<div class="delete">X</div>`);
+            this.element.querySelector(".delete").addEventListener("click", ()=>{this.remove()});
         }
-        this.element.insertAdjacentHTML("beforeend", `<div class="delete">X</div>`);
-        this.element.querySelector(".delete").addEventListener("click", ()=>{this.remove()});
 
         graph.appendChild(this.element);
     }
@@ -145,12 +145,12 @@ class RecipeNode extends Node {
 
     displayMultipliedCase() {
         this.showingMultiplied = true;
-        this.machine.element.setAttribute("amount", "x" + this.machine.multiplier.toFixed(2));
-        this.machine.element.setAttribute("accurateAmount", `${this.machine.multiplier} machines`);
+        this.machine.element.setAttribute("amount", "x" + formatNumber(this.machine.multiplier));
+        this.machine.element.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, true)} machines`);
         this.allItems().forEach(item=>{
             item.multipliedQuantity = throughput(item) * this.machine.multiplier;
-            item.element.setAttribute("quantity", `${item.multipliedQuantity.toFixed(2)}${item.unit}`);
-            item.element.setAttribute("accurateQuantity", `${item.multipliedQuantity}${item.unit}`);
+            item.element.setAttribute("quantity", `${formatNumber(item.multipliedQuantity)}${item.unit}`);
+            item.element.setAttribute("accurateQuantity", `${formatNumber(item.multipliedQuantity, true)}${item.unit}/s`);
         });
     }
 

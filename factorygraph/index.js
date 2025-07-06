@@ -331,3 +331,8 @@ function resolveSearchRecipe(element) {
     previousMouseY = mouseY;
     wrapper.addEventListener("mousemove", nodeInstance.dragFunction);
 }
+
+function formatNumber(number, morePrecise) {
+    if (morePrecise) return number.toPrecision(8);
+    return number.toPrecision(4);
+}

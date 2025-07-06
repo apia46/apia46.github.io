@@ -120,6 +120,7 @@ dropdown.open > div {display: block}
 #searchOverlay node {
     position: relative;
     display: inline-block;
+    vertical-align: top;
     margin: 8px;
     cursor: pointer;
     top: calc(var(--scroll-offset) * -1px);
@@ -135,6 +136,7 @@ dropdown.open > div {display: block}
     outline: none;
 }
 #searchOverlay node.recipeNode {
+    display: inline-flex;
     width: calc(282px * var(--scale));
     margin-top: calc(48px * var(--scale));
 }
@@ -279,6 +281,7 @@ item[style*="--imageModulation"]::before {
 /* RECIPENODE */
 .recipeNode {
     width: 282px;
+    display: flex;
 }
 
 machine {
@@ -304,10 +307,12 @@ machine::after {
     vertical-align: middle;
     background: var(--background);
 }
-.inputs, .outputs {
-    display: inline-grid;
+.recipeNode .inputs, .recipeNode .outputs {
+    display: grid;
     grid-template-columns: 64px;
     gap: 8px;
+    align-items: center;
+    align-content: center;
 }
 .recipe-arrow {
     position: absolute;
@@ -319,8 +324,8 @@ machine::after {
     top: 50%;
     translate: -50% -50%;
 }
-.outputs {
-    float: right;
+.recipeNode .inputs {
+    flex-grow: 1;
 }
 
 /* ITEMNODE */
