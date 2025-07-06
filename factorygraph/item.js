@@ -23,8 +23,8 @@ class Item {
     }
 
     dragConnection() {
-        this.element.classList.add("connecting");
         if (this.connection) return;
+        this.element.classList.add("connecting");
         new DraggedLine(this, resultElement=>{
             this.element.classList.remove("connecting");
             if (resultElement?.nodeName == "ITEM") {
