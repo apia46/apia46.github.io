@@ -27,6 +27,7 @@ class Item {
         this.element.classList.add("connecting");
         new DraggedLine(this, resultElement=>{
             this.element.classList.remove("connecting");
+            if (resultElement == this.element) return;
             if (resultElement?.nodeName == "ITEM") {
                 const toItem = Item.getFromElement(resultElement);
                 if (!toItem.connection && this.contentId == toItem.contentId) {
