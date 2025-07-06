@@ -40,8 +40,8 @@ function drag(element, accountForScaling, property="--pos", returnRelative) {
     var multiplier = (accountForScaling ? 1/Number(wrapper.style.getPropertyValue("--scale")||1) : 1);
     const changeX = (mouseX - previousMouseX) * multiplier;
     const changeY = (mouseY - previousMouseY) * multiplier;
-    const posX = Number(element.style.getPropertyValue(`${property}X`)||0) + changeX;
-    const posY = Number(element.style.getPropertyValue(`${property}Y`)||0) + changeY;
+    const posX = (Number(element.style.getPropertyValue(`${property}X`))||0) + changeX;
+    const posY = (Number(element.style.getPropertyValue(`${property}Y`))||0) + changeY;
     element.style.setProperty(`${property}X`, posX);
     element.style.setProperty(`${property}Y`, posY);
     previousMouseX = mouseX;
@@ -119,8 +119,8 @@ function load() {
     wrapper.addEventListener("wheel", event=>{
         var scaleFactor = 2**(-event.deltaY*0.003);
         wrapper.style.setProperty("--scale", Number(wrapper.style.getPropertyValue("--scale")||1) * scaleFactor);
-        var posX = Number(wrapper.style.getPropertyValue("--posX")||0);
-        var posY = Number(wrapper.style.getPropertyValue("--posY")||0);
+        var posX = Number(wrapper.style.getPropertyValue("--posX"))||0;
+        var posY = Number(wrapper.style.getPropertyValue("--posY"))||0;
         wrapper.style.setProperty("--posX", posX + (1 - scaleFactor) * (mouseX - posX));
         wrapper.style.setProperty("--posY", posY + (1 - scaleFactor) * (mouseY - posY));
     });
@@ -308,8 +308,8 @@ function resolveSearchItem(element) {
     const itemId = element.getAttribute("itemId");
     const graphScale = Number(wrapper.style.getPropertyValue('--scale')||1);
     const nodeInstance = new ItemNode( 
-        (element.offsetLeft - Number(wrapper.style.getPropertyValue('--posX')||0)) / graphScale,
-        (element.offsetTop - Number(wrapper.style.getPropertyValue('--posY')||0)) / graphScale,
+        (element.offsetLeft - (Number(wrapper.style.getPropertyValue('--posX'))||0)) / graphScale,
+        (element.offsetTop - (Number(wrapper.style.getPropertyValue('--posY'))||0)) / graphScale,
         itemId
     );
     nodeInstance.attachToGraph();
@@ -322,8 +322,8 @@ function resolveSearchRecipe(element) {
     const recipeId = element.getAttribute("recipeId");
     const graphScale = Number(wrapper.style.getPropertyValue('--scale')||1);
     const nodeInstance = new RecipeNode( 
-        (element.offsetLeft - Number(wrapper.style.getPropertyValue('--posX')||0)) / graphScale,
-        (element.offsetTop - Number(wrapper.style.getPropertyValue('--posY')||0)) / graphScale,
+        (element.offsetLeft - (Number(wrapper.style.getPropertyValue('--posX'))||0)) / graphScale,
+        (element.offsetTop - (Number(wrapper.style.getPropertyValue('--posY'))||0)) / graphScale,
         recipeId,
     );
     nodeInstance.attachToGraph();

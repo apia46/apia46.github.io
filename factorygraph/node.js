@@ -61,24 +61,27 @@ class ItemNode extends Node {
         quantityInput.addEventListener("input", ()=>{
             this.constrained = true;
             this.element.querySelector(".constrain").checked = true;
-            quantityInput.placeholder = "unset";
+            quantityInput.placeholder = "0";
         })
-        quantityInput.addEventListener("focusout", ()=>{
-            this.item.quantity = Number(quantityInput.value);
-            const result = solve(propagate(this));
-            if (result) this.element.querySelector(".error").setAttribute("name", result);
-            else this.element.querySelector(".error").removeAttribute("name");
-        });
+        quantityInput.addEventListener("input", ()=>{this.solveFromThis();});
         this.element.querySelector(".constrain").addEventListener("click", ()=>{
             this.constrained = this.element.querySelector(".constrain").checked;
-            quantityInput.placeholder = this.constrained?"unset":"unconstrained";
-        })
+            quantityInput.placeholder = this.constrained?"0":"unconstrained";
+            this.solveFromThis();
+        });
         this.element.querySelector(".flipper").addEventListener("click",()=>{
             this.element.classList.toggle("flipped");
             this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
-        })
+        });
         this.element.insertBefore(this.item.element, this.element.firstChild);
         this.element.classList.add("itemNode");
+    }
+
+    solveFromThis() {
+        this.item.quantity = Number(this.element.querySelector(".quantity").value)||0;
+        const result = solve(propagate(this));
+        if (result) this.element.querySelector(".error").setAttribute("name", result);
+        else this.element.querySelector(".error").removeAttribute("name");
     }
 
     updateDisplay() {
