@@ -1,5 +1,7 @@
 // https://github.com/yogaraptor/gaussian-elimination
 
+const EPSILON = 1e-8;
+
 var abs = Math.abs;
 
 function array_fill(length, value, start=0) {
@@ -70,6 +72,6 @@ function gauss(_A, _x) {
         }
     }
     // if the zeroed out rows at the bottom have nonzero augments, this system is inconsistent
-    if (A.slice(m).some(array=>array[m])) return undefined;
+    if (A.slice(m).some(array=>abs(array[m])>EPSILON)) return undefined;
     return x;
 }
