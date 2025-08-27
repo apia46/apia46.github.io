@@ -6,365 +6,365 @@ const MATERIALS = {"aluminium":{"m":19,"i":"DULL","c":"#80c8f0","o":1,"n":"Alumi
 const NON_CUSTOM_MATERIALS = ["DIAMOND","DULL","EMERALD","ENRICHED","FIERY","FINE","FLINT","FLUID","GEM_A","GEM_HORIZONTAL","GEM_VERTICAL","GLASS","LAPIS","LEAF","LIGNITE","MAGNETIC","METALLIC","NETHERSTAR","NONE","OPAL","PAPER","POWDER","QUARTZ","ROUGH","RUBY","SAND","SHARDS","SHINY","WOOD"]
 
 function gtnhGetImageData(itemId, itemData) {
-    if (itemData.unit) return gtnhGetImageDataFluid(itemId, itemData);
+	if (itemData.unit) return gtnhGetImageDataFluid(itemId, itemData);
 
-    var namespace = itemId.split(":")[0];
-    var id = itemId.split(":")[itemId.includes(":")?1:0].split("#")[0];
-    var metaId = itemId.split(":")[itemId.includes(":")?1:0].split("#")[1];
+	var namespace = itemId.split(":")[0];
+	var id = itemId.split(":")[itemId.includes(":")?1:0].split("#")[0];
+	var metaId = itemId.split(":")[itemId.includes(":")?1:0].split("#")[1];
 
-    switch (namespace) {
-        case "gregtech":
-            switch (id) {
-                case "gt.metaitem.01":
-                case "gt.metaitem.02":
-                case "gt.metaitem.03":
-                    var subMetaID = Number(metaId) % 1000;
-                    var superMetaID = Number(metaId) - subMetaID;
-                    var material = MATERIALS[Object.keys(MATERIALS).find(material=>MATERIALS[material].m==subMetaID)];
-                    if (material) {
-                        itemData.imageModulation = material.c;
-                        var getIcon;
-                        switch (id) {
-                            case "gt.metaitem.01": getIcon = ()=>{
-                                switch (superMetaID) {
-                                    case     0: return "dustTiny";
-                                    case  1000: return "dustSmall";
-                                    case  2000: return "dust";
-                                    case  3000: return "dustImpure";
-                                    case  4000: return "dustPure";
-                                    case  5000: return "crushed";
-                                    case  6000: return "crushedPurified";
-                                    case  7000: return "crushedCentrifuged";
-                                    case  8000: return "gem";
-                                    case  9000: return "nugget";
-                                    case 10000: return; // doesnt exist?
-                                    case 11000: return "ingot";
-                                    case 12000: return "ingotHot";
-                                    case 13000: return "ingotDouble";
-                                    case 14000: return "ingotTriple";
-                                    case 15000: return "ingotQuadruple";
-                                    case 16000: return "ingotQuintuple";
-                                    case 17000: return "plate";
-                                    case 18000: return "plateDouble";
-                                    case 19000: return "plateTriple";
-                                    case 20000: return "plateQuadruple";
-                                    case 21000: return "plateQuintuple";
-                                    case 22000: return "plateDense";
-                                    case 23000: return "stick";
-                                    case 24000: return material.s && material.t&4 ? "lens" : "spring";
-                                    case 25000: return "round";
-                                    case 26000: return "bolt"; 
-                                    case 27000: return "screw";
-                                    case 28000: return "ring";
-                                    case 29000: return "foil";
-                                    case 30000: return "cell";
-                                    case 31000: return "cellPlasma";
-                                    default: //console.log(`the item ${itemId} doesnt have an image`);
-                            }}; break;
-                            case "gt.metaitem.02": getIcon = ()=>{
-                                switch (superMetaID) {
-                                    case 16000: return "TURBINE_BLADE";
-                                    case 18000: return "casingSmall";
-                                    case 19000: return "wireFine";
-                                    case 20000: return "gearGtSmall";
-                                    case 21000: return "rotor";
-                                    case 22000: return "stickLong";
-                                    case 23000: return "springSmall";
-                                    case 24000: return "spring";
-                                    case 27000: return "gemChipped";
-                                    case 28000: return "gemFlawed";
-                                    case 29000: return "gemFlawless";
-                                    case 30000: return "gemExquisite";
-                                    case 31000: return "gearGt";
-                                    default: //console.log(`the item ${itemId} doesnt have an image`);
-                            }}; break;
-                            case "gt.metaitem.03": getIcon = ()=>{
-                                switch (superMetaID) {
-                                    case 4000: return; // nanites
-                                    case 5000: return "oreRaw";
-                                    case 6000: return "plateSuperdense";
-                            }}; break;
-                        }
-                        itemData.image = `assets/gtnh/images/items/materialicons/${NON_CUSTOM_MATERIALS.includes(material.i)?material.i:"CUSTOM/"+material.i}/${getIcon()}.png`
-                        itemData.imageOverlay = `assets/gtnh/images/items/materialicons/${NON_CUSTOM_MATERIALS.includes(material.i)?material.i:"CUSTOM/"+material.i}/${getIcon()}_OVERLAY.png`;
-                    }
-                break;
-            }
-        break;
-    }
-    //if (animatedImages.includes(itemData.image)) itemData.image = itemData.image.slice(0,-3) + "webp";
+	switch (namespace) {
+		case "gregtech":
+			switch (id) {
+				case "gt.metaitem.01":
+				case "gt.metaitem.02":
+				case "gt.metaitem.03":
+					var subMetaID = Number(metaId) % 1000;
+					var superMetaID = Number(metaId) - subMetaID;
+					var material = MATERIALS[Object.keys(MATERIALS).find(material=>MATERIALS[material].m==subMetaID)];
+					if (material) {
+						itemData.imageModulation = material.c;
+						var getIcon;
+						switch (id) {
+							case "gt.metaitem.01": getIcon = ()=>{
+								switch (superMetaID) {
+									case	 0: return "dustTiny";
+									case  1000: return "dustSmall";
+									case  2000: return "dust";
+									case  3000: return "dustImpure";
+									case  4000: return "dustPure";
+									case  5000: return "crushed";
+									case  6000: return "crushedPurified";
+									case  7000: return "crushedCentrifuged";
+									case  8000: return "gem";
+									case  9000: return "nugget";
+									case 10000: return; // doesnt exist?
+									case 11000: return "ingot";
+									case 12000: return "ingotHot";
+									case 13000: return "ingotDouble";
+									case 14000: return "ingotTriple";
+									case 15000: return "ingotQuadruple";
+									case 16000: return "ingotQuintuple";
+									case 17000: return "plate";
+									case 18000: return "plateDouble";
+									case 19000: return "plateTriple";
+									case 20000: return "plateQuadruple";
+									case 21000: return "plateQuintuple";
+									case 22000: return "plateDense";
+									case 23000: return "stick";
+									case 24000: return material.s && material.t&4 ? "lens" : "spring";
+									case 25000: return "round";
+									case 26000: return "bolt"; 
+									case 27000: return "screw";
+									case 28000: return "ring";
+									case 29000: return "foil";
+									case 30000: return "cell";
+									case 31000: return "cellPlasma";
+									default: //console.log(`the item ${itemId} doesnt have an image`);
+							}}; break;
+							case "gt.metaitem.02": getIcon = ()=>{
+								switch (superMetaID) {
+									case 16000: return "TURBINE_BLADE";
+									case 18000: return "casingSmall";
+									case 19000: return "wireFine";
+									case 20000: return "gearGtSmall";
+									case 21000: return "rotor";
+									case 22000: return "stickLong";
+									case 23000: return "springSmall";
+									case 24000: return "spring";
+									case 27000: return "gemChipped";
+									case 28000: return "gemFlawed";
+									case 29000: return "gemFlawless";
+									case 30000: return "gemExquisite";
+									case 31000: return "gearGt";
+									default: //console.log(`the item ${itemId} doesnt have an image`);
+							}}; break;
+							case "gt.metaitem.03": getIcon = ()=>{
+								switch (superMetaID) {
+									case 4000: return; // nanites
+									case 5000: return "oreRaw";
+									case 6000: return "plateSuperdense";
+							}}; break;
+						}
+						itemData.image = `assets/gtnh/images/items/materialicons/${NON_CUSTOM_MATERIALS.includes(material.i)?material.i:"CUSTOM/"+material.i}/${getIcon()}.png`
+						itemData.imageOverlay = `assets/gtnh/images/items/materialicons/${NON_CUSTOM_MATERIALS.includes(material.i)?material.i:"CUSTOM/"+material.i}/${getIcon()}_OVERLAY.png`;
+					}
+				break;
+			}
+		break;
+	}
+	//if (animatedImages.includes(itemData.image)) itemData.image = itemData.image.slice(0,-3) + "webp";
 }
 
 var fluids = []
 function gtnhGetImageDataFluid(itemId, itemData) {
-    if (FluidExceptions.includes(itemId)) {
-        itemData.image = `assets/gtnh/images/fluids/fluid.${itemId}.webp`
-    } else {
-        var state = itemId.split(".")[0];
-        var fluidId = itemId.split(".")[1] || itemId;
-        itemData.imageModulation = MATERIALS[fluidId]?.c || "#ffffff";
-        switch (state) {
-            case "molten": itemData.image = `assets/gtnh/images/fluids/fluid.molten.autogenerated.webp`; return;
-            case "plasma": itemData.image = `assets/gtnh/images/fluids/fluid.plasma.autogenerated.webp`; return;
-            case "wet": itemData.image = `assets/gtnh/images/fluids/fluid.wet.autogenerated.webp`; return; // not sure if this exists
-            default: itemData.image = `assets/gtnh/images/fluids/fluid.autogenerated.webp`; return;
-        }
-    }
+	if (FluidExceptions.includes(itemId)) {
+		itemData.image = `assets/gtnh/images/fluids/fluid.${itemId}.webp`
+	} else {
+		var state = itemId.split(".")[0];
+		var fluidId = itemId.split(".")[1] || itemId;
+		itemData.imageModulation = MATERIALS[fluidId]?.c || "#ffffff";
+		switch (state) {
+			case "molten": itemData.image = `assets/gtnh/images/fluids/fluid.molten.autogenerated.webp`; return;
+			case "plasma": itemData.image = `assets/gtnh/images/fluids/fluid.plasma.autogenerated.webp`; return;
+			case "wet": itemData.image = `assets/gtnh/images/fluids/fluid.wet.autogenerated.webp`; return; // not sure if this exists
+			default: itemData.image = `assets/gtnh/images/fluids/fluid.autogenerated.webp`; return;
+		}
+	}
 }
 
 // some of these are still pngs. i just havent bothered to convert them yet
 var FluidExceptions = [
-    "argon",
-    "AtmosphericGases",
-    "carbondioxide",
-    "air",
-    "antimatter",
-//    "autogenerated",
-    "berylium",
-    "bioethanol",
-//    "biomass", figure out what it is instead
-    "calcium",
-    "calciumcarbonate",
-    "chlorine",
-    "creosote",
-    "deuterium",
-    "dimensionallytranscendentresidue",
-//    "dyes",
-    "exciteddtcc",
-    "exciteddtec",
-    "exciteddtpc",
-    "exciteddtrc",
-    "exciteddtsc",
-    "fieryblood",
-    "fishoil",
-    "dimensionallyshiftedsuperfluid",
-    "prismaticacid",
-    "protohalkonitebase",
-    "sgcrystalslurry",
-    "stablebaryonicmatter",
-    "fluorine",
-//    "for.honey", figure out what it is instead
-    "fuel",
-    "gas_gas",
-    "gas_natural_gas",
-    "gas_sulfuricgas",
-    "glyceryl",
-    "helium-3",
-    "heliumplasma",
-    "holywater",
-    "hotfryingoil",
-    "hydrochloricacid",
-    "ice",
-    "indigo",
-    "indiumconcentrate",
-    "iron3chloride",
-    "leadzincsolution",
-    "lifeessence",
-    "liquidair",
-    "liquid_cracked_heavy_fuel",
-    "liquid_cracked_light_fuel",
-    "liquid_drillingfluid",
-    "liquid_epichlorhydrin",
-    "liquid_extra_heavy_oil",
-    "liquid_heavy_fuel",
-    "liquid_heavy_oil",
-    "liquid_hydricsulfur",
-    "liquid_light_fuel",
-    "liquid_light_oil",
-    "liquid_lpg",
-    "liquid_medium_oil",
-    "liquid_naphtha",
-    "liquid_nitrationmixture",
-    "liquid_sodium",
-    "liquid_sufluriclight_fuel",
-    "liquid_sulfuricheavy_fuel",
-    "liquid_sulfuricnaphtha",
-    "liquid_toluene",
-    "lithium",
-    "lubricant",
-    "mcguffium",
-    "mercury",
-    "milk",
-//    "molten.autogenerated",
-    "molten.bedrockium",
-    "molten.blaze",
-    "molten.concrete",
-    "molten.cosmicneutronium",
-    "molten.crystalline",
-    "molten.darksteel",
-    "molten.energetic",
-    "molten.eternity",
-    "molten.gaiaspirit",
-    "molten.glass",
-    "molten.ichorium",
-    "molten.infinity",
-    "molten.magmatter",
-    "molten.magnetohydrodynamicallyconstrainedstarmatter",
-    "molten.melodic",
-    "molten.redstone",
-    "molten.spacetime",
-    "molten.stellar",
-    "molten.transcendentmetal",
-    "molten.universium",
-    "molten.vibrant",
-    "molten.vivid",
-    "molten.whitedwarfmatter",
-    "nitricacid",
-    "nitrocoalfuel",
-    "nitrofuel",
-    "nitrofuel_old",
-    "nitrogendioxide",
-    "nitrogenplasma",
-    "oil",
-    "phononcrystalsolution",
-    "phononmedium",
-    "plasma.autogenerated",
-    "plasma.bedrockium",
-    "plasma.cosmicneutronium",
-    "plasma.ichorium",
-    "plasma.infinity",
-    "potassium",
-    "potion.alcopops",
-    "potion.applejuice",
-    "potion.awkward",
-    "potion.beer",
-    "potion.cavejohnsonsgrenadejuice",
-    "potion.chillysauce",
-    "potion.chocolatemilk",
-    "potion.cider",
-    "potion.coffee",
-    "potion.damage",
-    "potion.damage.splash",
-    "potion.damage.strong",
-    "potion.damage.strong.splash",
-    "potion.darkbeer",
-    "potion.darkchocolatemilk",
-    "potion.diablosauce",
-    "potion.diablosauce.strong",
-    "potion.diabolosauce",
-    "potion.dragonblood",
-    "potion.fireresistance.long",
-    "potion.fireresistance.long.splash",
-    "potion.fireresistance",
-    "potion.fireresistance.splash",
-    "potion.glenmckenner",
-    "potion.goldenapplejuice",
-    "potion.goldencider",
-    "potion.grapejuice",
-    "potion.health",
-    "potion.health.splash",
-    "potion.health.strong",
-    "potion.health.strong.splash",
-    "potion.hopsjuice",
-    "potion.hotsauce",
-    "potion.icetea",
-    "potion.idunsapplejuice",
-    "potion.invisibility.long",
-    "potion.invisibility.long.splash",
-    "potion.invisibility",
-    "potion.invisibility.splash",
-    "potion.latte",
-    "potion.lemonade",
-    "potion.lemonjuice",
-    "potion.leninade",
-    "potion.limoncello",
-    "potion.mineralwater",
-    "potion.mundane",
-    "potion.nightvision.long",
-    "potion.nightvision.long.splash",
-    "potion.nightvision",
-    "potion.nightvision.splash",
-    "potion.notchesbrew",
-    "potion.piratebrew",
-    "potion.poison.long",
-    "potion.poison.long.splash",
-    "potion.poison",
-    "potion.poison.splash",
-    "potion.poison.strong",
-    "potion.poison.strong.splash",
-    "potion.potatojuice",
-    "potion.purpledrink",
-    "potion.reedwater",
-    "potion.regen.long",
-    "potion.regen.long.splash",
-    "potion.regen",
-    "potion.regen.splash",
-    "potion.regen.strong",
-    "potion.regen.strong.splash",
-    "potion.rum",
-    "potion.saltywater",
-    "potion.scotch",
-    "potion.slowness.long",
-    "potion.slowness.long.splash",
-    "potion.slowness",
-    "potion.slowness.splash",
-    "potion.speed.long",
-    "potion.speed.long.splash",
-    "potion.speed",
-    "potion.speed.splash",
-    "potion.speed.strong",
-    "potion.speed.strong.splash",
-    "potion.strength.long",
-    "potion.strength.long.splash",
-    "potion.strength",
-    "potion.strength.splash",
-    "potion.strength.strong",
-    "potion.strength.strong.splash",
-    "potion.sweetcoffee",
-    "potion.sweetjesuslatte",
-    "potion.sweetlatte",
-    "potion.sweettea",
-    "potion.tea",
-    "potion.thick",
-    "potion.vinegar",
-    "potion.vodka",
-    "potion.waterbreathing.long",
-    "potion.waterbreathing.long.splash",
-    "potion.waterbreathing",
-    "potion.waterbreathing.splash",
-    "potion.weakness.long",
-    "potion.weakness.long.splash",
-    "potion.weakness",
-    "potion.weakness.splash",
-    "potion.wheatyhopsjuice",
-    "potion.wheatyjuice",
-    "potion.wine",
-    "primordialmatter",
-    "protomatter",
-    "quarkgluonplasma",
-    "radon",
-    "rawstarmatter",
-    "refinedglue",
-    "rocket_fuel",
-    "seedoil",
-    "silicon",
-    "sodium",
-    "sodiumpersulfate",
-    "solution.bluevitriol",
-    "solution.greenvitriol",
-    "solution.nickelsulfate",
-    "spatialfluid",
-    "squidink",
-    "steam",
-    "sulfuricacid",
-    "sulfuricacid",
-    "temporalfluid",
-    "titaniumtetrachloride",
-    "tritium",
-    "uuamplifier",
-    "wet.autogenerated",
-    "wet.concrete",
-    "wolframium",
-    "helium",
-    "hydrogen",
-    "LiquidArgon", // seemingly unused
-    "LiquidMethane", // seemingly unused
-    "Liquidnitrogen",
-    "liquidoxygen",
-    "methane",
-    "nitrogen",
-    "oxygen",
+	"argon",
+	"AtmosphericGases",
+	"carbondioxide",
+	"air",
+	"antimatter",
+//	"autogenerated",
+	"berylium",
+	"bioethanol",
+//	"biomass", figure out what it is instead
+	"calcium",
+	"calciumcarbonate",
+	"chlorine",
+	"creosote",
+	"deuterium",
+	"dimensionallytranscendentresidue",
+//	"dyes",
+	"exciteddtcc",
+	"exciteddtec",
+	"exciteddtpc",
+	"exciteddtrc",
+	"exciteddtsc",
+	"fieryblood",
+	"fishoil",
+	"dimensionallyshiftedsuperfluid",
+	"prismaticacid",
+	"protohalkonitebase",
+	"sgcrystalslurry",
+	"stablebaryonicmatter",
+	"fluorine",
+//	"for.honey", figure out what it is instead
+	"fuel",
+	"gas_gas",
+	"gas_natural_gas",
+	"gas_sulfuricgas",
+	"glyceryl",
+	"helium-3",
+	"heliumplasma",
+	"holywater",
+	"hotfryingoil",
+	"hydrochloricacid",
+	"ice",
+	"indigo",
+	"indiumconcentrate",
+	"iron3chloride",
+	"leadzincsolution",
+	"lifeessence",
+	"liquidair",
+	"liquid_cracked_heavy_fuel",
+	"liquid_cracked_light_fuel",
+	"liquid_drillingfluid",
+	"liquid_epichlorhydrin",
+	"liquid_extra_heavy_oil",
+	"liquid_heavy_fuel",
+	"liquid_heavy_oil",
+	"liquid_hydricsulfur",
+	"liquid_light_fuel",
+	"liquid_light_oil",
+	"liquid_lpg",
+	"liquid_medium_oil",
+	"liquid_naphtha",
+	"liquid_nitrationmixture",
+	"liquid_sodium",
+	"liquid_sufluriclight_fuel",
+	"liquid_sulfuricheavy_fuel",
+	"liquid_sulfuricnaphtha",
+	"liquid_toluene",
+	"lithium",
+	"lubricant",
+	"mcguffium",
+	"mercury",
+	"milk",
+//	"molten.autogenerated",
+	"molten.bedrockium",
+	"molten.blaze",
+	"molten.concrete",
+	"molten.cosmicneutronium",
+	"molten.crystalline",
+	"molten.darksteel",
+	"molten.energetic",
+	"molten.eternity",
+	"molten.gaiaspirit",
+	"molten.glass",
+	"molten.ichorium",
+	"molten.infinity",
+	"molten.magmatter",
+	"molten.magnetohydrodynamicallyconstrainedstarmatter",
+	"molten.melodic",
+	"molten.redstone",
+	"molten.spacetime",
+	"molten.stellar",
+	"molten.transcendentmetal",
+	"molten.universium",
+	"molten.vibrant",
+	"molten.vivid",
+	"molten.whitedwarfmatter",
+	"nitricacid",
+	"nitrocoalfuel",
+	"nitrofuel",
+	"nitrofuel_old",
+	"nitrogendioxide",
+	"nitrogenplasma",
+	"oil",
+	"phononcrystalsolution",
+	"phononmedium",
+	"plasma.autogenerated",
+	"plasma.bedrockium",
+	"plasma.cosmicneutronium",
+	"plasma.ichorium",
+	"plasma.infinity",
+	"potassium",
+	"potion.alcopops",
+	"potion.applejuice",
+	"potion.awkward",
+	"potion.beer",
+	"potion.cavejohnsonsgrenadejuice",
+	"potion.chillysauce",
+	"potion.chocolatemilk",
+	"potion.cider",
+	"potion.coffee",
+	"potion.damage",
+	"potion.damage.splash",
+	"potion.damage.strong",
+	"potion.damage.strong.splash",
+	"potion.darkbeer",
+	"potion.darkchocolatemilk",
+	"potion.diablosauce",
+	"potion.diablosauce.strong",
+	"potion.diabolosauce",
+	"potion.dragonblood",
+	"potion.fireresistance.long",
+	"potion.fireresistance.long.splash",
+	"potion.fireresistance",
+	"potion.fireresistance.splash",
+	"potion.glenmckenner",
+	"potion.goldenapplejuice",
+	"potion.goldencider",
+	"potion.grapejuice",
+	"potion.health",
+	"potion.health.splash",
+	"potion.health.strong",
+	"potion.health.strong.splash",
+	"potion.hopsjuice",
+	"potion.hotsauce",
+	"potion.icetea",
+	"potion.idunsapplejuice",
+	"potion.invisibility.long",
+	"potion.invisibility.long.splash",
+	"potion.invisibility",
+	"potion.invisibility.splash",
+	"potion.latte",
+	"potion.lemonade",
+	"potion.lemonjuice",
+	"potion.leninade",
+	"potion.limoncello",
+	"potion.mineralwater",
+	"potion.mundane",
+	"potion.nightvision.long",
+	"potion.nightvision.long.splash",
+	"potion.nightvision",
+	"potion.nightvision.splash",
+	"potion.notchesbrew",
+	"potion.piratebrew",
+	"potion.poison.long",
+	"potion.poison.long.splash",
+	"potion.poison",
+	"potion.poison.splash",
+	"potion.poison.strong",
+	"potion.poison.strong.splash",
+	"potion.potatojuice",
+	"potion.purpledrink",
+	"potion.reedwater",
+	"potion.regen.long",
+	"potion.regen.long.splash",
+	"potion.regen",
+	"potion.regen.splash",
+	"potion.regen.strong",
+	"potion.regen.strong.splash",
+	"potion.rum",
+	"potion.saltywater",
+	"potion.scotch",
+	"potion.slowness.long",
+	"potion.slowness.long.splash",
+	"potion.slowness",
+	"potion.slowness.splash",
+	"potion.speed.long",
+	"potion.speed.long.splash",
+	"potion.speed",
+	"potion.speed.splash",
+	"potion.speed.strong",
+	"potion.speed.strong.splash",
+	"potion.strength.long",
+	"potion.strength.long.splash",
+	"potion.strength",
+	"potion.strength.splash",
+	"potion.strength.strong",
+	"potion.strength.strong.splash",
+	"potion.sweetcoffee",
+	"potion.sweetjesuslatte",
+	"potion.sweetlatte",
+	"potion.sweettea",
+	"potion.tea",
+	"potion.thick",
+	"potion.vinegar",
+	"potion.vodka",
+	"potion.waterbreathing.long",
+	"potion.waterbreathing.long.splash",
+	"potion.waterbreathing",
+	"potion.waterbreathing.splash",
+	"potion.weakness.long",
+	"potion.weakness.long.splash",
+	"potion.weakness",
+	"potion.weakness.splash",
+	"potion.wheatyhopsjuice",
+	"potion.wheatyjuice",
+	"potion.wine",
+	"primordialmatter",
+	"protomatter",
+	"quarkgluonplasma",
+	"radon",
+	"rawstarmatter",
+	"refinedglue",
+	"rocket_fuel",
+	"seedoil",
+	"silicon",
+	"sodium",
+	"sodiumpersulfate",
+	"solution.bluevitriol",
+	"solution.greenvitriol",
+	"solution.nickelsulfate",
+	"spatialfluid",
+	"squidink",
+	"steam",
+	"sulfuricacid",
+	"sulfuricacid",
+	"temporalfluid",
+	"titaniumtetrachloride",
+	"tritium",
+	"uuamplifier",
+	"wet.autogenerated",
+	"wet.concrete",
+	"wolframium",
+	"helium",
+	"hydrogen",
+	"LiquidArgon", // seemingly unused
+	"LiquidMethane", // seemingly unused
+	"Liquidnitrogen",
+	"liquidoxygen",
+	"methane",
+	"nitrogen",
+	"oxygen",
 
-    "water",
-    "lava",
+	"water",
+	"lava",
 ]
