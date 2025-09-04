@@ -10,6 +10,7 @@ class Node {
 		this.element.style.setProperty("--posY", posY);
 
 		this.dragFunction = ()=>{
+			nodeElements.appendChild(this.element);
 			drag(this.element, true);
 			this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
 		}
@@ -20,8 +21,6 @@ class Node {
 			this.element.insertAdjacentHTML("beforeend", `<div class="delete">X</div>`);
 			this.element.querySelector(".delete").addEventListener("click", ()=>{this.remove()});
 		}
-
-		graph.appendChild(this.element);
 	}
 
 	static getFromElement(element) {
@@ -29,7 +28,7 @@ class Node {
 	}
 
 	attachToGraph() {
-		graph.appendChild(this.element);
+		nodeElements.appendChild(this.element);
 		this.network = new Network(this);
 		nodes[this.id] = this;
 	}
@@ -121,8 +120,8 @@ class RecipeNode extends Node {
 			<div class="recipe-arrow"></div>
 			<div class="outputs"></div>
 		`);
-		this.machineElement = this.machine.newElement();
-		this.element.appendChild(this.machineElement);
+		this.machineInstance = this.machine.newInstance(this.recipeData.machines, functionless);
+		this.element.appendChild(this.machineInstance.element);
 
 		const inputs = this.element.querySelector(".inputs");
 		this.inputs = this.recipeData.inputs.map(([itemId, quantity], index) => {
@@ -149,8 +148,8 @@ class RecipeNode extends Node {
 
 	displayBaseCase() {
 		this.showingMultiplied = false;
-		this.machineElement.setAttribute("amount", `${this.recipeData.time}s`);
-		this.machineElement.setAttribute("accurateAmount", `${this.recipeData.time}s per recipe`);
+		this.machineInstance.element.setAttribute("amount", `${this.recipeData.time}s`);
+		this.machineInstance.element.setAttribute("accurateAmount", `${this.recipeData.time}s per recipe`);
 		this.allItems().forEach(item=>{
 			item.element.setAttribute("quantity", `${item.quantity}${item.unit}`);
 			item.element.setAttribute("accurateQuantity", `${item.quantity}${item.unit}`);
@@ -159,8 +158,8 @@ class RecipeNode extends Node {
 
 	displayMultipliedCase() {
 		this.showingMultiplied = true;
-		this.machineElement.setAttribute("amount", "x" + formatNumber(this.machine.multiplier));
-		this.machineElement.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, true)} machines`);
+		this.machineInstance.element.setAttribute("amount", "x" + formatNumber(this.machine.multiplier));
+		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, true)} machines`);
 		this.allItems().forEach(item=>{
 			item.multipliedQuantity = throughput(item) * this.machine.multiplier;
 			item.element.setAttribute("quantity", `${formatNumber(item.multipliedQuantity)}${item.unit}`);

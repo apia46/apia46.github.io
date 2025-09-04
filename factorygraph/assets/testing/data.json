@@ -17,7 +17,7 @@
 	"recipes": [
 		{
 			"time": 8,
-			"machines": [ "chemicalReactor" ],
+			"machines": [ "chemicalReactor", "distillery" ],
 			"inputs":   [ ["ethylene", 144], ["oxygen", 1000] ],
 			"outputs":  [ ["molten.plastic", 216] ]
 		},
@@ -61,7 +61,7 @@
 		"distillery": {
 			"name": "Distillery",
 			"image": "assets/testing/images/distillery.png",
-			"speed": 1
+			"speed": 2
 		},
 		"pyrolyseOven": {
 			"name": "Pyrolyse Oven",

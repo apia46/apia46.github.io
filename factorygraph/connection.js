@@ -10,7 +10,7 @@ class DraggedLine {
 		this.element.style.setProperty("--aY", startY);
 		this.element.style.setProperty("--bX", startX);
 		this.element.style.setProperty("--bY", startY);
-		graph.appendChild(this.element);
+		lineElements.appendChild(this.element);
 		const scale = Number(wrapper.style.getPropertyValue("--scale")||1);
 		previousMouseX = startX * scale + (Number(wrapper.style.getPropertyValue('--posX')||0)) + wrapper.offsetLeft;
 		previousMouseY = startY * scale + (Number(wrapper.style.getPropertyValue('--posY')||0)) + wrapper.offsetTop;
@@ -50,7 +50,7 @@ class Connection {
 		this.element = document.createElement("connection");
 		this.element.setAttribute("connectionId", this.id);
 		this.element.classList.add(this.direction);
-		graph.appendChild(this.element);
+		lineElements.appendChild(this.element);
 		connections[this.id] = this;
 		items.forEach(item=>this.connectTo(item));
 		this.element.addEventListener("mousedown", event=>{this.startDrag()});
@@ -226,7 +226,7 @@ class DirectConnection {
 		this.element = document.createElement("line");
 		this.element.addEventListener("click", ()=>{this.remove()});
 		this.updatePosition();
-		graph.appendChild(this.element);
+		lineElements.appendChild(this.element);
 	}
 
 	remove() {

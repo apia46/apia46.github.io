@@ -19,6 +19,7 @@
 		<header id="header">
 			<button id="newRecipeButton" onclick="document.body.setAttribute('state', 'recipeSearch'); searchRecipes()"></button>
 			<button id="newItemButton" onclick="document.body.setAttribute('state', 'itemSearch'); searchItems()"></button>
+			<button id="newMachineButton" onclick="document.body.setAttribute('state', 'machineSearch'); searchMachines()"></button>
 			<span id="infoText"></span>
 			<dropdown onclick="this.classList.add('open'); event.stopPropagation(); document.body.addEventListener('click',()=>this.classList.remove('open'),{once:true});">
 				Load Dataset
@@ -38,8 +39,14 @@
 		<header id="itemSearchHeader">
 			<input type="text" id="itemSearchBar" placeholder="Item Search" oninput="searchItems()">
 		</header>
+		<header id="machineSearchHeader">
+			<input type="text" id="machineSearchBar" placeholder="Machine Search" oninput="searchMachines()">
+		</header>
 		<div id="wrapper">
-			<div id="graph"></div>
+			<div id="graph">
+				<div id="nodeElements"></div>
+				<div id="lineElements"></div>
+			</div>
 		</div>
 		<div id="searchOverlay" onmousedown="document.body.setAttribute('state', 'normal')"></div>
 		<script>load()</script>

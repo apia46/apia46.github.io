@@ -47,6 +47,7 @@ header {
 body[state="normal"] #header {display: block}
 body[state="recipeSearch"] #recipeSearchHeader, body[state="recipeSearch"] #searchOverlay {display: block}
 body[state="itemSearch"] #itemSearchHeader, body[state="itemSearch"] #searchOverlay {display: block}
+body[state="machineSearch"] #machineSearchHeader, body[state="machineSearch"] #searchOverlay {display: block}
 #header > button {
 	display: inline-block;
 	width: 36px;
@@ -58,6 +59,7 @@ body[state="itemSearch"] #itemSearchHeader, body[state="itemSearch"] #searchOver
 }
 #newRecipeButton { background: var(--this-background) no-repeat url(assets/newRecipe.png) }
 #newItemButton { background: var(--this-background) no-repeat url(assets/newItem.png) }
+#newMachineButton { background: var(--this-background) no-repeat url(assets/newMachine.png) }
 dropdown {
 	--this-background: var(--background);
 	position: relative;
@@ -93,7 +95,7 @@ dropdown.open > div {display: block}
 	font-size: 16px;
 }
 
-#itemSearchBar, #recipeSearchBar {
+#itemSearchBar, #recipeSearchBar, #machineSearchBar {
 	border: none;
 	outline: none;
 	width: 300px;
@@ -217,7 +219,7 @@ item {
 item::after {
 	content: attr(quantity);
 	font-size: 16em;
-	text-shadow: 1em 1em var(--dark); /* MAKE THESE 1/16 */
+	text-shadow: 0.0625em 0.0625em var(--dark);
 	position: absolute;
 	display: block;
 	width: 100%;
@@ -226,7 +228,7 @@ item::after {
 	background: var(--imageOverlay);
 	background-size: contain;
 	text-align: right;
-	line-height: 116em;
+	line-height: 7.25em;
 }
 item:hover, item.connecting {
 	outline: calc(4px * var(--outline-width-multiplier)) solid #ffffff;
@@ -244,35 +246,71 @@ item[style*="--imageModulation"]::before {
 	mix-blend-mode: multiply;
 }
 
-/* RECIPENODE */
-.recipeNode {
-	width: 282em;
-	display: flex;
-}
-
+/* MACHINE */
 machine {
 	position: absolute;
 	top: -48em;
 	left: 0em;
 	height: 48em;
 	width: 48em;
-	padding: 6em;
-	padding-bottom: 0;
-	background: no-repeat 6em 6em/48em var(--background) var(--image);
+	border-bottom: 0em;
+	border: 6em solid var(--background);
+	background: no-repeat top left/48em #222 var(--image);
 	text-align: center;
 }
 machine::after {
 	position: absolute;
-	top: 0em;
-	left: 60em;
-	height: 48em;
-	padding: 5em 17.5em 0em 0em;
+	top: -0.222222222em;
+	left: 2em;
+	height: 1.77777778em;
+	padding: 0.185185185em 0.648148148em 0em 0.222222222em;
 	content: attr(amount);
-	font-size: 27em; /* MAKE THESE 1/27 */
-	line-height: 48em;
-	vertical-align: middle;
+	font-size: 27em;
+	line-height: 1.77777778em;
 	background: var(--background);
 }
+.machine-options {
+	position: absolute;
+	font-size: 0px;
+	top: -64px;
+	left: 50%;
+	height: 48px;
+	translate: -50% 16px;
+	opacity: 0;
+	transition: 0.5s;
+	background: var(--background);
+	text-wrap: nowrap;
+	border: 4px solid var(--background);
+	z-index: 1;
+	.option {
+		position: relative;
+		display: inline-block;
+		width: 48px;
+		height: 48px;
+		background: var(--image);
+		background-size: contain;
+	}
+	.option:hover {
+		background: var(--dark) var(--image);
+		background-size: contain;
+	}
+	.option.selected {
+		outline: 4px solid var(--highlight);
+		outline-offset: -4px;
+		z-index: 1;
+	}
+}
+machine:hover .machine-options {
+	opacity: 1;
+	translate: -50% 0em;
+}
+
+/* RECIPENODE */
+.recipeNode {
+	width: 282em;
+	display: flex;
+}
+
 .recipeNode .inputs, .recipeNode .outputs {
 	display: grid;
 	grid-template-columns: 64em;
