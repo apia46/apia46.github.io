@@ -1,17 +1,26 @@
+let networkPeek; // debug
+let networkIdIter = 0;
+
 class Network {
 	constructor(node) {
+		this.id = networkIdIter++;
 		if (node) this.nodes = [node];
 		else this.nodes = [];
 		this.connections = [];
+		this.machines = [];
+		if (!networkPeek) networkPeek = this;
 	}
 
 	joinTo(network) {
 		if (network === this) return;
 		network.nodes.push(...this.nodes);
 		network.connections.push(...this.connections);
+		network.machines.push(...this.machines);
 		this.nodes.forEach(node=>node.network=network);
 		this.connections.forEach(connection=>connection.network=network);
+		this.machines.forEach(machine=>machine.network=network);
 		network.updateSolve();
+		if (networkPeek == this) networkPeek = network;
 	}
 
 	setNetworkIndices() {
@@ -22,6 +31,7 @@ class Network {
 		let visitId = 0;
 		this.nodes.forEach(node=>delete node.visitId);
 		this.connections.forEach(connection=>delete connection.visitId);
+		this.machines.forEach(machine=>delete machine.visitId);
 		let subnets = [];
 		this.nodes.forEach(node=>{
 			if (node.visitId) return;
@@ -71,18 +81,19 @@ function solve(network) {
 
 	network.connections.forEach(connection=>{
 		let row = array_fill(network.nodes.length, 0);
-		if (connection instanceof DirectConnection) {
-			if (connection.itemItem.node.constrained) {
+		if (connection instanceof DirectItemConnection) {
+			// remember: source is itemItem; destination is recipeItem
+			if (connection.source.node.constrained) {
 				let extraRow = array_fill(network.nodes.length, 0);
 				// 1 * itemNode = quantity
-				extraRow[connection.itemItem.node.networkIndex] = 1;
-				addRowToMatrix(extraRow, connection.itemItem.quantity);
+				extraRow[connection.source.node.networkIndex] = 1;
+				addRowToMatrix(extraRow, connection.source.quantity);
 			}
 			// throughput(recipeItem) * recipeNode = itemNode
 			// :. throughPut(recipeItem) * recipeNode - itemNode = 0
-			row[connection.recipeItem.node.networkIndex] = throughput(connection.recipeItem);
-			row[connection.itemItem.node.networkIndex] = -1;
-		} else {
+			row[connection.destination.node.networkIndex] = throughput(connection.destination);
+			row[connection.source.node.networkIndex] = -1;
+		} else if (connection instanceof Connection) {
 			// remember, the types on the connection are given as relative to the node they come from
 			// Σ(throughput(outputRecipeItem) * outputRecipeNode) = itemNode + Σ(throughput(inputRecipeItem) * inputRecipeNode)
 			// :. Σ(throughput(outputRecipeItem) * outputRecipeNode) - itemNode - Σ(throughput(inputRecipeItem) * inputRecipeNode) = 0
@@ -101,15 +112,26 @@ function solve(network) {
 			connection.inputs.forEach(inputItem=>{
 				row[inputItem.node.networkIndex] = -throughput(inputItem);
 			});
+		} else if (connection instanceof MachineConnection) {
+			// ΣrecipeNode = machineNode
+			// :. ΣrecipeNode - machineNode = 0
+			row[connection.mainInstance.node.networkIndex] = -1;
+			connection.referenceInstances.forEach(instance=>{
+				row[instance.node.networkIndex] = 1;
+			});
 		}
 		addRowToMatrix(row, 0);
 	});
+
+	// TODO: IMPLEMENT RESULT OF MACHINECONNECTION PLEASE
 
 	// returns the multipliers for each recipeNode; amounts for each itemNode
 	if (matrix.length < network.nodes.length) {
 		network.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
 		return "couldnt solve; node graph underconstrained";
 	}
+	console.log(matrix);
+	console.log(augment);
 	const result = gauss(matrix, augment);
 	if (!result) {
 		network.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});

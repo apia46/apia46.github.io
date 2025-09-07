@@ -135,7 +135,7 @@ function load() {
 			hover.innerHTML = element.getAttribute("name");
 			if (element.getAttribute("accurateQuantity")) hover.innerHTML += `<br>${element.getAttribute("accurateQuantity")}`;
 			hover.classList.add("show");
-		} else if (element.nodeName == "MACHINE") {
+		} else if (element.nodeName == "MACHINEINSTANCE") {
 			hover.innerHTML = element.getAttribute("name");
 			if (element.getAttribute("accurateAmount")) hover.innerHTML += `<br>${element.getAttribute("accurateAmount")}`;
 			hover.classList.add("show");
@@ -159,8 +159,14 @@ function load() {
 
 // https://www.quirksmode.org/js/findpos.html
 function getGraphPositionFromCenter(element) {
-	var posX = element.offsetWidth / 2;
-	var posY = element.offsetHeight / 2;
+	var [posX, posY] = getGraphPositionFromTopleft(element);
+	posX += element.offsetWidth / 2;
+	posY += element.offsetHeight / 2;
+	return [posX, posY];
+}
+function getGraphPositionFromTopleft(element) {
+	var posX = 0;
+	var posY = 0;
 	do {
 		posX += element.offsetLeft;
 		posY += element.offsetTop;
@@ -332,7 +338,7 @@ function resolveSearchRecipe(element) {
 	wrapper.addEventListener("mousemove", nodeInstance.dragFunction);
 }
 
-function formatNumber(number, morePrecise) {
-	if (morePrecise) return number.toPrecision(8);
+function formatNumber(number, digitsPrecision) {
+	if (digitsPrecision) return number.toPrecision(digitsPrecision);
 	return number.toPrecision(4);
 }

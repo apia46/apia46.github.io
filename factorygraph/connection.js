@@ -138,7 +138,7 @@ class Connection {
 			delete this.itemNodeItem;
 			delete this.itemNodeLine;
 		}
-		delete this.network.connections[this.network.connections.findIndex(check=>check===this)];
+		this.network.connections.splice(this.network.connections.findIndex(check=>check===this), 1);
 		this.network.findDisconnected();
 	}
 
@@ -214,15 +214,21 @@ function mouseRelativeToGrid() {
 }
 
 class DirectConnection {
-	// a direct connection between a recipenode item and an itemnode item
-	constructor(itemItem, recipeItem) {
-		this.itemItem = itemItem;
-		this.recipeItem = recipeItem;
-		itemItem.connection = this;
-		recipeItem.connection = this;
-		this.network = itemItem.node.network;
+	// a direct connection between a recipenode item and an itemnode item or whatever. constrains the network
+	constructor(source, destination, sourceNetwork, destinationNetwork, plural) {
+		this.source = source;
+		this.destination = destination;
+		this.plural = plural;
+		if (plural) {
+			source.connections.push(this);
+			destination.connections.push(this);
+		} else {
+			source.connection = this;
+			destination.connection = this;
+		}
+		this.network = sourceNetwork;
 		this.network.connections.push(this);
-		recipeItem.node.network.joinTo(itemItem.node.network);
+		destinationNetwork.joinTo(sourceNetwork);
 		this.element = document.createElement("line");
 		this.element.addEventListener("click", ()=>{this.remove()});
 		this.updatePosition();
@@ -230,16 +236,21 @@ class DirectConnection {
 	}
 
 	remove() {
-		delete this.itemItem.connection;
-		delete this.recipeItem.connection;
+		if (this.plural) {
+			this.source.connections.splice(this.source.connections.findIndex(check=>check===this), 1);
+			this.destination.connections.splice(this.destination.connections.findIndex(check=>check===this), 1);
+		} else {
+			delete this.source.connection;
+			delete this.destination.connection;
+		}
 		this.element.remove();
-		delete this.network.connections[this.network.connections.findIndex(check=>check===this)];
+		this.network.connections.splice(this.network.connections.findIndex(check=>check===this), 1);
 		this.network.findDisconnected();
 	}
 
 	updatePosition() {
-		const [aX, aY] = getGraphPositionFromCenter(this.itemItem.element);
-		const [bX, bY] = getGraphPositionFromCenter(this.recipeItem.element);
+		const [aX, aY] = getGraphPositionFromCenter(this.source.element);
+		const [bX, bY] = getGraphPositionFromCenter(this.destination.element);
 		this.element.style.setProperty("--aX", aX);
 		this.element.style.setProperty("--aY", aY);
 		this.element.style.setProperty("--bX", bX);
@@ -247,9 +258,105 @@ class DirectConnection {
 	}
 
 	getAllExcept(item) {
-		return [this.itemItem, this.recipeItem].filter(checkItem=>checkItem!==item);
+		return [this.source, this.recipeItem].filter(checkItem=>checkItem!==item);
 	}
 
 	updateLineTo() { this.updatePosition() }
 	removeConnectionTo() { this.remove() } // kind of a hack but it works so
+}
+
+class DirectItemConnection extends DirectConnection {
+	constructor(itemItem, recipeItem) {
+		super(itemItem, recipeItem, itemItem.node.network, recipeItem.node.network);
+	}
+}
+
+class DirectMachineConnection extends DirectConnection {
+	constructor(mainInstance, referenceInstance) {
+		super(mainInstance, referenceInstance, mainInstance.node.network, referenceInstance.node.network, true);
+		referenceInstance.attachTo(mainInstance.machine);
+		this.element.classList.add("directMachineConnection");
+	}
+
+	updatePosition() { // other way around because we want to shorten to source. jank
+		const [aX, aY] = getGraphPositionFromCenter(this.destination.element);
+		const [bX, bY] = getGraphPositionFromCenter(this.source.element);
+		this.element.style.setProperty("--aX", aX);
+		this.element.style.setProperty("--aY", aY);
+		this.element.style.setProperty("--bX", bX);
+		this.element.style.setProperty("--bY", bY);
+		
+		let theta = 0.785398163 - abs(0.785398163 - abs(1.57079633 - abs(Math.atan2(aX-bX, aY-bY))));
+		this.element.style.setProperty("--shortenBy", 32 / Math.cos(theta));
+	}
+
+	remove() {
+		this.destination.disconnect();
+		super.remove();
+		if (this.source.machine.referenceInstances.length == 0) this.source.machine.remove();
+	}
+}
+
+class MachineConnection { // has to be a single object for the solver to be happy
+	referenceInstances = [];
+	elements = [];
+	
+	constructor(mainInstance, referenceInstance) {
+		this.mainInstance = mainInstance;
+		mainInstance.connection = this;
+		this.network = mainInstance.machine.network;
+		this.network.connections.push(this);
+		this.connectTo(referenceInstance);
+	}
+
+	connectTo(referenceInstance) {
+		this.referenceInstances.push(referenceInstance);
+		referenceInstance.attachTo(this.mainInstance.machine);
+		referenceInstance.connection = this;
+		let element = document.createElement("line");
+		element.addEventListener("click", ()=>{this.disconnectTo(referenceInstance)});
+		element.classList.add("directMachineConnection");
+		lineElements.appendChild(element);
+		this.elements.push(element);
+		this.updatePosition();
+		referenceInstance.node.network.joinTo(this.network);
+	}
+
+	disconnectTo(referenceInstance) {
+		console.log(referenceInstance);
+		let index = this.referenceInstances.findIndex(check=>check===referenceInstance);
+		this.referenceInstances[index].disconnect();
+		this.referenceInstances.splice(index, 1);
+		this.elements[index].remove();
+		this.elements.splice(index, 1);
+		if (this.referenceInstances.length == 0) this.mainInstance.machine.remove();
+		this.network.findDisconnected();
+	}
+
+	remove() {
+		this.referenceInstances.forEach((instance, index)=>{
+			instance.disconnect(true);
+			this.elements[index].remove();
+		});
+		this.network.findDisconnected();
+	}
+
+	updatePosition() {
+		const [bX, bY] = getGraphPositionFromCenter(this.mainInstance.element);
+		this.elements.forEach((element, i)=>{
+			let instance = this.referenceInstances[i];
+			const [aX, aY] = getGraphPositionFromCenter(instance.element);
+			element.style.setProperty("--aX", aX);
+			element.style.setProperty("--aY", aY);
+			element.style.setProperty("--bX", bX);
+			element.style.setProperty("--bY", bY);
+
+			let theta = 0.785398163 - abs(0.785398163 - abs(1.57079633 - abs(Math.atan2(aX-bX, aY-bY))));
+			element.style.setProperty("--shortenBy", 32 / Math.cos(theta));
+		});
+	}
+
+	getAllExcept(instance) {
+		return [this.mainInstance, ...this.referenceInstances].filter(checkInstance=>checkInstance!==instance);
+	}
 }

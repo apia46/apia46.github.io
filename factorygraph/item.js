@@ -32,8 +32,8 @@ class Item {
 				const toItem = Item.getFromElement(resultElement);
 				if (!toItem.connection && this.contentId == toItem.contentId) {
 					if (this.node instanceof ItemNode && toItem.node instanceof ItemNode) return;
-					else if (this.node instanceof ItemNode) new DirectConnection(this, toItem);
-					else if (toItem.node instanceof ItemNode) new DirectConnection(toItem, this);
+					else if (this.node instanceof ItemNode) new DirectItemConnection(this, toItem);
+					else if (toItem.node instanceof ItemNode) new DirectItemConnection(toItem, this);
 					else new Connection(this, toItem);
 				}
 			} else if (resultElement?.nodeName == "CONNECTION") {

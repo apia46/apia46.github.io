@@ -1,7 +1,7 @@
 let nodeIdIter = 0;
 let nodes = {};
 
-class Node {
+class GraphNode {
 	constructor(posX, posY, functionless) {
 		if (!functionless) this.id = nodeIdIter++
 		this.element = document.createElement("node");
@@ -10,14 +10,26 @@ class Node {
 		this.element.style.setProperty("--posY", posY);
 
 		this.dragFunction = ()=>{
-			nodeElements.appendChild(this.element);
+			nodeElements.appendChild(this.element); // move it to the top
 			drag(this.element, true);
 			this.allItems().forEach(item=>{if (item.connection) item.connection.updateLineTo(item)});
+			if (this.machineInstance?.connection) this.machineInstance.connection.updatePosition();
 		}
 		if (!functionless) {
-			this.element.addEventListener("mousedown", event=>{event.stopPropagation(); previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", this.dragFunction)});
-			wrapper.addEventListener("mouseup", ()=>{wrapper.removeEventListener("mousemove", this.dragFunction)});
-			wrapper.addEventListener("mouseleave", ()=>{wrapper.removeEventListener("mousemove", this.dragFunction)});
+			this.element.addEventListener("mousedown", event=>{
+				event.stopPropagation();
+				if (document.elementFromPoint(event.clientX, event.clientY).closest(".dontDragNode")) return; // https://stackoverflow.com/questions/16863917/check-if-class-exists-somewhere-in-parent
+				previousMouseX = mouseX; previousMouseY = mouseY; wrapper.addEventListener("mousemove", this.dragFunction);
+				this.element.classList.add("dragged");
+			});
+			wrapper.addEventListener("mouseup", ()=>{
+				wrapper.removeEventListener("mousemove", this.dragFunction);
+				this.element.classList.remove("dragged");
+			});
+			wrapper.addEventListener("mouseleave", ()=>{
+				wrapper.removeEventListener("mousemove", this.dragFunction);
+				this.element.classList.remove("dragged");
+			});
 			this.element.insertAdjacentHTML("beforeend", `<div class="delete">X</div>`);
 			this.element.querySelector(".delete").addEventListener("click", ()=>{this.remove()});
 		}
@@ -39,7 +51,7 @@ class Node {
 		});
 		this.element.remove();
 		delete nodes[this.id];
-		delete this.network.nodes[this.network.nodes.findIndex(check=>check===this)];
+		this.network.nodes.splice(this.network.nodes.findIndex(check=>check===this), 1);
 	}
 
 	unvisitedConnectedNodesAndConnections(visitId) {
@@ -55,11 +67,21 @@ class Node {
 				});
 			}
 		});
+		if (this.machineInstance?.connection && !this.machineInstance.connection.visitId) {
+			connections.push(this.machineInstance.connection);
+			this.machineInstance.connection.visitId = visitId;
+			this.machineInstance.connection.getAllExcept(this.machineInstance).forEach(otherMachineInstance=>{
+				if (!otherMachineInstance.node.visitId) nodes.push(otherMachineInstance.node);
+				otherMachineInstance.node.visitId = visitId;
+			});
+		}
 		return [nodes, connections];
 	}
+
+	allItems() { return [] }
 }
 
-class ItemNode extends Node {
+class ItemNode extends GraphNode {
 	constructor(posX, posY, itemId, functionless) {
 		super(posX, posY, functionless);
 		this.element.insertAdjacentHTML("beforeend", `
@@ -107,7 +129,7 @@ class ItemNode extends Node {
 	allItems() { return [this.item] }
 }
 
-class RecipeNode extends Node {
+class RecipeNode extends GraphNode {
 	showingMultiplied = false;
 
 	constructor(posX, posY, recipeId, functionless) {
@@ -120,7 +142,7 @@ class RecipeNode extends Node {
 			<div class="recipe-arrow"></div>
 			<div class="outputs"></div>
 		`);
-		this.machineInstance = this.machine.newInstance(this.recipeData.machines, functionless);
+		this.machineInstance = this.machine.newInstance(this, this.recipeData.machines, functionless);
 		this.element.appendChild(this.machineInstance.element);
 
 		const inputs = this.element.querySelector(".inputs");
@@ -144,12 +166,21 @@ class RecipeNode extends Node {
 	attachToGraph() {
 		super.attachToGraph();
 		this.displayBaseCase();
+		this.machine.network = this.network;
+		this.network.machines.push(this.machine);
+	}
+
+	remove() {
+		this.machineInstance.remove();
+		super.remove();
 	}
 
 	displayBaseCase() {
 		this.showingMultiplied = false;
-		this.machineInstance.element.setAttribute("amount", `${this.recipeData.time}s`);
-		this.machineInstance.element.setAttribute("accurateAmount", `${this.recipeData.time}s per recipe`);
+		this.machineInstance.element.setAttribute("amount", `${formatNumber(this.recipeData.time/this.machine.machineData.speed, 3)}s`);
+		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.recipeData.time/this.machine.machineData.speed, 6)}s per recipe
+	<br>from ${this.recipeData.time}s base
+	<br>and ${this.machine.machineData.speed} machine speed`);
 		this.allItems().forEach(item=>{
 			item.element.setAttribute("quantity", `${item.quantity}${item.unit}`);
 			item.element.setAttribute("accurateQuantity", `${item.quantity}${item.unit}`);
@@ -159,13 +190,46 @@ class RecipeNode extends Node {
 	displayMultipliedCase() {
 		this.showingMultiplied = true;
 		this.machineInstance.element.setAttribute("amount", "x" + formatNumber(this.machine.multiplier));
-		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, true)} machines`);
+		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, 6)} machines`);
 		this.allItems().forEach(item=>{
 			item.multipliedQuantity = throughput(item) * this.machine.multiplier;
 			item.element.setAttribute("quantity", `${formatNumber(item.multipliedQuantity)}${item.unit}`);
-			item.element.setAttribute("accurateQuantity", `${formatNumber(item.multipliedQuantity, true)}${item.unit}/s`);
+			item.element.setAttribute("accurateQuantity", `${formatNumber(item.multipliedQuantity, 6)}${item.unit}/s`);
 		});
 	}
 
 	allItems() { return [...this.inputs, ...this.outputs] }
+}
+
+class MachineNode extends GraphNode {
+	constructor(posX, posY, machine) {
+		super(posX, posY);
+		this.machine = machine;
+		this.element.insertAdjacentHTML("beforeend", `
+			<div class="right-side">
+				<div class="number-container"><span>x</span><input type="numeric" placeholder="unconstrained" class="quantity"></input></div>
+				<label><input type="checkbox" class="constrain"></label>
+				<span class="error">\uf06a</span>
+				<button class="flipper">\uf2f1</button>
+			</div>
+		`);
+		this.machineInstance = new MachineInstance(this.machine, "main", this);
+		this.element.insertBefore(this.machineInstance.element, this.element.firstChild);
+
+		this.options = this.element.appendChild(this.machineInstance.createOptions());
+
+		this.element.classList.add("machineNode");
+	}
+
+	changeTo(machineId, from) {
+		this.options.querySelector(`[machineId=${from}]`).classList.remove("selected");
+		this.options.querySelector(`[machineId=${machineId}]`).classList.add("selected");
+		this.machineInstance.element.style.setProperty("--image", `url('${this.machine.machineData.image}')`);
+		this.machineInstance.element.setAttribute("name", this.machine.machineData.name);
+	}
+
+	remove() {
+		this.machineInstance.remove();
+		super.remove();
+	}
 }

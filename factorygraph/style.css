@@ -47,7 +47,6 @@ header {
 body[state="normal"] #header {display: block}
 body[state="recipeSearch"] #recipeSearchHeader, body[state="recipeSearch"] #searchOverlay {display: block}
 body[state="itemSearch"] #itemSearchHeader, body[state="itemSearch"] #searchOverlay {display: block}
-body[state="machineSearch"] #machineSearchHeader, body[state="machineSearch"] #searchOverlay {display: block}
 #header > button {
 	display: inline-block;
 	width: 36px;
@@ -59,7 +58,6 @@ body[state="machineSearch"] #machineSearchHeader, body[state="machineSearch"] #s
 }
 #newRecipeButton { background: var(--this-background) no-repeat url(assets/newRecipe.png) }
 #newItemButton { background: var(--this-background) no-repeat url(assets/newItem.png) }
-#newMachineButton { background: var(--this-background) no-repeat url(assets/newMachine.png) }
 dropdown {
 	--this-background: var(--background);
 	position: relative;
@@ -95,7 +93,7 @@ dropdown.open > div {display: block}
 	font-size: 16px;
 }
 
-#itemSearchBar, #recipeSearchBar, #machineSearchBar {
+#itemSearchBar, #recipeSearchBar {
 	border: none;
 	outline: none;
 	width: 300px;
@@ -246,63 +244,120 @@ item[style*="--imageModulation"]::before {
 	mix-blend-mode: multiply;
 }
 
-/* MACHINE */
-machine {
+machineInstance {
 	position: absolute;
-	top: -48em;
-	left: 0em;
+	top: -42em;
+	left: 6em;
 	height: 48em;
 	width: 48em;
-	border-bottom: 0em;
-	border: 6em solid var(--background);
 	background: no-repeat top left/48em #222 var(--image);
 	text-align: center;
+	transition: outline 0.05s;
+	outline: 0px solid;
+	outline-offset: -2px;
 }
-machine::after {
+machineInstance:hover, machineInstance.connecting {
+	outline: 4px solid #ffffff;
+}
+machineInstance::after {
 	position: absolute;
 	top: -0.222222222em;
-	left: 2em;
+	left: -0.222222222em;
 	height: 1.77777778em;
-	padding: 0.185185185em 0.648148148em 0em 0.222222222em;
+	padding: 0.185185185em 0.648148148em 0em 2.444444444em;
 	content: attr(amount);
 	font-size: 27em;
 	line-height: 1.77777778em;
 	background: var(--background);
+	z-index: -1;
 }
 .machine-options {
 	position: absolute;
 	font-size: 0px;
-	top: -64px;
-	left: 50%;
+	top: -72px;
+	left: -24px;
 	height: 48px;
-	translate: -50% 16px;
+	translate: 0 16px;
 	opacity: 0;
-	transition: 0.5s;
+	transition: 0.3s;
 	background: var(--background);
 	text-wrap: nowrap;
-	border: 4px solid var(--background);
+	border: 6px solid var(--background);
 	z-index: 1;
-	.option {
-		position: relative;
-		display: inline-block;
-		width: 48px;
-		height: 48px;
-		background: var(--image);
-		background-size: contain;
-	}
-	.option:hover {
-		background: var(--dark) var(--image);
-		background-size: contain;
-	}
-	.option.selected {
-		outline: 4px solid var(--highlight);
-		outline-offset: -4px;
-		z-index: 1;
-	}
 }
-machine:hover .machine-options {
+.machine-options .pullout {
+	position: relative;
+	display: inline-block;
+	width: 12px;
+	height: 48px;
+	background: url("assets/grippyBar.png");
+	margin-right: 6px;
+}
+.machine-options .pullout::after {
+	position: absolute;
+	display: block;
+	width: 21px;
+	height: 60px;
+	left: -6px;
+	top: -6px;
+	content: " ";
+}
+machineInstance.attached .machine-options {
+	left: -6px;
+}
+machineInstance.pulling .machine-options {
+	transition: 0s;
+}
+machineInstance.attached .pullout {
+	display: none;
+}
+.machine-options .option {
+	position: relative;
+	display: inline-block;
+	width: 48px;
+	height: 48px;
+	background: var(--image);
+	background-size: contain;
+}
+.machine-options .option:hover {
+	background: var(--dark) var(--image);
+	background-size: contain;
+}
+.machine-options .option.selected {
+	outline: 4px solid var(--highlight);
+	outline-offset: -4px;
+	z-index: 1;
+}
+machineInstance:not(.attached):hover .machine-options {
 	opacity: 1;
-	translate: -50% 0em;
+	translate: 0;
+}
+
+/* MACHINENODE */
+.machineNode {
+	width: 282px;
+	padding: 13px;
+	display: flex;
+}
+.machineNode .machine-options {
+	opacity: 1;
+	translate: 0;
+	left: 0;
+	top: 100%;
+	z-index: 0;
+}
+.machineNode machineInstance {
+	position: relative;
+	display: block;
+	width: 64px;
+	height: 64px;
+	left: 0;
+	top: 0;
+	border: none;
+	background-size: contain;
+}
+.machineNode machineInstance::after {
+	display: none;
 }
 
 /* RECIPENODE */
@@ -337,19 +392,23 @@ machine:hover .machine-options {
 	width: 282em;
 	display: flex;
 }
-.itemNode item {
+.itemNode item,
+.machineNode machineInstance {
 	flex-shrink: 0;
 }
-.itemNode .right-side {
+.itemNode .right-side,
+.machineNode .right-side {
 	margin-left: 8px;
 	min-width: 0;
 }
-.itemNode .number-container {
+.itemNode .number-container,
+.machineNode .number-container {
 	display: flex;
 	margin-bottom: 8px;
 	direction: ltr;
 }
-.itemNode .quantity, .itemNode button, .itemNode span {
+.itemNode .quantity, .itemNode button, .itemNode span,
+.machineNode .quantity, .machineNode button, .machineNode span {
 	box-sizing: border-box;
 	font-size: 24px;
 	padding: 0px 4px;
@@ -357,7 +416,8 @@ machine:hover .machine-options {
 	border: none;
 	background: var(--dark);
 }
-.itemNode .quantity {
+.itemNode .quantity,
+.machineNode .quantity {
 	min-width: 0;
 	color: var(--highlight);
 	text-align: right;
@@ -373,10 +433,16 @@ machine:hover .machine-options {
 	line-height: 28px;
 	padding-left: 0;
 }
-.itemNode .constrain {
+.machineNode span {
+	line-height: 28px;
+	padding-right: 0;
+}
+.itemNode .constrain,
+.machineNode .constrain {
 	display: none;
 }
-.itemNode label::after {
+.itemNode label::after,
+.machineNode label::after {
 	content: "\f09c";
 	font-family: fontawesome;
 	display: inline-block;
@@ -390,13 +456,16 @@ machine:hover .machine-options {
 	color: var(--highlight);
 	cursor: pointer;
 }
-.itemNode label:hover::after {
+.itemNode label:hover::after,
+.machineNode label:hover::after {
 	background: var(--bright);
 }
-.itemNode label:has(input:checked)::after {
+.itemNode label:has(input:checked)::after,
+.machineNode label:has(input:checked)::after {
 	content: "\f023";
 }
-.itemNode .error {
+.itemNode .error,
+.machineNode .error {
 	font-family: fontawesome;
 	vertical-align: top;
 	height: 27px;
@@ -406,11 +475,13 @@ machine:hover .machine-options {
 	margin-left: 8px;
 	display: none;
 }
-.itemNode .error[name] {
-	display:inline-block;
+.itemNode .error[name],
+.machineNode .error[name] {
+	display: inline-block;
 }
 
-.itemNode button.flipper {
+.itemNode button.flipper,
+.machineNode button.flipper {
 	font-family: fontawesome;
 	float: right;
 	font-size: 20px;
@@ -419,17 +490,21 @@ machine:hover .machine-options {
 	background: none;
 	color: var(--dark);
 }
-.itemNode button.flipper:hover {
+.itemNode button.flipper:hover,
+.machineNode button.flipper:hover {
 	color: var(--bright);
 }
-.itemNode.flipped {
+.itemNode.flipped,
+.machineNode.flipped {
 	direction: rtl;
 }
-.itemNode.flipped .right-side {
+.itemNode.flipped .right-side,
+.machineNode.flipped .right-side {
 	margin-left: 0;
 	margin-right: 8px;
 }
-.itemNode.flipped button.flipper {
+.itemNode.flipped button.flipper,
+.machineNode.flipped button.flipper {
 	float: left;
 }
 
@@ -510,7 +585,8 @@ line {
 	transform-origin: -2px var(--width);
 	height: calc(var(--width) * 2);
 	width: calc(var(--distance) * 1px - 4px);
-	rotate: calc(atan2(var(--bY) - var(--aY), var(--bX) - var(--aX)));
+	--angle: calc(atan2(var(--bY) - var(--aY), var(--bX) - var(--aX)));
+	rotate: var(--angle);
 	background: url(assets/dashedLine.png);
 	background-size: contain;
 	background-position: calc(var(--distance) * 0.5px) 0px;
