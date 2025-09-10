@@ -303,12 +303,6 @@ machineInstance::after {
 	content: " ";
 }
 machineInstance.attached .machine-options {
-	left: -6px;
-}
-machineInstance.pulling .machine-options {
-	transition: 0s;
-}
-machineInstance.attached .pullout {
 	display: none;
 }
 .machine-options .option {

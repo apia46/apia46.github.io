@@ -61,6 +61,8 @@ class GraphNode {
 			if (item.connection && !item.connection.visitId) {
 				connections.push(item.connection);
 				item.connection.visitId = visitId;
+				console.log(item.connection)
+				console.log(item.connection.getAllExcept(item))
 				item.connection.getAllExcept(item).forEach(otherItem=>{
 					if (!otherItem.node.visitId) nodes.push(otherItem.node);
 					otherItem.node.visitId = visitId;

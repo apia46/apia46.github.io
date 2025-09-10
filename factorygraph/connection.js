@@ -258,7 +258,7 @@ class DirectConnection {
 	}
 
 	getAllExcept(item) {
-		return [this.source, this.recipeItem].filter(checkItem=>checkItem!==item);
+		return [this.source, this.destination].filter(checkItem=>checkItem!==item);
 	}
 
 	updateLineTo() { this.updatePosition() }

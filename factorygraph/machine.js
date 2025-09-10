@@ -57,11 +57,8 @@ class Machine {
 		this.node.element.classList.add("dragged");
 		new MachineConnection(this.node.machineInstance, instance);
 		instance.element.classList.add("attached");
-		instance.element.classList.add("pulling");
-		setTimeout(()=>{
-			instance.element.classList.remove("pulling");
-		}, 1);
 		this.node.changeTo(this.machineId, this.optionIds[0]);
+		this.network.updateSolve();
 	}
 
 	copyTo(instance) {
