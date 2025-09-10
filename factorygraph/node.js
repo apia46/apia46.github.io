@@ -54,15 +54,14 @@ class GraphNode {
 		this.network.nodes.splice(this.network.nodes.findIndex(check=>check===this), 1);
 	}
 
-	unvisitedConnectedNodesAndConnections(visitId) {
+	unvisitedConnectedNodesAndConnectionsAndMachines(visitId) {
 		let connections = [];
 		let nodes = [];
+		let machines = [];
 		this.allItems().forEach(item=>{
 			if (item.connection && !item.connection.visitId) {
 				connections.push(item.connection);
 				item.connection.visitId = visitId;
-				console.log(item.connection)
-				console.log(item.connection.getAllExcept(item))
 				item.connection.getAllExcept(item).forEach(otherItem=>{
 					if (!otherItem.node.visitId) nodes.push(otherItem.node);
 					otherItem.node.visitId = visitId;
@@ -77,7 +76,11 @@ class GraphNode {
 				otherMachineInstance.node.visitId = visitId;
 			});
 		}
-		return [nodes, connections];
+		if (this.machineInstance && !this.machineInstance.machine.visitId) {
+			machines.push(this.machineInstance.machine);
+			this.machineInstance.machine.visitId = visitId;
+		}
+		return [nodes, connections, machines];
 	}
 
 	allItems() { return [] }
@@ -219,6 +222,7 @@ class MachineNode extends GraphNode {
 		this.element.insertBefore(this.machineInstance.element, this.element.firstChild);
 
 		this.options = this.element.appendChild(this.machineInstance.createOptions());
+		this.machineInstance.options = this.options;
 
 		const quantityInput = this.element.querySelector(".quantity");
 		quantityInput.classList.add("dontDragNode");
@@ -242,13 +246,6 @@ class MachineNode extends GraphNode {
 		});
 
 		this.element.classList.add("machineNode");
-	}
-
-	changeTo(machineId, from) {
-		this.options.querySelector(`[machineId=${from}]`).classList.remove("selected");
-		this.options.querySelector(`[machineId=${machineId}]`).classList.add("selected");
-		this.machineInstance.element.style.setProperty("--image", `url('${this.machine.machineData.image}')`);
-		this.machineInstance.element.setAttribute("name", this.machine.machineData.name);
 	}
 
 	displayGood() {

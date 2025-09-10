@@ -17,13 +17,13 @@
 	"recipes": [
 		{
 			"time": 8,
-			"machines": [ "chemicalReactor", "distillery" ],
+			"machines": [ "a", "b", "c" ],
 			"inputs":   [ ["ethylene", 144], ["oxygen", 1000] ],
 			"outputs":  [ ["molten.plastic", 216] ]
 		},
 		{
 			"time": 12,
-			"machines": [ "distillery" ],
+			"machines": [ "b", "c", "d" ],
 			"inputs":   [ ["severelysteamcracked.gas", 1000] ],
 			"outputs":  [ ["dustTinyCarbon", 1], ["ethylene", 300] ]
 		},
@@ -71,6 +71,26 @@
 		"fluidExtractor": {
 			"name": "Fluid Extractor",
 			"image": "assets/gtnh/images/machines/Fluid Extractor.png",
+			"speed": 1
+		},
+		"a": {
+			"name": "A",
+			"image": "assets/testing/images/a.png",
+			"speed": 1
+		},
+		"b": {
+			"name": "B",
+			"image": "assets/testing/images/b.png",
+			"speed": 1
+		},
+		"c": {
+			"name": "C",
+			"image": "assets/testing/images/c.png",
+			"speed": 2
+		},
+		"d": {
+			"name": "D",
+			"image": "assets/testing/images/d.png",
 			"speed": 1
 		}
 	},

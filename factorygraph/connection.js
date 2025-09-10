@@ -104,6 +104,7 @@ class Connection {
 		}
 		this.calculateParallelBounds();
 		item.node.network.joinTo(this.network);
+		this.network.updateSolve();
 	}
 
 	addItemNode(item) {
@@ -117,6 +118,7 @@ class Connection {
 		this.element.appendChild(this.itemNodeLine);
 		this.calculateParallelBounds();
 		item.node.network.joinTo(this.network);
+		this.network.updateSolve();
 	}
 
 	updateLineTo(item) {

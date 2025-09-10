@@ -20,23 +20,26 @@ class Machine {
 	}
 
 	updateOptions() {
-		this.optionIds = referenceInstances[0].node.recipeData.machines;
+		if (this.referenceInstances.length == 0) return;
+		this.optionIds = this.referenceInstances[0].node.recipeData.machines;
 		this.referenceInstances.forEach(instance=>{this.optionIds = this.optionIds.filter(
 			option=>instance.node.recipeData.machines.includes(option)
 		)});
-	
+		this.node.machineInstance.options.textContent = '';
+		this.node.machineInstance.options.append(...this.optionIds.map(id=>this.createOptionElement(id)));
+		this.changeTo(this.machineId);
 	}
 
 	changeTo(machineId) {
 		this.machineData = data.machines[machineId];
-		this.referenceInstances.forEach(instance=>{
+		this.allInstances().forEach(instance=>{
 			instance.options.querySelector(`[machineId=${this.machineId}]`).classList.remove("selected");
 			instance.options.querySelector(`[machineId=${machineId}]`).classList.add("selected");
 			instance.element.setAttribute("name", this.machineData.name);
 			instance.element.style.setProperty("--image", `url('${this.machineData.image}')`);
 		});
-		if (this.node) this.node.changeTo(machineId, this.machineId);
 		this.machineId = machineId;
+		console.log(this.network)
 		this.network.updateSolve();
 	}
 
@@ -57,8 +60,7 @@ class Machine {
 		this.node.element.classList.add("dragged");
 		new MachineConnection(this.node.machineInstance, instance);
 		instance.element.classList.add("attached");
-		this.node.changeTo(this.machineId, this.optionIds[0]);
-		this.network.updateSolve();
+		this.changeTo(this.machineId);
 	}
 
 	copyTo(instance) {
@@ -69,6 +71,24 @@ class Machine {
 		machine.changeTo(this.machineId);
 		machine.referenceInstances.push(instance);
 		return machine;
+	}
+
+	allInstances() {
+		if (this.node) return [this.node.machineInstance, ...this.referenceInstances];
+		return this.referenceInstances;
+	}
+
+	createOptionElement(id) {
+		let option = data.machines[id];
+		let optionElement = document.createElement("div");
+		optionElement.classList.add("option");
+		optionElement.setAttribute("machineId", id);
+		optionElement.setAttribute("name", option.name);
+		optionElement.style.setProperty("--image", `url("${option.image}")`);
+		optionElement.addEventListener("click", ()=>{
+			this.changeTo(id);
+		});
+		return optionElement;
 	}
 }
 
@@ -96,7 +116,7 @@ class MachineInstance {
 		}
 		this.element.style.setProperty("--image", `url('${machine.machineData.image}')`);
 		this.element.setAttribute("name", machine.machineData.name);
-		if (type == "reference" && !functionless) {
+		if (this.type == "reference" && !functionless) {
 			this.options = this.createOptions(machine);
 			this.element.appendChild(this.options);
 			var pullout = document.createElement("div");
@@ -114,18 +134,8 @@ class MachineInstance {
 		options.classList.add("machine-options");
 		options.classList.add("dontDragNode");
 		options.classList.add("dontDragMachineInstance");
-		this.machine.optionIds.forEach(id=>{
-			let option = data.machines[id];
-			let optionElement = document.createElement("div");
-			optionElement.classList.add("option");
-			optionElement.setAttribute("machineId", id);
-			optionElement.setAttribute("name", option.name);
-			optionElement.style.setProperty("--image", `url("${option.image}")`);
-			optionElement.addEventListener("click", ()=>{
-				this.machine.changeTo(id);
-			});
-			options.appendChild(optionElement);
-		});
+		if (this.type == "reference") options.append(...this.node.recipeData.machines.map(id=>this.machine.createOptionElement(id)));
+		else options.append(...this.machine.optionIds.map(id=>this.machine.createOptionElement(id)));
 		options.children[0].classList.add("selected");
 		return options;
 	}
@@ -142,6 +152,7 @@ class MachineInstance {
 
 	disconnect(dontBother) {
 		this.machine.referenceInstances.splice(this.machine.referenceInstances.findIndex(check=>check===this), 1);
+		if (!dontBother) this.machine.updateOptions();
 		this.machine = this.machine.copyTo(this);
 		this.node.machine = this.machine;
 		delete this.connection;
@@ -156,6 +167,8 @@ class MachineInstance {
 			machine.referenceInstances.push(this);
 			this.machine = machine;
 			this.node.machine = machine;
+			this.machine.updateOptions();
+			this.machine.network.updateSolve();
 		}
 	}
 

@@ -45,9 +45,11 @@ class Network {
 				thisNode.visitId = visitId;
 				subnet.nodes.push(thisNode);
 				thisNode.network = subnet;
-				const [connectedNodes, connections] = thisNode.unvisitedConnectedNodesAndConnections(visitId);
+				const [connectedNodes, connections, machines] = thisNode.unvisitedConnectedNodesAndConnectionsAndMachines(visitId);
 				subnet.connections.push(...connections);
+				subnet.machines.push(...machines);
 				connections.forEach(connection=>connection.network=subnet);
+				machines.forEach(machine=>machine.network=subnet);
 				queue.push(...connectedNodes);
 			}
 		});
