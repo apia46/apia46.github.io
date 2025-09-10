@@ -94,12 +94,12 @@ class ItemNode extends GraphNode {
 		`);
 		const quantityInput = this.element.querySelector(".quantity");
 		this.item = new Item(itemId, null, itemIdIter++, this, null, functionless);
-		quantityInput.addEventListener("mousedown", event=>{event.stopPropagation()}); // dont drag
+		quantityInput.classList.add("dontDragNode");
 		quantityInput.addEventListener("input", ()=>{
 			this.constrained = true;
 			this.element.querySelector(".constrain").checked = true;
 			quantityInput.placeholder = "0";
-		})
+		});
 		quantityInput.addEventListener("input", ()=>{
 			this.item.quantity = Number(this.element.querySelector(".quantity").value)||0;
 			this.network.updateSolve();
@@ -189,10 +189,10 @@ class RecipeNode extends GraphNode {
 
 	displayMultipliedCase() {
 		this.showingMultiplied = true;
-		this.machineInstance.element.setAttribute("amount", "x" + formatNumber(this.machine.multiplier));
-		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.machine.multiplier, 6)} machines`);
+		this.machineInstance.element.setAttribute("amount", "x" + formatNumber(this.machineInstance.quantity));
+		this.machineInstance.element.setAttribute("accurateAmount", `${formatNumber(this.machineInstance.quantity, 6)} machines`);
 		this.allItems().forEach(item=>{
-			item.multipliedQuantity = throughput(item) * this.machine.multiplier;
+			item.multipliedQuantity = throughput(item) * this.machineInstance.quantity;
 			item.element.setAttribute("quantity", `${formatNumber(item.multipliedQuantity)}${item.unit}`);
 			item.element.setAttribute("accurateQuantity", `${formatNumber(item.multipliedQuantity, 6)}${item.unit}/s`);
 		});
@@ -218,6 +218,27 @@ class MachineNode extends GraphNode {
 
 		this.options = this.element.appendChild(this.machineInstance.createOptions());
 
+		const quantityInput = this.element.querySelector(".quantity");
+		quantityInput.classList.add("dontDragNode");
+		quantityInput.addEventListener("input", ()=>{
+			this.constrained = true;
+			this.element.querySelector(".constrain").checked = true;
+			quantityInput.placeholder = "0";
+		});
+		quantityInput.addEventListener("input", ()=>{
+			this.machineInstance.quantity = Number(this.element.querySelector(".quantity").value)||0;
+			this.network.updateSolve();
+		});
+		this.element.querySelector(".constrain").addEventListener("click", ()=>{
+			this.constrained = this.element.querySelector(".constrain").checked;
+			quantityInput.placeholder = this.constrained?"0":"unconstrained";
+			this.network.updateSolve();
+		});
+		this.element.querySelector(".flipper").addEventListener("click",()=>{
+			this.element.classList.toggle("flipped");
+			this.machineInstance.connection.updatePosition();
+		});
+
 		this.element.classList.add("machineNode");
 	}
 
@@ -226,6 +247,15 @@ class MachineNode extends GraphNode {
 		this.options.querySelector(`[machineId=${machineId}]`).classList.add("selected");
 		this.machineInstance.element.style.setProperty("--image", `url('${this.machine.machineData.image}')`);
 		this.machineInstance.element.setAttribute("name", this.machine.machineData.name);
+	}
+
+	displayGood() {
+		this.element.querySelector(".error").removeAttribute("name");
+		if (!this.constrained) this.element.querySelector(".quantity").value = this.machineInstance.quantity;
+	}
+
+	displayBad(error) {
+		this.element.querySelector(".error").setAttribute("name", error);
 	}
 
 	remove() {

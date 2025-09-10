@@ -12,10 +12,19 @@ class Machine {
 	}
 	
 	newInstance(node, optionIds, functionless) {
-		this.optionIds = optionIds;
+		if (this.optionIds) this.optionIds = this.optionIds.filter(option=>optionIds.includes(option));
+		else this.optionIds = optionIds;
 		let instance = new MachineInstance(this, "reference", node, functionless);
 		this.referenceInstances.push(instance);
 		return instance;
+	}
+
+	updateOptions() {
+		this.optionIds = referenceInstances[0].node.recipeData.machines;
+		this.referenceInstances.forEach(instance=>{this.optionIds = this.optionIds.filter(
+			option=>instance.node.recipeData.machines.includes(option)
+		)});
+	
 	}
 
 	changeTo(machineId) {
@@ -127,8 +136,10 @@ class MachineInstance {
 	remove() {
 		this.element.remove();
 		delete machineInstances[this.id];
-		if (this.type == "reference") this.connection.disconnectTo(this);
-		else this.connection.remove();
+		if (this.connection) {
+			if (this.type == "reference") this.connection.disconnectTo(this);
+			else this.connection.remove();
+		}
 		this.machine.referenceInstances.splice(this.machine.referenceInstances.findIndex(check=>check===this), 1);
 	}
 

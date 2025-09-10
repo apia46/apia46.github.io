@@ -323,7 +323,6 @@ class MachineConnection { // has to be a single object for the solver to be happ
 	}
 
 	disconnectTo(referenceInstance) {
-		console.log(referenceInstance);
 		let index = this.referenceInstances.findIndex(check=>check===referenceInstance);
 		this.referenceInstances[index].disconnect();
 		this.referenceInstances.splice(index, 1);

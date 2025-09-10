@@ -55,10 +55,10 @@ class Network {
 	}
 
 	updateSolve() {
-		let itemNodes = this.nodes.filter(node=>node instanceof ItemNode);
-		if (itemNodes.length) {
+		let constrainNodes = this.nodes.filter(node=>node instanceof ItemNode || node instanceof MachineNode);
+		if (constrainNodes.length) {
 			let result = solve(this);
-			if (result) itemNodes.forEach(node=>node.displayBad(result));
+			if (result) constrainNodes.forEach(node=>node.displayBad(result));
 		} else this.nodes.forEach(node=>{if (node instanceof RecipeNode) node.displayBaseCase()});
 	}
 }
@@ -85,7 +85,7 @@ function solve(network) {
 			// remember: source is itemItem; destination is recipeItem
 			if (connection.source.node.constrained) {
 				let extraRow = array_fill(network.nodes.length, 0);
-				// 1 * itemNode = quantity
+				// itemNode = quantity
 				extraRow[connection.source.node.networkIndex] = 1;
 				addRowToMatrix(extraRow, connection.source.quantity);
 			}
@@ -104,7 +104,7 @@ function solve(network) {
 				row[connection.itemNodeItem.node.networkIndex] = -1;
 				if (connection.itemNodeItem.node.constrained) {
 					let extraRow = array_fill(network.nodes.length, 0);
-					// 1 * itemNode = quantity
+					// itemNode = quantity
 					extraRow[connection.itemNodeItem.node.networkIndex] = 1;
 					addRowToMatrix(extraRow, connection.itemNodeItem.quantity);
 				}
@@ -119,6 +119,12 @@ function solve(network) {
 			connection.referenceInstances.forEach(instance=>{
 				row[instance.node.networkIndex] = 1;
 			});
+			if (connection.mainInstance.node.constrained) {
+				let extraRow = array_fill(network.nodes.length, 0);
+				// machineNode = quantity
+				extraRow[connection.mainInstance.node.networkIndex] = 1;
+				addRowToMatrix(extraRow, connection.mainInstance.quantity);
+			}
 		}
 		addRowToMatrix(row, 0);
 	});
@@ -144,20 +150,20 @@ function solve(network) {
 
 	network.nodes.forEach(node=>{
 		if (node instanceof ItemNode) { if (!node.constrained) node.item.quantity = 0; }
-		else node.machine.multiplier = 0;
+		else node.machineInstance.quantity = 0;
 	});
 	result.forEach((value, nodeIndex)=>{
 		const node = network.nodes[nodeIndex];
 		if (node instanceof ItemNode) {
 			node.item.quantity = value;
 		} else {
-			node.machine.multiplier = value;
+			node.machineInstance.quantity = value;
 		}
 	});
 
 	network.nodes.forEach(node=>{
 		if (node instanceof RecipeNode) node.displayMultipliedCase();
-		if (node instanceof ItemNode) node.displayGood();
+		if (node instanceof ItemNode || node instanceof MachineNode) node.displayGood();
 	});
 }
 

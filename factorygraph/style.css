@@ -416,11 +416,16 @@ machineInstance:not(.attached):hover .machine-options {
 	border: none;
 	background: var(--dark);
 }
-.itemNode .quantity,
-.machineNode .quantity {
+.itemNode .quantity{
 	min-width: 0;
 	color: var(--highlight);
 	text-align: right;
+	flex-shrink: 1;
+}
+.machineNode .quantity {
+	min-width: 0;
+	color: var(--highlight);
+	text-align: left;
 	flex-shrink: 1;
 }
 .itemNode .quantity:focus {
